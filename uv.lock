@@ -593,7 +593,7 @@ requires-dist = [
     { name = "diffusers", specifier = "==0.38.0" },
     { name = "gradio", marker = "extra == 'ui'", specifier = "==6.30.0" },
     { name = "huggingface-hub", specifier = "==1.16.0" },
-    { name = "particle-sliders-core", extras = ["serialization"], git = "https://github.com/HyperGAN/particle-sliders.git?subdirectory=packages%2Fparticle-sliders-core&rev=4be0b5b29d2e2c741431f468d71ba8a7c884b724" },
+    { name = "particle-sliders-core", extras = ["serialization"], git = "https://github.com/HyperGAN/particle-sliders.git?subdirectory=packages%2Fparticle-sliders-core&rev=cdfb80a76b882b4b73861b12f555263bd64ffeb7" },
     { name = "particlegan", specifier = "==0.9.1" },
     { name = "pillow", specifier = "==11.3.0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = "==8.4.2" },
@@ -1035,7 +1035,7 @@ wheels = [
 [[package]]
 name = "particle-sliders-core"
 version = "0.6.0"
-source = { git = "https://github.com/HyperGAN/particle-sliders.git?subdirectory=packages%2Fparticle-sliders-core&rev=4be0b5b29d2e2c741431f468d71ba8a7c884b724#4be0b5b29d2e2c741431f468d71ba8a7c884b724" }
+source = { git = "https://github.com/HyperGAN/particle-sliders.git?subdirectory=packages%2Fparticle-sliders-core&rev=cdfb80a76b882b4b73861b12f555263bd64ffeb7#cdfb80a76b882b4b73861b12f555263bd64ffeb7" }
 dependencies = [
     { name = "particlegan" },
     { name = "torch" },

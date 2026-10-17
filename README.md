@@ -102,7 +102,7 @@ adapter and private result bundle remain private.
 ## Install and CPU qualification
 
 Python 3.10–3.12. The shared package dependency is pinned to the proposed source
-commit `4be0b5b29d2e2c741431f468d71ba8a7c884b724` (pending Ada approval) in `pyproject.toml`; ParticleGAN stays exactly 0.9.1. Install the matching
+commit `cdfb80a76b882b4b73861b12f555263bd64ffeb7` (pending Ada approval) in `pyproject.toml`; ParticleGAN stays exactly 0.9.1. Install the matching
 shared package before importing training or inference. See
 [the integration audit](docs/shared-pg09-audit.md) for the exact integration pin
 and CPU receipt. Do not retarget an environment used by a running campaign.
@@ -118,7 +118,7 @@ After synchronizing it, install the exact shared source and this project without
 resolving a different runtime:
 
 ```bash
-uv pip install --no-deps 'particle-sliders-core[serialization] @ git+https://github.com/HyperGAN/particle-sliders.git@4be0b5b29d2e2c741431f468d71ba8a7c884b724#subdirectory=packages/particle-sliders-core'
+uv pip install --no-deps 'particle-sliders-core[serialization] @ git+https://github.com/HyperGAN/particle-sliders.git@cdfb80a76b882b4b73861b12f555263bd64ffeb7#subdirectory=packages/particle-sliders-core'
 uv pip install --no-deps -e .
 ```
 

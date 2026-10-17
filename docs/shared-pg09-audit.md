@@ -58,24 +58,29 @@ ordinary failures clean the newly reserved output and allow retry.
 
 ## Validation and remaining gates
 
-The sole packaging owner's immutable proposed dependency is
-`4be0b5b29d2e2c741431f468d71ba8a7c884b724`, `particle-sliders-core` 0.6.0,
+The sole packaging owner's final immutable proposed dependency is
+`cdfb80a76b882b4b73861b12f555263bd64ffeb7`, `particle-sliders-core` 0.6.0,
 released ParticleGAN 0.9.1. It is pending Ada approval and merge. Its producer wheel
-SHA256 is `2e7621c370e790f65702acf76cfa2f428b393cd3f863245aa26d8a76ff096ada`.
+SHA256 is `4abc83988fdeb6d7478de830e7ee8ec5d9bd99c20d52f89e4ce594d50dfd39a3`.
 The official ParticleGAN wheel SHA256 is
 `b01b7957169cb3de45887e22b4d525fd54071577e1de58089707cf05fe6992ec`.
 Final source/wheel receipts accompany this exact dependency pin. The original 42a2e371 installed-wheel consumer suite passed **48 tests in 7.43
 seconds**, with no skips; these original receipts remain historical and unchanged. Its separate isolated `-I` process outside both checkouts imported the three
 wheels and passed the four-update GAN/resume/reload smoke with `conceptmod` absent.
 The optimizer-state P1 review superseded that dependency. A separate replacement
-receipt records the narrow current-wheel rerun: **46 installed-wheel CPU tests in
+receipt records the earlier 4be-wheel rerun: **46 installed-wheel CPU tests in
 13.413 seconds**, with no failures or skips, including product RNG scope,
 inference-token preflight and export failure cleanup. The replacement isolated
 four-update/replay/reload smoke also passed with all three imports from installed
 wheels, no `conceptmod`, and CUDA uninitialized. All 11 active source pins match.
 See the [replacement receipt](receipts/shared-pg09-replacement/receipt.json) for
 source commit `3d4bad7df2ee5527bb3de24248715c0ee424f8df`, wheel hashes and the
-29-source map. These CPU receipts do not qualify pretrained image quality.
+29-source map. Those results remain scoped to 4be. The final CDF qualification
+is recorded separately under `receipts/shared-pg09-cdf/`, using the exact producer
+wheel and a narrow MOSS restore/update/export check. CDF adds Adam-specific clock
+bounds and an Iris metadata fix; MOSS uses the unchanged optimized non-Adam
+wrappers. No image payload or existing source cohort is adopted. These CPU receipts
+do not qualify pretrained image quality.
 
 Before any new native run the parent must route exact dependency and product heads
 through Ada, check source pins and use coordinator admission. Package relocation

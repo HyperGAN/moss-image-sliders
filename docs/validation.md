@@ -1,15 +1,17 @@
 # Shared PG0.9.1 integration validation
 
-The current derivative uses the proposed shared package commit
-`4be0b5b29d2e2c741431f468d71ba8a7c884b724` (0.6.0) and released ParticleGAN 0.9.1.
+The current derivative uses the final proposed shared package commit
+`cdfb80a76b882b4b73861b12f555263bd64ffeb7` (0.6.0) and released ParticleGAN 0.9.1.
+Final qualification is a separate narrow exact-wheel consumer check under
+`receipts/shared-pg09-cdf/`; the prior receipts below retain their original scope.
 The original 42a2e371 candidate passed 48 installed-wheel CPU checks. Its receipts
 are preserved under `receipts/shared-pg09-audit/` as historical evidence. That
 candidate was superseded after an optimizer-state P1 review. Replacement
 qualification and product RNG, inference-token and export-retry corrections are
-recorded separately under `receipts/shared-pg09-replacement/`; only the replacement
-receipt qualifies the current dependency pin. See [the audit](shared-pg09-audit.md).
+recorded separately under `receipts/shared-pg09-replacement/` and qualify 4be only.
+The final CDF receipt qualifies the current dependency pin. See [the audit](shared-pg09-audit.md).
 
-The replacement product source is `3d4bad7df2ee5527bb3de24248715c0ee424f8df`.
+The earlier 4be replacement product source is `3d4bad7df2ee5527bb3de24248715c0ee424f8df`.
 Its exact Git-archive wheel and the producer's exact replacement wheel passed
 **46 affected installed-wheel CPU tests in 13.413 seconds**, with no skips or
 failures. A separate isolated Python process outside the checkouts executed four
@@ -17,8 +19,8 @@ actual shared GAN updates, exact full-game replay and portable adapter reload;
 `conceptmod` was absent and CUDA remained uninitialized. The
 [replacement receipt](receipts/shared-pg09-replacement/receipt.json) binds all wheel
 Python sources and 29 product source hashes, and confirms all 11 active pins match.
-The exact shared GitHub commit is readable; Ada review and parent merges remain
-pending. The MOSS public draft target is `HyperGAN/moss-image-sliders:main`.
+That result qualifies the 4be candidate only. The final CDF exact GitHub commit
+is readable; Ada review and parent merges remain pending. The MOSS public draft target is `HyperGAN/moss-image-sliders:main`.
 
 No GPU/native model run or quality claim belongs to this audit. Existing native
 0.9.0 campaigns and their sources are untouched. The receipts below are historical
