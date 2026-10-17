@@ -68,9 +68,14 @@ Final source/wheel receipts accompany this exact dependency pin. The original 42
 seconds**, with no skips; these original receipts remain historical and unchanged. Its separate isolated `-I` process outside both checkouts imported the three
 wheels and passed the four-update GAN/resume/reload smoke with `conceptmod` absent.
 The optimizer-state P1 review superseded that dependency. A separate replacement
-receipt records the narrow current-wheel rerun, including product RNG scope,
-inference-token preflight and export failure cleanup. These CPU receipts do not qualify pretrained
-image quality.
+receipt records the narrow current-wheel rerun: **46 installed-wheel CPU tests in
+13.413 seconds**, with no failures or skips, including product RNG scope,
+inference-token preflight and export failure cleanup. The replacement isolated
+four-update/replay/reload smoke also passed with all three imports from installed
+wheels, no `conceptmod`, and CUDA uninitialized. All 11 active source pins match.
+See the [replacement receipt](receipts/shared-pg09-replacement/receipt.json) for
+source commit `3d4bad7df2ee5527bb3de24248715c0ee424f8df`, wheel hashes and the
+29-source map. These CPU receipts do not qualify pretrained image quality.
 
 Before any new native run the parent must route exact dependency and product heads
 through Ada, check source pins and use coordinator admission. Package relocation
