@@ -82,6 +82,15 @@ bounds and an Iris metadata fix; MOSS uses the unchanged optimized non-Adam
 wrappers. No image payload or existing source cohort is adopted. These CPU receipts
 do not qualify pretrained image quality.
 
+The [CDF receipt](receipts/shared-pg09-cdf/receipt.json) records **18 narrow
+installed-wheel CPU tests in 10.770 seconds**, zero failures/skips, plus an
+isolated installed-origin/metadata and four-update/export/exact-resume smoke.
+The product pin commit is `b247a239d3b73b75b32291a85e068c1ec57ef258`; its exact
+Git-archive wheel SHA256 is
+`04fc39472bd551055f5bb37af4c80e279dce7925666b06b32f02458dbe4193be`.
+Product code/tests/tools and the 42/4be receipts remain unchanged. Only this
+narrow CDF result qualifies the final dependency pin; CUDA remains uninitialized.
+
 Before any new native run the parent must route exact dependency and product heads
 through Ada, check source pins and use coordinator admission. Package relocation
 changes module/source identity: old source-bound cohorts require the original

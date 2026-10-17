@@ -4,6 +4,13 @@ The current derivative uses the final proposed shared package commit
 `cdfb80a76b882b4b73861b12f555263bd64ffeb7` (0.6.0) and released ParticleGAN 0.9.1.
 Final qualification is a separate narrow exact-wheel consumer check under
 `receipts/shared-pg09-cdf/`; the prior receipts below retain their original scope.
+Product pin commit `b247a239d3b73b75b32291a85e068c1ec57ef258`, built from its
+exact Git archive, passed **18 narrow installed-wheel CPU checks in 10.770
+seconds**, with zero failures or skips. The isolated origin/metadata check and
+four-update/export/exact-resume smoke also passed; CUDA remained uninitialized.
+The [CDF receipt](receipts/shared-pg09-cdf/receipt.json) verifies the exact producer
+wheel, all installed package Python sources, and all 11 unchanged active pins.
+
 The original 42a2e371 candidate passed 48 installed-wheel CPU checks. Its receipts
 are preserved under `receipts/shared-pg09-audit/` as historical evidence. That
 candidate was superseded after an optimizer-state P1 review. Replacement
