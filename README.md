@@ -6,10 +6,98 @@ Adapted from [particle-sliders](https://github.com/HyperGAN/particle-sliders), w
 a MOSS-specific backend, trainable attention adapters, reproducible ramp inference,
 and a local Gradio control panel. The original repository is untouched.
 
-**Status:** CPU integration validated on the actual MOSS implementation at tiny random
-dimensions. Full SFT checkpoint training, GPU memory use and visual concept quality still
-need a GPU acceptance run. Example configs are starting recipes, not trained adapters.
-This project does not implement the separate ParticleGAN develop BISPF upgrade.
+**Status:** A real 60-update MOSS-Image-SFT GPU pilot produced the lighting examples
+below. Moderate strengths give a visible cool-to-warm change with better shape preservation;
+full strengths can change geometry. Trained adapter weights remain private. The pilot uses
+signed LoRA velocity distillation. This project does not implement the separate ParticleGAN
+BISPF upgrade.
+
+## Samples
+
+**Start around magnitude 0.35 for this lighting pilot.** Each row keeps its prompt,
+seed, 512 × 512 resolution, 50 Euler steps and CFG 3 fixed; only signed adapter
+strength changes. The controls run **cool → off → warm**. These are actual model
+outputs from the same trained adapter, not color-filtered or blended previews.
+
+### Lighting warmth · gentle
+
+**Cool · −0.35** → **Off · 0** → **Warm · +0.35**
+
+![Lighting warmth: cool minus 0.35, base zero, warm plus 0.35](assets/lighting-warmth/gentle.png)
+
+Full resolution: [−0.35](samples/lighting-warmth/teapot/minus-0.35.png) ·
+[Off](samples/lighting-warmth/teapot/off.png) ·
+[+0.35](samples/lighting-warmth/teapot/plus-0.35.png)
+
+<details><summary>Prompt and seed</summary>
+
+A ceramic teapot on a wooden table, studio photograph.
+
+Seed: `42`. This is the neutral caption from the training triplet.
+
+</details>
+
+### Lighting warmth · full strength and held-out scene
+
+**Cool · −1** → **Off · 0** → **Warm · +1**
+
+![Full-strength lighting warmth: teapot seed 42 above and held-out cup and book seed 84 below](assets/lighting-warmth/full-strength.png)
+
+Full resolution, teapot: [−1](samples/lighting-warmth/teapot/minus-1.png) ·
+[Off](samples/lighting-warmth/teapot/off.png) ·
+[+1](samples/lighting-warmth/teapot/plus-1.png)
+
+Full resolution, held-out cup/book: [−1](samples/lighting-warmth/held-out-cup-book/minus-1.png) ·
+[Off](samples/lighting-warmth/held-out-cup-book/off.png) ·
+[+1](samples/lighting-warmth/held-out-cup-book/plus-1.png)
+
+<details><summary>Prompts and seeds</summary>
+
+Top row: A ceramic teapot on a wooden table, studio photograph.
+
+Seed: `42`.
+
+Bottom row: A white porcelain cup beside an open book on a wooden desk, studio photograph.
+
+Seed: `84`. This scene was not used in training.
+
+</details>
+
+The cool-to-warm direction is visible in both scenes. **Full strength also changes
+geometry and composition:** the +1 teapot changes its handle/spout, and the −1
+held-out cup loses its handle. This is not clean relighting. The moderate ramp retains
+the teapot's shape much better, with small texture changes. These are development
+examples from one training triplet, not a final-test benchmark or a general quality claim.
+Zero strength matches the separately rendered [adapter-free baseline](samples/lighting-warmth/teapot/adapter-free.png)
+pixel for pixel on the teapot scene.
+
+<details><summary>Training, inference and provenance</summary>
+
+Base: [MOSS-Image-SFT](https://huggingface.co/OpenMOSS-Team/MOSS-Image-SFT), pinned to
+`fc5de0d56fc910cbca6f6625a70f5f582b26deb1`. Training and rendering code:
+[`a6f5cd0`](https://github.com/HyperGAN/moss-image-sliders/commit/a6f5cd06aa561d0edd495656509a712c6c4b8ead).
+Generated 2026-10-17 on one RTX A6000.
+
+Training: 60 updates; rank/alpha 4; LR 0.0003; direction strength 1; seed 42;
+512px; four-step frozen neutral rollouts; token cap 256; frozen DiT base and text
+encoder. Neutral caption: `A ceramic teapot on a wooden table, studio photograph.`
+Positive caption adds `warm golden lighting.`; negative adds `cool blue lighting.`
+Exact strings and file SHA256 values are in the [provenance manifest](samples/lighting-warmth/provenance.json).
+
+The executed objective is signed LoRA contrastive velocity distillation. At the same
+latent and timestep, frozen teachers give `delta = v(positive) - v(negative)` and
+`base = v(neutral)`. The neutral-caption student at signs +1 and −1 minimizes the mean
+of the two velocity MSEs against `base + delta` and `base - delta` respectively.
+There is **no discriminator, adversarial loss, or ParticleGAN/BISPF call** in this
+pilot's executed training path. Scale zero bypasses the adapter exactly.
+
+Inference: fresh matched-seed CPU generator for each strength; 50 steps; CFG 3;
+scheduler shift 5; negative prompt empty; negative branch skips layer 22. PNGs are
+published unchanged, with contact-sheet labels added outside the generated images.
+Only examples and their documentation/provenance are published here; the trained
+adapter and private result bundle remain private.
+
+</details>
 
 ## Install
 

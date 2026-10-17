@@ -1,0 +1,186 @@
+{
+  "schema": "moss-image-sliders-example-provenance-v1",
+  "generated_utc_date": "2026-10-17",
+  "base_model": "OpenMOSS-Team/MOSS-Image-SFT",
+  "model_revision": "fc5de0d56fc910cbca6f6625a70f5f582b26deb1",
+  "source_commit": "a6f5cd06aa561d0edd495656509a712c6c4b8ead",
+  "training": {
+    "objective": "signed contrastive velocity LoRA distillation",
+    "discriminator": false,
+    "particlegan_or_bispf_called": false,
+    "recipe": {
+      "neutral": "A ceramic teapot on a wooden table, studio photograph.",
+      "positive": "A ceramic teapot on a wooden table, studio photograph, warm golden lighting.",
+      "negative": "A ceramic teapot on a wooden table, studio photograph, cool blue lighting.",
+      "steps": 60,
+      "rank": 4,
+      "lr": 0.0003,
+      "resolution": 512,
+      "rollout_steps": 4,
+      "strength": 1.0,
+      "seed": 42,
+      "max_sequence_length": 256
+    },
+    "alpha": 4,
+    "attention_targets": [
+      "layers.N.proj.q",
+      "layers.N.proj.k",
+      "layers.N.proj.v",
+      "layers.N.proj.o"
+    ],
+    "base_and_text_encoder_frozen": true,
+    "adapter_weights_published": false,
+    "private_adapter_sha256": "b6ad09fba1e532a2b28c88cfdf504b94c6ef5a53acd17c110d1139e495551b31"
+  },
+  "inference": {
+    "width": 512,
+    "height": 512,
+    "steps": 50,
+    "cfg": 3.0,
+    "sampler": "MOSSImageScheduler Euler",
+    "scheduler_shift": 5.0,
+    "negative_prompt": "",
+    "uncond_skip_layers": [
+      22
+    ],
+    "matched_seed_per_scene": true,
+    "fresh_cpu_generator_for_each_strength": true
+  },
+  "observations": {
+    "zero_matches_adapter_free_pixels": true,
+    "gentle_strengths": [
+      -0.35,
+      0,
+      0.35
+    ],
+    "full_strengths": [
+      -1,
+      0,
+      1
+    ],
+    "limitations": "Full strengths can change object shape, handles, spouts and scene composition. This is one training triplet and two development scenes, not a final-test benchmark."
+  },
+  "images": [
+    {
+      "path": "samples/lighting-warmth/teapot/minus-1.png",
+      "scene": "teapot",
+      "prompt": "A ceramic teapot on a wooden table, studio photograph.",
+      "seed": 42,
+      "strength": -1
+    },
+    {
+      "path": "samples/lighting-warmth/teapot/off.png",
+      "scene": "teapot",
+      "prompt": "A ceramic teapot on a wooden table, studio photograph.",
+      "seed": 42,
+      "strength": 0
+    },
+    {
+      "path": "samples/lighting-warmth/teapot/plus-1.png",
+      "scene": "teapot",
+      "prompt": "A ceramic teapot on a wooden table, studio photograph.",
+      "seed": 42,
+      "strength": 1
+    },
+    {
+      "path": "samples/lighting-warmth/held-out-cup-book/minus-1.png",
+      "scene": "held-out-cup-book",
+      "prompt": "A white porcelain cup beside an open book on a wooden desk, studio photograph.",
+      "seed": 84,
+      "strength": -1
+    },
+    {
+      "path": "samples/lighting-warmth/held-out-cup-book/off.png",
+      "scene": "held-out-cup-book",
+      "prompt": "A white porcelain cup beside an open book on a wooden desk, studio photograph.",
+      "seed": 84,
+      "strength": 0
+    },
+    {
+      "path": "samples/lighting-warmth/held-out-cup-book/plus-1.png",
+      "scene": "held-out-cup-book",
+      "prompt": "A white porcelain cup beside an open book on a wooden desk, studio photograph.",
+      "seed": 84,
+      "strength": 1
+    },
+    {
+      "path": "samples/lighting-warmth/teapot/minus-0.35.png",
+      "scene": "teapot",
+      "prompt": "A ceramic teapot on a wooden table, studio photograph.",
+      "seed": 42,
+      "strength": -0.35
+    },
+    {
+      "path": "samples/lighting-warmth/teapot/plus-0.35.png",
+      "scene": "teapot",
+      "prompt": "A ceramic teapot on a wooden table, studio photograph.",
+      "seed": 42,
+      "strength": 0.35
+    },
+    {
+      "path": "samples/lighting-warmth/teapot/adapter-free.png",
+      "scene": "teapot",
+      "prompt": "A ceramic teapot on a wooden table, studio photograph.",
+      "seed": 42,
+      "strength": 0,
+      "adapter_attached": false
+    }
+  ],
+  "files": [
+    {
+      "path": "assets/lighting-warmth/gentle.png",
+      "sha256": "4c49be9e0ad99db6f79aaa7b0b87060b0183105d7eda9e1686f79728ffa4a848",
+      "bytes": 793717
+    },
+    {
+      "path": "assets/lighting-warmth/full-strength.png",
+      "sha256": "73992f149e4f7bfc0aed16a07e768b2c0370836ae417fc37f11f36261a0fa9bd",
+      "bytes": 1674243
+    },
+    {
+      "path": "samples/lighting-warmth/teapot/minus-0.35.png",
+      "sha256": "5a3113473557d49f5f2c9b706abaf0b498c40e502983ad8e4081a9e1145ff11d",
+      "bytes": 268394
+    },
+    {
+      "path": "samples/lighting-warmth/teapot/off.png",
+      "sha256": "5740701e8a01c2d2176f2b596fe5e98f436748873d1a8672e13d8744f2001aaa",
+      "bytes": 261880
+    },
+    {
+      "path": "samples/lighting-warmth/teapot/plus-0.35.png",
+      "sha256": "c1afedd3b0c659fa32fbd6ba9fae2d18fb35f2b0deaa88d90361f4b2792daf8d",
+      "bytes": 260333
+    },
+    {
+      "path": "samples/lighting-warmth/teapot/minus-1.png",
+      "sha256": "031fb7988398553b0e3022876c60c993231929396f15f94cd490bc0aad99afd2",
+      "bytes": 263964
+    },
+    {
+      "path": "samples/lighting-warmth/teapot/plus-1.png",
+      "sha256": "8f04dfbd321beb075d3683dd8bb5791399ce9c2453a64bc1391c45b035e66cee",
+      "bytes": 270333
+    },
+    {
+      "path": "samples/lighting-warmth/held-out-cup-book/minus-1.png",
+      "sha256": "d026110c4948a34a7c0bccb4e7263277ce608f62328340f75317e0b218271647",
+      "bytes": 281989
+    },
+    {
+      "path": "samples/lighting-warmth/held-out-cup-book/off.png",
+      "sha256": "baea83de34b784d3ff35673657b810c66ff8f07a0cdcfc2f2ae7f983f581f3f9",
+      "bytes": 285202
+    },
+    {
+      "path": "samples/lighting-warmth/held-out-cup-book/plus-1.png",
+      "sha256": "f0390e47cca97171c652de315077b1705c0c29ef4de324a275758970acb77262",
+      "bytes": 272858
+    },
+    {
+      "path": "samples/lighting-warmth/teapot/adapter-free.png",
+      "sha256": "5740701e8a01c2d2176f2b596fe5e98f436748873d1a8672e13d8744f2001aaa",
+      "bytes": 261880
+    }
+  ]
+}
