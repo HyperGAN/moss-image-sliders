@@ -51,32 +51,43 @@ def load_pipeline(*, device="cuda:0", local_files_only=True, training=False, off
     return pipe
 
 
+def preflight_prompt(tokenizer, prompt, max_sequence_length=4096, *, purpose="Inference"):
+    """Tokenize the complete native chat template and reject silent truncation."""
+    if type(max_sequence_length) is not int or not 1 <= max_sequence_length <= 4096:
+        raise ValueError("max_sequence_length must be an integer between 1 and 4096")
+    if not isinstance(prompt, str):
+        raise ValueError("prompt must be a string")
+    if tokenizer is None:
+        raise ValueError("A native tokenizer is required to validate the full prompt")
+    text = tokenizer.apply_chat_template(
+        [{"role": "user", "content": prompt}], tokenize=False,
+        add_generation_prompt=True, enable_thinking=True)
+    inputs = tokenizer(text, return_tensors="pt", truncation=False)
+    token_count = inputs["input_ids"].shape[-1]
+    if token_count > max_sequence_length:
+        raise ValueError(f"{purpose} prompt has {token_count} tokens; budget is {max_sequence_length}; "
+                         "shorten the prompt or explicitly raise max_sequence_length")
+    identity = {"prompt_sha256": hashlib.sha256(prompt.encode()).hexdigest(),
+                "formatted_sha256": hashlib.sha256(text.encode()).hexdigest(),
+                "input_ids_sha256": hashlib.sha256(
+                    inputs["input_ids"].contiguous().numpy().tobytes()).hexdigest(),
+                "mask_sha256": hashlib.sha256(
+                    inputs["attention_mask"].contiguous().numpy().tobytes()).hexdigest(),
+                "token_count": token_count, "max_sequence_length": max_sequence_length,
+                "truncated": False}
+    return inputs, identity
+
+
 def encode_training_prompts(pipe, prompts, device, max_length=256):
     # Pipeline device detection sees the CPU transformer during this staging phase.
     # Move only its device marker temporarily by using the encoder's tokenizer directly.
-    if type(max_length) is not int or not 1 <= max_length <= 4096:
-        raise ValueError("max_length must be an integer between 1 and 4096")
     prepared, identity = [], []
-    # Validate every full chat-templated prompt before any encoder forward. A
-    # truncated positive pole can otherwise silently become the neutral pole.
+    # Validate every full prompt before any encoder forward. A truncated positive
+    # pole can otherwise silently become the neutral pole.
     for prompt in prompts:
-        text = pipe.tokenizer.apply_chat_template(
-            [{"role": "user", "content": prompt}], tokenize=False,
-            add_generation_prompt=True, enable_thinking=True)
-        inputs = pipe.tokenizer(text, return_tensors="pt", truncation=False)
-        token_count = inputs["input_ids"].shape[-1]
-        if token_count > max_length:
-            raise ValueError(f"Training prompt has {token_count} tokens; budget is {max_length}; "
-                             "shorten the prompt or explicitly raise max_sequence_length")
+        inputs, info = preflight_prompt(pipe.tokenizer, prompt, max_length, purpose="Training")
         prepared.append(inputs)
-        identity.append({"prompt_sha256": hashlib.sha256(prompt.encode()).hexdigest(),
-                         "formatted_sha256": hashlib.sha256(text.encode()).hexdigest(),
-                         "input_ids_sha256": hashlib.sha256(
-                             inputs["input_ids"].contiguous().numpy().tobytes()).hexdigest(),
-                         "mask_sha256": hashlib.sha256(
-                             inputs["attention_mask"].contiguous().numpy().tobytes()).hexdigest(),
-                         "token_count": token_count, "max_sequence_length": max_length,
-                         "truncated": False})
+        identity.append(info)
     result = []
     with torch.no_grad():
         for inputs in prepared:

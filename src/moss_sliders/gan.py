@@ -82,9 +82,14 @@ def _build_run(pipe, contexts, config, *, checkpointing, model_identity, owner):
     if config.get("objective") != OBJECTIVE or config.get("pg_version") != "0.9.1":
         raise ValueError("An explicit PG 0.9 GAN-only recipe is required")
     device = pipe.transformer.device
-    devices = [device.index or 0] if device.type == "cuda" else []
+    devices = ([device.index if device.index is not None else torch.cuda.current_device()]
+               if device.type == "cuda" else [])
     with torch.random.fork_rng(devices=devices):
-        torch.manual_seed(config["seed"])
+        # Seed only generators whose state this fork restores. torch.manual_seed
+        # also resets every CUDA generator, including devices outside the fork.
+        torch.random.default_generator.manual_seed(config["seed"])
+        if devices:
+            torch.cuda.default_generators[devices[0]].manual_seed(config["seed"])
         slider = Slider(pipe.transformer, rank=config["rank"])
         owner.append(slider)
         identity = dict(model_identity or {"model": MODEL_ID, "revision": MODEL_REVISION})

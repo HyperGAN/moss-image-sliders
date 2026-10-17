@@ -4,6 +4,8 @@ import json
 import hashlib
 import math
 from pathlib import Path
+import shutil
+import tempfile
 
 import torch
 from torch import nn
@@ -60,15 +62,38 @@ def save_gan_slider(slider, directory, training, *, core_config, completed_steps
     if any(value.dtype != torch.float32 or not value.isfinite().all() for value in state.values()):
         raise ValueError("GAN adapter leaves must be finite float32 tensors")
     path = Path(directory)
-    path.mkdir(parents=True, exist_ok=False)
+    if path.exists() or path.is_symlink():
+        raise FileExistsError(path)
     manifest = dict(format=V2, base_model=MODEL_ID, revision=MODEL_REVISION,
                     **slider.manifest(), objective="pg09_gan_only", pg_version="0.9.1",
                     preset="bispf_optimized", core_config=core_config,
-                    completed_steps=completed_steps, training=training or {})
-    save_file({k: v.detach().cpu().contiguous() for k, v in state.items()},
-              str(path / "adapter.safetensors"), metadata={"format": V2})
-    manifest["adapter_sha256"] = _sha256(path / "adapter.safetensors")
-    (path / "slider.json").write_text(json.dumps(manifest, indent=2, allow_nan=False) + "\n")
+                    completed_steps=completed_steps, training=training or {},
+                    adapter_sha256="0" * 64)
+    # Validate every provenance field and freeze its JSON snapshot before creating
+    # any output. The actual file checksum is filled in after staging the weights.
+    manifest = json.loads(json.dumps(manifest, allow_nan=False))
+    path.parent.mkdir(parents=True, exist_ok=True)
+    pending = Path(tempfile.mkdtemp(prefix=f".{path.name}.pending-", dir=path.parent))
+    reserved = False
+    try:
+        weights = pending / "adapter.safetensors"
+        save_file({k: v.detach().cpu().contiguous() for k, v in state.items()},
+                  str(weights), metadata={"format": V2})
+        manifest["adapter_sha256"] = _sha256(weights)
+        (pending / "slider.json").write_text(json.dumps(manifest, indent=2, allow_nan=False) + "\n")
+        # Exclusively reserve the destination, then publish the manifest last as
+        # the commit marker. Readers reject incomplete directories without it.
+        path.mkdir(exist_ok=False)
+        reserved = True
+        weights.replace(path / weights.name)
+        (pending / "slider.json").replace(path / "slider.json")
+    except Exception:
+        if reserved:
+            shutil.rmtree(path)
+        raise
+    finally:
+        if pending.exists():
+            shutil.rmtree(pending)
 
 
 def save_slider(slider, directory, training=None):

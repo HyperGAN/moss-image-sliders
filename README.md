@@ -102,7 +102,7 @@ adapter and private result bundle remain private.
 ## Install and CPU qualification
 
 Python 3.10–3.12. The shared package dependency is pinned to the proposed source
-commit `42a2e371c537180bd189fd4a288b640f9f1c98fc` (pending Ada approval) in `pyproject.toml`; ParticleGAN stays exactly 0.9.1. Install the matching
+commit `4be0b5b29d2e2c741431f468d71ba8a7c884b724` (pending Ada approval) in `pyproject.toml`; ParticleGAN stays exactly 0.9.1. Install the matching
 shared package before importing training or inference. See
 [the integration audit](docs/shared-pg09-audit.md) for the exact integration pin
 and CPU receipt. Do not retarget an environment used by a running campaign.
@@ -118,7 +118,7 @@ After synchronizing it, install the exact shared source and this project without
 resolving a different runtime:
 
 ```bash
-uv pip install --no-deps 'particle-sliders-core[serialization] @ git+https://github.com/HyperGAN/particle-sliders.git@42a2e371c537180bd189fd4a288b640f9f1c98fc#subdirectory=packages/particle-sliders-core'
+uv pip install --no-deps 'particle-sliders-core[serialization] @ git+https://github.com/HyperGAN/particle-sliders.git@4be0b5b29d2e2c741431f468d71ba8a7c884b724#subdirectory=packages/particle-sliders-core'
 uv pip install --no-deps -e .
 ```
 
@@ -131,8 +131,8 @@ reload and exact full-game disk resume; it makes no image-quality claim.
 
 The example JSON recipes explicitly name `pg09_gan_only`, ParticleGAN `0.9.1`,
 `bispf_optimized`, and batch size. Recipes from the old MSE trainer fail validation.
-Training prompt tokenization is never truncated; an over-budget pole fails before
-any encoder forward.
+Training and inference preflight the full native chat template before any
+encoder forward. An over-budget prompt fails instead of being silently truncated.
 
 ```bash
 moss-sliders train --config examples/warm-light.json \

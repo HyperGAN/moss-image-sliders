@@ -8,10 +8,12 @@ from particle_sliders.pg09_backends import (
 )
 
 from . import MODEL_ID, MODEL_REVISION
+from .backend import preflight_prompt
 
 
 def render(pipe, slider, prompt, *, scale=0.0, seed=42, width=1024, height=1024,
-           steps=50, guidance=3.0, skip_layer=False, output_type="pil", response_backend=None):
+           steps=50, guidance=3.0, skip_layer=False, output_type="pil", response_backend=None,
+           max_sequence_length=4096):
     if width <= 0 or height <= 0 or width % 16 or height % 16:
         raise ValueError("Dimensions must be positive multiples of 16")
     if steps < 1 or not math.isfinite(guidance) or guidance < 0:
@@ -27,11 +29,15 @@ def render(pipe, slider, prompt, *, scale=0.0, seed=42, width=1024, height=1024,
     elif any(getattr(block, "_pg09_scale_checkpoint", False) for block in pipe.transformer.layers):
         raise ValueError("Pass the training response_backend for a checkpointed transformer, "
                          "or load the portable adapter in a fresh inference process")
+    # The native encoder truncates by default. Validate both complete formatted
+    # branches before calling it, then pass the same explicit budget to encoding.
+    for text in (prompt, ""):
+        preflight_prompt(pipe.tokenizer, text, max_sequence_length)
     # Validate and restore scale even when encoding or decoder setup fails.
     with slider.at(scale), torch.inference_mode():
         device = pipe._execution_device
-        prompt_context = pipe.encode_prompt(prompt)
-        negative_context = pipe.encode_prompt("")
+        prompt_context = pipe.encode_prompt(prompt, max_sequence_length=max_sequence_length)
+        negative_context = pipe.encode_prompt("", max_sequence_length=max_sequence_length)
         scheduler = type(pipe.scheduler).from_config(pipe.scheduler.config)
         scheduler.set_timesteps(steps, device=device)
         noise = torch.randn(

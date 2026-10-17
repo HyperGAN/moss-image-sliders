@@ -38,7 +38,8 @@ def render_fixture():
         "": (torch.randn(1, 2, 16), torch.ones(1, 2, dtype=torch.bool)),
     }
     pipe = MOSSImagePipeline(model, MOSSImageScheduler())
-    pipe.encode_prompt = lambda prompt: contexts[prompt]
+    pipe.tokenizer = tokenizer_fixture({"hello": 3, "": 2}).tokenizer
+    pipe.encode_prompt = lambda prompt, **kwargs: contexts[prompt]
     return model, slider, contexts, pipe
 
 
@@ -135,7 +136,8 @@ def test_portable_gan_roundtrip_uses_actual_shared_signature_and_weights(tmp_pat
     pipe = MOSSImagePipeline(model, MOSSImageScheduler())
     neutral = run.game.rows[0].row.neutral
     negative = run.game.rows[0].row.negative
-    pipe.encode_prompt = lambda prompt: neutral if prompt else negative
+    pipe.tokenizer = tokenizer_fixture({"neutral": 3, "": 3}).tokenizer
+    pipe.encode_prompt = lambda prompt, **kwargs: neutral if prompt else negative
     render_kwargs = dict(scale=1, steps=2, width=32, height=32, output_type="latent")
     expected_image = render(pipe, run.slider, "neutral", **render_kwargs)
     save_gan_slider(run.slider, tmp_path / "gan", {"source": "CPU regression"},

@@ -50,20 +50,26 @@ adapter leaves; checksum/shape/target/config mismatches fail before attaching ho
 Legacy v1 adapters remain readable; MSE optimizer packets are never accepted as GAN
 resumes. Shared inference exports cannot be reserialized into a full checkpoint.
 Failed generic construction restores model flags, forwards and adapter hooks.
-Training prompt tokenization no longer silently truncates the concept pole.
+Training and inference tokenize the complete native chat template without
+truncation before encoding. Initialization seeds CPU and only the fork-owned
+CUDA generator, preserving other generators. Portable export prevalidates
+provenance JSON before filesystem writes and publishes its manifest last;
+ordinary failures clean the newly reserved output and allow retry.
 
 ## Validation and remaining gates
 
 The sole packaging owner's immutable proposed dependency is
-`42a2e371c537180bd189fd4a288b640f9f1c98fc`, `particle-sliders-core` 0.6.0,
+`4be0b5b29d2e2c741431f468d71ba8a7c884b724`, `particle-sliders-core` 0.6.0,
 released ParticleGAN 0.9.1. It is pending Ada approval and merge. Its producer wheel
-SHA256 is `7418efe0d89782b2fd266c6a8e536539243d06dd42ff5d393e409bf4b0f2c872`.
+SHA256 is `2e7621c370e790f65702acf76cfa2f428b393cd3f863245aa26d8a76ff096ada`.
 The official ParticleGAN wheel SHA256 is
 `b01b7957169cb3de45887e22b4d525fd54071577e1de58089707cf05fe6992ec`.
-Final source/wheel receipts accompany this exact dependency pin. The final installed-wheel consumer suite passes **48 tests in 7.43 seconds** with
-no skips. A separate isolated `-I` process outside both checkouts imports the
-installed product, core and PG wheels and passes the four-update GAN/resume/reload
-smoke while `conceptmod` is absent. These CPU receipts do not qualify pretrained
+Final source/wheel receipts accompany this exact dependency pin. The original 42a2e371 installed-wheel consumer suite passed **48 tests in 7.43
+seconds**, with no skips; these original receipts remain historical and unchanged. Its separate isolated `-I` process outside both checkouts imported the three
+wheels and passed the four-update GAN/resume/reload smoke with `conceptmod` absent.
+The optimizer-state P1 review superseded that dependency. A separate replacement
+receipt records the narrow current-wheel rerun, including product RNG scope,
+inference-token preflight and export failure cleanup. These CPU receipts do not qualify pretrained
 image quality.
 
 Before any new native run the parent must route exact dependency and product heads

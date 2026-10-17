@@ -66,6 +66,10 @@ def test_render_controls_forwarded_and_scale_reset(monkeypatch):
     model = tiny_model()
     slider = Slider(model)
     pipe = MOSSImagePipeline(model, MOSSImageScheduler())
+    pipe.tokenizer = Mock()
+    pipe.tokenizer.apply_chat_template.side_effect = lambda messages, **kwargs: messages[0]['content']
+    pipe.tokenizer.return_value = dict(input_ids=torch.ones(1, 3, dtype=torch.long),
+                                      attention_mask=torch.ones(1, 3, dtype=torch.long))
     pipe.encode_prompt = Mock(return_value=(torch.randn(1, 3, 16),
                                            torch.ones(1, 3, dtype=torch.bool)))
     captured = []
@@ -85,7 +89,8 @@ def test_render_controls_forwarded_and_scale_reset(monkeypatch):
     assert len(row.schedule.timesteps) == 5
     assert torch.equal(row.latent, torch.randn(row.latent.shape,
                        generator=torch.Generator('cpu').manual_seed(7)))
-    assert pipe.encode_prompt.call_args_list == [(("hello",), {}), (("",), {})]
+    assert pipe.encode_prompt.call_args_list == [(("hello",), {'max_sequence_length': 4096}),
+                                                (("",), {'max_sequence_length': 4096})]
     decoder.assert_called_once_with(pipe, output_type='pil')
     assert slider.scale == 0
     with pytest.raises(ValueError):
