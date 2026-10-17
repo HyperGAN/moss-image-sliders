@@ -1,7 +1,6 @@
-"""Contrastive velocity distillation on shared neutral denoising trajectories."""
+"""Frozen MOSS response and rollout helpers. Training lives in the shared GAN."""
 
 import torch
-from torch.nn import functional as F
 
 
 def velocity(model, latent, timestep, context):
@@ -10,26 +9,8 @@ def velocity(model, latent, timestep, context):
 
 
 def train_step(model, slider, optimizer, latent, timestep, contexts, strength=1.0):
-    """Fit neutral +/- concept direction; keep teachers frozen and on the same noise/time."""
-    neutral, positive, negative = contexts
-    with torch.no_grad(), slider.at(0):
-        base = velocity(model, latent, timestep, neutral)
-        delta = velocity(model, latent, timestep, positive) - velocity(model, latent, timestep, negative)
-    optimizer.zero_grad(set_to_none=True)
-    losses = []
-    # Backward while the scale context is active, including checkpoint recomputation.
-    for sign in (1, -1):
-        with slider.at(sign):
-            prediction = velocity(model, latent, timestep, neutral)
-            target = base + sign * strength * delta
-            loss = F.mse_loss(prediction, target) / 2
-            if not torch.isfinite(loss):
-                raise RuntimeError("Non-finite loss; refusing optimizer step")
-            loss.backward()
-            losses.append(float(loss.detach()))
-    norm = torch.nn.utils.clip_grad_norm_(slider.parameters(), 1.0, error_if_nonfinite=True)
-    optimizer.step()
-    return {"loss": sum(losses), "grad_norm": float(norm)}
+    """Reject the historical MSE API before mutating any state."""
+    raise RuntimeError("Legacy MSE training is disabled; use moss_sliders.gan.build_run")
 
 
 @torch.no_grad()
@@ -48,12 +29,10 @@ def sample_training_state(pipe, slider, neutral, generator, resolution, rollout_
     return latent.detach(), times[stop]
 
 
-def checkpoint_blocks(transformer):
-    """Checkpoint only main blocks; preserve official forward signatures and adapter hooks."""
-    from torch.utils.checkpoint import checkpoint
+def checkpoint_blocks(transformer, network=None):
+    """Capture each signed forward's scale for shared GAN batch recomputation."""
+    if network is None:
+        raise ValueError("GAN checkpointing requires the actual shared backend.network")
+    from particle_sliders.pg09_backends import checkpoint_with_adapter_scale
     for block in transformer.layers:
-        original = block.forward
-
-        def forward(*args, _original=original, **kwargs):
-            return checkpoint(_original, *args, use_reentrant=False, **kwargs)
-        block.forward = forward
+        checkpoint_with_adapter_scale(block, network)

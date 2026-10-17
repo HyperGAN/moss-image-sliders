@@ -1,4 +1,3 @@
-from types import SimpleNamespace
 from unittest.mock import Mock
 
 import pytest
@@ -6,10 +5,11 @@ import torch
 
 from moss_sliders import MODEL_REVISION
 from moss_sliders import backend
+from moss_sliders import inference
+from moss_sliders.gan import build_run
 from moss_sliders.inference import render
 from moss_sliders.lora import Slider
 from moss_sliders.smoke import tiny_model
-from moss_sliders.training import train_step
 from moss_sliders.ui import build_ui
 from moss_sliders.vendor.pipeline_moss_image import MOSSImagePipeline, MOSSImageScheduler
 
@@ -62,14 +62,36 @@ def test_cpu_real_model_load_refused_before_download(monkeypatch):
         backend.load_pipeline(local_files_only=False)
 
 
-def test_render_controls_forwarded_and_scale_reset():
-    slider = Slider(tiny_model())
-    pipe = Mock(return_value=SimpleNamespace(images=['image']))
-    assert render(pipe, slider, 'hello', scale=-0.5, seed=7, steps=5) == 'image'
-    kwargs = pipe.call_args.kwargs
-    assert kwargs['generator'].initial_seed() == 7
-    assert kwargs['uncond_skip_layers'] == [22]
-    assert kwargs['num_inference_steps'] == 5
+def test_render_controls_forwarded_and_scale_reset(monkeypatch):
+    model = tiny_model()
+    slider = Slider(model)
+    pipe = MOSSImagePipeline(model, MOSSImageScheduler())
+    pipe.tokenizer = Mock()
+    pipe.tokenizer.apply_chat_template.side_effect = lambda messages, **kwargs: messages[0]['content']
+    pipe.tokenizer.return_value = dict(input_ids=torch.ones(1, 3, dtype=torch.long),
+                                      attention_mask=torch.ones(1, 3, dtype=torch.long))
+    pipe.encode_prompt = Mock(return_value=(torch.randn(1, 3, 16),
+                                           torch.ones(1, 3, dtype=torch.bool)))
+    captured = []
+    shared_render = inference.MossResponseAdapter.render
+
+    def record(adapter, row, *, scale):
+        captured.append((row, scale))
+        return shared_render(adapter, row, scale=scale)
+
+    monkeypatch.setattr(inference.MossResponseAdapter, 'render', record)
+    decoder = Mock(return_value=lambda latent: ['image'])
+    monkeypatch.setattr(inference, 'moss_pipeline_decoder', decoder)
+    assert render(pipe, slider, 'hello', scale=-0.5, seed=7, steps=5,
+                  width=32, height=32) == 'image'
+    row, scale = captured[0]
+    assert scale == -.5 and row.guidance == 3
+    assert len(row.schedule.timesteps) == 5
+    assert torch.equal(row.latent, torch.randn(row.latent.shape,
+                       generator=torch.Generator('cpu').manual_seed(7)))
+    assert pipe.encode_prompt.call_args_list == [(("hello",), {'max_sequence_length': 4096}),
+                                                (("",), {'max_sequence_length': 4096})]
+    decoder.assert_called_once_with(pipe, output_type='pil')
     assert slider.scale == 0
     with pytest.raises(ValueError):
         render(pipe, slider, 'hello', width=513)
@@ -86,10 +108,17 @@ def test_gradio_controls_build_offline():
 def test_bfloat16_base_with_float32_adapter_training():
     torch.set_num_threads(1)
     model = tiny_model().to(dtype=torch.bfloat16)
-    slider = Slider(model, rank=2)
-    assert all(p.dtype == torch.float32 for p in slider.parameters())
+    frozen = {k: v.clone() for k, v in model.state_dict().items()}
     contexts = [(torch.randn(1, 3, 16).bfloat16(), torch.ones(1, 3, dtype=torch.bool))
                 for _ in range(3)]
-    result = train_step(model, slider, torch.optim.AdamW(slider.parameters(), lr=0.001),
-                        torch.randn(1, 4, 2, 2), torch.tensor(500.), contexts)
-    assert result['grad_norm'] > 0
+    config = dict(objective='pg09_gan_only', pg_version='0.9.1', rank=2, lr=.001,
+                  seed=71, resolution=32, rollout_steps=2, strength=1.,
+                  batch_size=2, steps=2, critic_width=8)
+    run = build_run(MOSSImagePipeline(model, MOSSImageScheduler()), contexts, config)
+    before = {k: v.clone() for k, v in run.slider.state_dict().items()}
+    result = run.step()
+    assert all(p.dtype == torch.float32 for p in run.slider.parameters())
+    assert result['g_loss'] == result['g_adv']
+    assert any(p.grad is not None and p.grad.abs().sum() > 0 for p in run.slider.parameters())
+    assert any(not torch.equal(before[k], v) for k, v in run.slider.state_dict().items())
+    assert all(torch.equal(frozen[k], v) for k, v in model.state_dict().items())

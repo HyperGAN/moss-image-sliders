@@ -1,0 +1,43 @@
+{
+  "product_source_commit": "3d4bad7df2ee5527bb3de24248715c0ee424f8df",
+  "shared_commit": "4be0b5b29d2e2c741431f468d71ba8a7c884b724",
+  "imports": {
+    "moss_sliders": "/tmp/moss-audit-replacement-installed/moss_sliders/__init__.py",
+    "particle_sliders": "/tmp/moss-audit-replacement-installed/particle_sliders/__init__.py",
+    "particlegan": "/tmp/moss-audit-replacement-installed/particlegan/__init__.py"
+  },
+  "versions": {
+    "moss-image-sliders": "0.2.0",
+    "particle-sliders-core": "0.6.0",
+    "particlegan": "0.9.1"
+  },
+  "hidden_repo_package_absent": true,
+  "python_isolated": 1,
+  "cwd": "/tmp",
+  "cuda_initialized": false,
+  "smoke": {
+    "backend": "official MOSSImageTransformer (tiny random weights)",
+    "device": "cpu",
+    "model_weights_downloaded": false,
+    "optimizer_steps": 4,
+    "objective": "pg09_gan_only",
+    "pg_version": "0.9.1",
+    "game": "particle_sliders.pg09.ConditionalPG09",
+    "losses": [
+      0.5879863500595093,
+      0.5926616191864014,
+      0.5905153751373291,
+      0.5944586992263794
+    ],
+    "ramp_scales": [
+      -1,
+      0,
+      1
+    ],
+    "checkpoint_roundtrip": true,
+    "exact_full_game_resume": true,
+    "replayed_validation_updates": 1,
+    "frozen_base_unchanged": true,
+    "image_quality_validated": false
+  }
+}

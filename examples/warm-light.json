@@ -9,5 +9,9 @@
   "rollout_steps": 4,
   "strength": 1.0,
   "seed": 42,
-  "max_sequence_length": 256
+  "max_sequence_length": 256,
+  "objective": "pg09_gan_only",
+  "pg_version": "0.9.1",
+  "preset": "bispf_optimized",
+  "batch_size": 4
 }

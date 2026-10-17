@@ -3,9 +3,7 @@
 import tempfile
 import torch
 
-from .artifacts import load_slider, save_slider
-from .lora import Slider
-from .training import train_step
+from .artifacts import load_slider
 from .vendor.pipeline_moss_image import MOSSImagePipeline, MOSSImageScheduler, MOSSImageTransformer
 
 
@@ -15,35 +13,53 @@ def tiny_model():
 
 
 def run_smoke(steps=4):
+    from .gan import build_run, restore_checkpoint, save_checkpoint
+    from .artifacts import save_gan_slider
+    from particle_sliders.pg09_backends import FlowSchedule, ResponseRow
     torch.set_num_threads(1)
     torch.manual_seed(42)
     model = tiny_model()
     latent = torch.randn(1, 4, 2, 2)
     contexts = [(torch.randn(1, 3, 16), torch.ones(1, 3, dtype=torch.bool)) for _ in range(3)]
     original = {key: tensor.clone() for key, tensor in model.state_dict().items()}
-    slider = Slider(model, rank=2)
-    optimizer = torch.optim.AdamW(slider.parameters(), lr=0.01)
-    receipts = [train_step(model, slider, optimizer, latent, torch.tensor(500.), contexts)
-                for _ in range(steps)]
+    pipe = MOSSImagePipeline(model, MOSSImageScheduler())
+    config = dict(objective="pg09_gan_only", pg_version="0.9.1", rank=2, seed=42,
+                  resolution=32, rollout_steps=2, strength=1., batch_size=2,
+                  steps=steps, lr=0.001, critic_width=8)
+    run = build_run(pipe, contexts, config)
+    receipts = [run.step() for _ in range(steps - 1)]
     with tempfile.TemporaryDirectory() as directory:
         path = directory + "/slider"
-        save_slider(slider, path, {"smoke": True})
-        slider.detach()
+        checkpoint = save_checkpoint(run, directory + "/checkpoints")
+        expected = run.step()
+        receipts.append(expected)
+        restore_checkpoint(run, checkpoint)
+        assert run.step() == expected
+        save_gan_slider(run.slider, path, {"smoke": True},
+                        core_config=run.game.export_state_dict()["config"],
+                        completed_steps=run.game.completed_steps)
+        run.slider.detach()
+        # Fresh unwrapped architecture, as used by CLI inference/reload.
+        model = tiny_model()
+        model.load_state_dict(original)
         restored = load_slider(model, path)
-        pipe = MOSSImagePipeline(model, MOSSImageScheduler())
+        from particle_sliders.pg09_backends import MossResponseAdapter
+        backend = MossResponseAdapter(model, restored)
         outputs = []
         for scale in [-1, 0, 1]:
-            with restored.at(scale):
-                result = pipe(prompt_embeds=contexts[0][0], prompt_attention_mask=contexts[0][1],
-                              height=32, width=32, num_inference_steps=2, guidance_scale=1,
-                              uncond_skip_layers=[], output_type="latent",
-                              generator=torch.Generator("cpu").manual_seed(42)).images
-                outputs.append(result)
+            row = ResponseRow(contexts[0], contexts[0], contexts[2], latent,
+                              schedule=FlowSchedule.linear(2, time_scale=1000), guidance=3.)
+            with torch.no_grad():
+                outputs.append(backend._response(row, scale=scale))
         assert all(torch.isfinite(value).all() for value in outputs)
         assert not torch.equal(outputs[0], outputs[2])
         assert all(torch.equal(original[key], tensor) for key, tensor in model.state_dict().items())
     return {"backend": "official MOSSImageTransformer (tiny random weights)", "device": "cpu",
             "model_weights_downloaded": False, "optimizer_steps": steps,
-            "losses": [value["loss"] for value in receipts],
+            "objective": "pg09_gan_only", "pg_version": "0.9.1",
+            "game": type(run.game).__module__ + "." + type(run.game).__name__,
+            "losses": [value["g_loss"] for value in receipts],
             "ramp_scales": [-1, 0, 1], "checkpoint_roundtrip": True,
+            "exact_full_game_resume": True,
+            "replayed_validation_updates": 1,
             "frozen_base_unchanged": True, "image_quality_validated": False}

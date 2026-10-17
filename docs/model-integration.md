@@ -14,7 +14,7 @@ No weights are vendored or redistributed.
 | Scheduler | MOSSImageScheduler, flow Euler, shift 5, nearest training-grid schedule; transformer timestep in scheduler units |
 | Precision | BF16 DiT/encoder, FP32 VAE, noise and CFG composition |
 | Images | Positive width/height multiples of 16; official recommendation ≥50 sampling steps |
-| Sampling guidance | CFG 3, empty negative prompt, negative branch skips layer 22 by default |
+| Shared GAN sampling guidance | CFG 3, empty negative prompt, conditional adapter only, no negative layer skipping |
 | License | Weights and bundled inference source Apache-2.0, full license retained |
 
 Sources: [model card](https://huggingface.co/OpenMOSS-Team/MOSS-Image-SFT),
@@ -40,6 +40,5 @@ ComfyUI/PEFT adapter loaders. Rank/alpha follow particle-sliders' alpha/rank sca
 
 The official guide recommends freezing the text encoder during post-training. We
 also freeze the VAE (unused in training) and all transformer base weights. Training
-uses the official scheduler rather than assuming a DDPM epsilon loss. This new
-contrastive velocity recipe is experimental; the official release does not provide
+uses the official scheduler rather than assuming a DDPM epsilon loss. The shared conditional GAN is experimental; the official release does not provide
 a slider training objective or quality guarantee.
