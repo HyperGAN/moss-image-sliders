@@ -1,0 +1,25 @@
+{
+  "backend": "official MOSSImageTransformer (tiny random weights)",
+  "device": "cpu",
+  "model_weights_downloaded": false,
+  "optimizer_steps": 4,
+  "objective": "pg09_gan_only",
+  "pg_version": "0.9.1",
+  "game": "particle_sliders.pg09.ConditionalPG09",
+  "losses": [
+    0.5879863500595093,
+    0.5926616191864014,
+    0.5905153751373291,
+    0.5944586992263794
+  ],
+  "ramp_scales": [
+    -1,
+    0,
+    1
+  ],
+  "checkpoint_roundtrip": true,
+  "exact_full_game_resume": true,
+  "replayed_validation_updates": 1,
+  "frozen_base_unchanged": true,
+  "image_quality_validated": false
+}
