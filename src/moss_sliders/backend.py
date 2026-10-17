@@ -1,11 +1,23 @@
 """Load pinned components through audited local classes, without remote Python execution."""
 
+import hashlib
+
 import torch
 from diffusers import AutoencoderKLFlux2
 from transformers import AutoModel, AutoTokenizer
 
 from . import MODEL_ID, MODEL_REVISION
 from .vendor.pipeline_moss_image import MOSSImagePipeline, MOSSImageScheduler, MOSSImageTransformer
+
+
+def load_transformer(*, device="cuda:0", local_files_only=True):
+    """Load only the pinned DiT for an explicitly admitted cached campaign."""
+    if not device.startswith("cuda") or not torch.cuda.is_available():
+        raise RuntimeError("Real MOSS runs require a working CUDA GPU; use smoke for CPU validation")
+    return MOSSImageTransformer.from_pretrained(
+        MODEL_ID, subfolder="transformer", torch_dtype=torch.bfloat16,
+        revision=MODEL_REVISION, local_files_only=local_files_only,
+    ).to(device).eval().requires_grad_(False)
 
 
 def load_pipeline(*, device="cuda:0", local_files_only=True, training=False, offload=False):
@@ -42,16 +54,36 @@ def load_pipeline(*, device="cuda:0", local_files_only=True, training=False, off
 def encode_training_prompts(pipe, prompts, device, max_length=256):
     # Pipeline device detection sees the CPU transformer during this staging phase.
     # Move only its device marker temporarily by using the encoder's tokenizer directly.
+    if type(max_length) is not int or not 1 <= max_length <= 4096:
+        raise ValueError("max_length must be an integer between 1 and 4096")
+    prepared, identity = [], []
+    # Validate every full chat-templated prompt before any encoder forward. A
+    # truncated positive pole can otherwise silently become the neutral pole.
+    for prompt in prompts:
+        text = pipe.tokenizer.apply_chat_template(
+            [{"role": "user", "content": prompt}], tokenize=False,
+            add_generation_prompt=True, enable_thinking=True)
+        inputs = pipe.tokenizer(text, return_tensors="pt", truncation=False)
+        token_count = inputs["input_ids"].shape[-1]
+        if token_count > max_length:
+            raise ValueError(f"Training prompt has {token_count} tokens; budget is {max_length}; "
+                             "shorten the prompt or explicitly raise max_sequence_length")
+        prepared.append(inputs)
+        identity.append({"prompt_sha256": hashlib.sha256(prompt.encode()).hexdigest(),
+                         "formatted_sha256": hashlib.sha256(text.encode()).hexdigest(),
+                         "input_ids_sha256": hashlib.sha256(
+                             inputs["input_ids"].contiguous().numpy().tobytes()).hexdigest(),
+                         "mask_sha256": hashlib.sha256(
+                             inputs["attention_mask"].contiguous().numpy().tobytes()).hexdigest(),
+                         "token_count": token_count, "max_sequence_length": max_length,
+                         "truncated": False})
     result = []
     with torch.no_grad():
-        for prompt in prompts:
-            text = pipe.tokenizer.apply_chat_template(
-                [{"role": "user", "content": prompt}], tokenize=False,
-                add_generation_prompt=True, enable_thinking=True)
-            inputs = pipe.tokenizer(text, return_tensors="pt", truncation=True,
-                                    max_length=max_length).to(device)
+        for inputs in prepared:
+            inputs = inputs.to(device)
             hidden = pipe.text_encoder(**inputs, use_cache=False, return_dict=True).last_hidden_state
             result.append((hidden.detach().cpu(), inputs.attention_mask.bool().cpu()))
+    pipe._moss_training_context_identity = identity
     pipe.text_encoder.to("cpu")
     torch.cuda.empty_cache()
     pipe.transformer.to(device)

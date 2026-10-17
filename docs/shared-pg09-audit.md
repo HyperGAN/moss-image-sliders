@@ -1,0 +1,78 @@
+# MOSS shared ParticleGAN integration audit
+
+The inspected public repository is `HyperGAN/moss-image-sliders`, public main
+`477278a2e87f77d8a56a38bd6b952741231f1b3e`. The campaign source baseline is
+`0aa3867965aad20f3ee653dcf14e49a1fbca06d9`. Work is isolated on
+`audit/moss-pg09-shared-integration-20261017`. Original campaign worktrees, pinned
+sources, resident services, credentials, permissions and GPU processes are untouched.
+
+## Executed entrypoints
+
+| Entrypoint | Executed implementation |
+| --- | --- |
+| `moss-sliders train` | `gan.build_run` calls installed `particle_sliders.pg09.ConditionalPG09`, shared MOSS response adapter, field critic and scale-aware checkpointing |
+| `moss-sliders train-campaign` | Shared `pg09_moss_campaign.MossCampaignRows` and `build_campaign_run`; original caches read-only |
+| `tools/train_campaign.py` | Explicit forward to `train-campaign`; requires a new output directory |
+| `moss-sliders smoke` | Same shared GAN on tiny real random MOSS, full-game disk replay and portable adapter reload |
+| `moss-sliders infer` / UI | Shared `pg09_backends` CFG, native scheduler and decoder; actual loaded LoRA leaves |
+| Historical `training.train_step` / `campaign.cached_backward` | Reject before update; no MSE optimizer path |
+| Old monitor / autonomous CUDA smoke | Reject before GPU queries, locks or process dispatch |
+
+The shared package alone owns GAN losses, public recipe selection, optimizers,
+regularization, independent noise streams and balanced sampler state. This MOSS
+adapter has no routed particle bank, so no unused particle prior is created.
+Explicit new recipes require ParticleGAN 0.9.1 and `bispf_optimized`. The old native
+0.9.0 runs and their source-bound checkpoints retain their original runtime.
+
+## Demonstrated defects and corrections
+
+The retained [legacy probe](receipts/shared-pg09-audit/probe_legacy_defects.py)
+loads the exact original blobs and reproduces delayed signed checkpoint backward
+failing with 62 forward tensors versus 46 recomputed tensors. The new path uses
+the shared per-forward scale capture, including repeated protected-gradient replay.
+The [JSON result](receipts/shared-pg09-audit/legacy-defects.json) also records the
+old whole-pipeline adapter scope and negative layer 22 skipping. Shared inference
+now scales the conditional branch only and keeps the empty negative branch frozen,
+with no negative layer skipping. The vendored official model source is unchanged.
+
+The old CLI/cached/smoke trainers optimized local MSE and imported no shared GAN.
+All current training now executes the actual installed conditional game. Paired
+signs share latent/time and frozen teachers. Generic critic conditions include
+mask-weighted normalized Qwen features, native timestep, sign and strength;
+cached campaigns reuse the exact shared condition policy. Scale calibration uses
+only training edit RMS. Held-out data never fits the scale or training objective.
+
+Full game checkpoints keep adapter, critic, both optimizers, all RNG and shuffled
+row/cursor/exposure state. Checksums and core identities are verified on CPU before
+restore. Exact continuation retains the original budget and step counter. Portable
+v2 inference exports carry verified shared provenance and strict FP32 finite actual
+adapter leaves; checksum/shape/target/config mismatches fail before attaching hooks.
+Legacy v1 adapters remain readable; MSE optimizer packets are never accepted as GAN
+resumes. Shared inference exports cannot be reserialized into a full checkpoint.
+Failed generic construction restores model flags, forwards and adapter hooks.
+Training prompt tokenization no longer silently truncates the concept pole.
+
+## Validation and remaining gates
+
+The sole packaging owner's immutable proposed dependency is
+`42a2e371c537180bd189fd4a288b640f9f1c98fc`, `particle-sliders-core` 0.6.0,
+released ParticleGAN 0.9.1. It is pending Ada approval and merge. Its producer wheel
+SHA256 is `7418efe0d89782b2fd266c6a8e536539243d06dd42ff5d393e409bf4b0f2c872`.
+The official ParticleGAN wheel SHA256 is
+`b01b7957169cb3de45887e22b4d525fd54071577e1de58089707cf05fe6992ec`.
+Final source/wheel receipts accompany this exact dependency pin. The final installed-wheel consumer suite passes **48 tests in 7.43 seconds** with
+no skips. A separate isolated `-I` process outside both checkouts imports the
+installed product, core and PG wheels and passes the four-update GAN/resume/reload
+smoke while `conceptmod` is absent. These CPU receipts do not qualify pretrained
+image quality.
+
+Before any new native run the parent must route exact dependency and product heads
+through Ada, check source pins and use coordinator admission. Package relocation
+changes module/source identity: old source-bound cohorts require the original
+runtime or an explicitly reviewed migration, rather than an automatic resume.
+
+Remaining native gates are fresh-process CUDA/BF16 full-state replay, actual model
+memory and timing, text encoder/offload hooks, finite native VAE decoding, matched
+unattached-base versus off images/latents, signed/moderate ramps, and separate
+interim/final visual qualification. No GPU job, model load/download, image/model
+publication, resident-service change, merge or active-source edit was performed.

@@ -1,45 +1,31 @@
-# Resumable private training campaigns
+# Shared GAN campaign entrypoint
 
-`tools/train_campaign.py` keeps the signed frozen-velocity MSE objective. It does
-not implement an adversarial, particle, or BISPF training method.
+Use `moss-sliders train-campaign --cache CACHE --output NEW_OUTPUT` only after
+coordinator admission. The command imports the installed
+`particle_sliders.pg09_moss_campaign` provider and runner, which execute
+`particle_sliders.pg09.ConditionalPG09`. It loads only the pinned transformer;
+encoded captions and native targets come from the existing immutable cache.
 
-The executed recipe fixes all source prompt pairs and seeds. Frozen targets cover
-both neutral and positive paths from matched noise, ten MOSS Euler positions per
-path, with both frozen prompt velocities evaluated at each state. The target is
-`base + sign * (positive - neutral)`, for signs -1 and +1. Raw MSE is averaged over
-both signs and eight independent states before one AdamW update. Rank/alpha are
-four, learning rate 0.0003, clipping threshold one, AdamW defaults otherwise.
+`MossCampaignRows` validates recipe, prompt order, embeddings, target-index,
+row/seed/split identity and target checksums. It uses a bounded CPU LRU. The two
+signs share latent, native timestep and the cached positive-minus-neutral teacher.
+The neutral caption is the teacher negative pole; the empty caption is the frozen
+CFG-negative condition used for rendering. These roles are distinct.
 
-A separately seeded shuffled Cartesian state sampler replaces the coupled
-row/timestep modulo counters. A full epoch covers every row, seed, path and time.
-The sampler cursor/order, its RNG, CPU/CUDA RNG, adapter and complete optimizer
-state are checkpointed. Only complete immutable checkpoint directories are
-eligible for recovery; hashes and recipe identity are checked before restoring.
-`training.pt` is a private, locally produced optimizer checkpoint, loaded with
-`weights_only=True`. Portable inference exports remain adapter-only safetensors.
+Only the training split can calibrate response RMS or fit the GAN. The shared
+critic uses native spatial fields and mask-weighted Qwen context/time/sign/strength
+conditions. Generator and critic have separate balanced shuffled row streams and
+reference noise streams. There is no local MSE objective, local optimizer, or new
+particle prior. The default maximum budget is 3840 updates; selecting a stopping
+checkpoint and native validation panels belongs to the campaign coordinator.
 
-Every ten updates has a resumable checkpoint. All checkpoints are retained.
-Updates 200/400/800/1200/1600 receive fixed held-out diagnostics and matched-seed
-images alongside frozen Off and direct positive-prompt baselines. Baselines also
-include CFG-one positive-prompt images. The primary image path uses official
-MOSS 50-step CFG-three generation, with unconditional layer 22 skipped. Training
-targets are unguided; this mismatch is documented, not silently changed.
+Full checkpoints contain the complete shared game and are CPU-mapped before
+restore. A new output directory is required for continuation; `--resume` preserves
+the original total budget. Source/runtime/config changes reject old packets.
+Historical MSE packets and adapter-only exports cannot serve as GAN resumes.
+Package relocation changes source identities. Current active native campaigns
+remain on their original source and checkpoint lineage, untouched by this change.
 
-Diagnostics report teacher/student edit RMS, cosine and relative error separately
-for each sign on fixed held-out states from both trajectories at positions
-0/3/6/9. `BEST-DIAGNOSTIC.json` identifies only the lowest development positive
-edit MSE. It is not an automatic perceptual winner. All candidate images remain
-available for visual comparison. No final-test characters select checkpoints.
-
-The supervisor observes GPUs and kernel errors and stops only its own process
-groups. Existing GPU services and the system cooling service remain untouched.
-Workers pause at 76 C and resume at 70 C; 82 C is a hard stop. Memory reserves,
-competition, live power limits and host memory are guarded. Signal stops occur at
-safe cache-bundle or complete-optimizer boundaries. Inspect progress, checkpoint
-metadata and supervisor receipts before resuming; never launch a duplicate worker.
-
-The first twenty effective-batch-eight updates record measured active/wall speed.
-The worker stops for review if the active training projection exceeds 16.5 hours
-per concept, rather than silently accepting a material increase over the approved
-rough estimate. Target preparation and image evaluation are reported separately.
-Weights, optimizer state, targets and new examples remain private on NVMe.
+The old MSE helper APIs fail before update. The old monitor and autonomous CUDA
+smoke fail before querying GPUs, acquiring locks or spawning anything. Existing
+active workers and resource guardians remain coordinator-owned.

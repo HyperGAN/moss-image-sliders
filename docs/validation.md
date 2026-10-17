@@ -1,3 +1,18 @@
+# Shared PG0.9.1 integration validation
+
+The current derivative uses the proposed shared package commit
+`42a2e371c537180bd189fd4a288b640f9f1c98fc` (0.6.0) and released ParticleGAN 0.9.1.
+The installed-wheel consumer suite passes 48 CPU tests, including UI construction,
+exact full-game disk resume, signed checkpoint recomputation, actual adapter
+reload, frozen-base preservation and conditional-only CFG. A separate isolated
+process passes the shared GAN smoke outside both source checkouts, without a
+`conceptmod` package. See the [audit](shared-pg09-audit.md) and
+[installed-wheel JUnit](receipts/shared-pg09-audit/installed-wheel-tests.xml).
+
+No GPU/native model run or quality claim belongs to this audit. Existing native
+0.9.0 campaigns and their sources are untouched. The receipts below are historical
+baseline validation and must not be read as qualification of the new GAN objective.
+
 # Initial validation receipts — 2026-10-17
 
 ## Environment inspected

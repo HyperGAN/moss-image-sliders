@@ -57,25 +57,16 @@ def test_scale_restored_after_exception_and_invalid_scale():
             pass
 
 
-@pytest.mark.parametrize("checkpoint", [False, True])
-def test_training_updates_only_adapter_and_zero_stays_exact(checkpoint):
+def test_legacy_mse_and_unsafe_checkpoint_wrappers_are_disabled():
     model = tiny_model()
     x, t, contexts = inputs()
-    before = {k: v.clone() for k, v in model.state_dict().items()}
-    baseline = model(x, t, *contexts[0]).sample.detach()
     slider = Slider(model, rank=2)
-    if checkpoint:
+    before = {k: v.clone() for k, v in slider.state_dict().items()}
+    with pytest.raises(RuntimeError, match="Legacy MSE training is disabled"):
+        train_step(model, slider, None, x, t, contexts)
+    assert all(torch.equal(v, slider.state_dict()[k]) for k, v in before.items())
+    with pytest.raises(ValueError, match="actual shared backend.network"):
         checkpoint_blocks(model)
-    optimizer = torch.optim.AdamW(slider.parameters(), lr=0.005)
-    first = train_step(model, slider, optimizer, x, t, contexts)
-    for _ in range(8):
-        last = train_step(model, slider, optimizer, x, t, contexts)
-    assert last['loss'] < first['loss']
-    assert first['grad_norm'] > 0
-    assert any(r.up.weight.abs().sum() > 0 for r in slider.residuals)
-    assert all(p.grad is None for p in model.parameters())
-    assert all(torch.equal(before[k], v) for k, v in model.state_dict().items())
-    assert torch.equal(baseline, model(x, t, *contexts[0]).sample)
 
 
 def test_checkpoint_roundtrip_strict_and_no_overwrite(tmp_path):
