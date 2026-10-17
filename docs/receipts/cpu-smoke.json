@@ -1,0 +1,20 @@
+{
+  "backend": "official MOSSImageTransformer (tiny random weights)",
+  "device": "cpu",
+  "model_weights_downloaded": false,
+  "optimizer_steps": 4,
+  "losses": [
+    0.0012687878916040063,
+    0.0008997467230074108,
+    0.0004959399520885199,
+    0.00017349252448184416
+  ],
+  "ramp_scales": [
+    -1,
+    0,
+    1
+  ],
+  "checkpoint_roundtrip": true,
+  "frozen_base_unchanged": true,
+  "image_quality_validated": false
+}

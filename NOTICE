@@ -1,0 +1,19 @@
+MOSS-Image Sliders — HyperGAN, 2026
+
+The signed low-rank residual implementation in src/moss_sliders/lora.py is
+adapted from HyperGAN/particle-sliders, conceptmod/textsliders/lora.py,
+commit 1f5b380d317b73779a8aeab63b6bec0093c2c65c.
+Copyright (c) 2023 Rohit Gandikota. MIT license retained in
+LICENSES/particle-sliders-MIT.txt. The original module cites cloneofsimo/lora
+and kohya-ss/sd-scripts as references. We reuse its down/up initialization,
+alpha/rank residual scaling, and signed multiplier mechanism; replace its
+forward monkey patch with removable hooks for MOSS's direct weight access.
+No original repository history, datasets, checkpoints or private configs copied.
+
+src/moss_sliders/vendor/pipeline_moss_image.py is an unmodified copy of
+OpenMOSS-Team/MOSS-Image-SFT/pipeline_moss_image.py at Hugging Face revision
+fc5de0d56fc910cbca6f6625a70f5f582b26deb1, SHA256
+1dac1aca9feb1bfdfc727a401e4b67d61a505d3190706d1b7d2d784f88678b31.
+OpenMOSS releases this source under Apache License 2.0; see
+LICENSES/OpenMOSS-Apache-2.0.txt. No modifications were made to that file.
+Model weights are not distributed here; their upstream license is Apache 2.0.

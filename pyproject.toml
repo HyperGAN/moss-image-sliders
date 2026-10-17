@@ -1,0 +1,37 @@
+[build-system]
+requires = ["hatchling==1.28.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "moss-image-sliders"
+version = "0.1.0"
+description = "Signed concept LoRA sliders for OpenMOSS MOSS-Image-SFT"
+readme = "README.md"
+requires-python = ">=3.10,<3.13"
+license = "MIT"
+license-files = ["LICENSE", "NOTICE", "LICENSES/*.txt"]
+authors = [{name = "HyperGAN contributors"}]
+dependencies = [
+  "torch==2.9.1", "diffusers==0.38.0", "transformers==5.3.0",
+  "accelerate==1.10.1", "safetensors==0.8.0", "Pillow==11.3.0",
+  "huggingface-hub==1.16.0",
+]
+
+[project.optional-dependencies]
+ui = ["gradio==6.30.0"]
+dev = ["pytest==8.4.2", "ruff==0.14.1"]
+
+[project.scripts]
+moss-sliders = "moss_sliders.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/moss_sliders"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+exclude = ["src/moss_sliders/vendor/*"]

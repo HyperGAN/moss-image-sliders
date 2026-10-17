@@ -1,0 +1,19 @@
+name: CPU integration
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.13.1"
+          python-version: "3.12"
+      - run: uv venv --python 3.12
+      - run: uv pip sync requirements-cpu.lock --torch-backend cpu --require-hashes
+      - run: uv pip install --no-deps -e .
+      - run: .venv/bin/ruff check src tests
+      - run: .venv/bin/pytest -q
+      - run: .venv/bin/moss-sliders smoke --receipt smoke-receipt.json

@@ -1,0 +1,13 @@
+{
+  "neutral": "A mountain lake with pine trees.",
+  "positive": "A watercolor painting of a mountain lake with pine trees.",
+  "negative": "A detailed photograph of a mountain lake with pine trees.",
+  "steps": 20,
+  "rank": 4,
+  "lr": 0.0001,
+  "resolution": 512,
+  "rollout_steps": 4,
+  "strength": 1.0,
+  "seed": 7,
+  "max_sequence_length": 256
+}

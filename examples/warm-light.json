@@ -1,0 +1,13 @@
+{
+  "neutral": "A ceramic teapot on a wooden table, studio photograph.",
+  "positive": "A ceramic teapot on a wooden table, studio photograph, warm golden lighting.",
+  "negative": "A ceramic teapot on a wooden table, studio photograph, cool blue lighting.",
+  "steps": 20,
+  "rank": 4,
+  "lr": 0.0001,
+  "resolution": 512,
+  "rollout_steps": 4,
+  "strength": 1.0,
+  "seed": 42,
+  "max_sequence_length": 256
+}
