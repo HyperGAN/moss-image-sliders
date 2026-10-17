@@ -53,6 +53,7 @@ def test_loader_pins_all_components_and_avoids_remote_code(monkeypatch):
         assert kwargs['revision'] == MODEL_REVISION
         assert kwargs['local_files_only'] is True
         assert not kwargs.get('trust_remote_code')
+    assert calls['AutoTokenizer'].call_args.kwargs['tokenizer_type'] == 'qwen2'
 
 
 def test_cpu_real_model_load_refused_before_download(monkeypatch):

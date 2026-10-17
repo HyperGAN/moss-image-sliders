@@ -16,7 +16,10 @@ def load_pipeline(*, device="cuda:0", local_files_only=True, training=False, off
     common = dict(revision=MODEL_REVISION, local_files_only=local_files_only)
     transformer = MOSSImageTransformer.from_pretrained(
         MODEL_ID, subfolder="transformer", torch_dtype=torch.bfloat16, **common)
-    tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, subfolder="tokenizer", **common)
+    # Transformers 5.3 AutoTokenizer otherwise requires tokenizer/config.json,
+    # absent from the official diffusion snapshot. Its model_index declares Qwen2Tokenizer.
+    tokenizer = AutoTokenizer.from_pretrained(
+        MODEL_ID, subfolder="tokenizer", tokenizer_type="qwen2", **common)
     text_encoder = AutoModel.from_pretrained(
         MODEL_ID, subfolder="text_encoder", dtype=torch.bfloat16, **common).eval()
     vae = None if training else AutoencoderKLFlux2.from_pretrained(
