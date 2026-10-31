@@ -213,7 +213,11 @@ def save_checkpoint(run, root):
     try:
         packet = _cpu(run.game.state_dict())
         torch.save(packet, pending / "training.pt")
-        metadata = dict(schema="moss-pg09-checkpoint-v1", objective=OBJECTIVE,
+        config = packet["config"]
+        metadata = dict(schema="moss-pg09-checkpoint-v2", objective=OBJECTIVE,
+                        pg_version=config["pg_version"],
+                        pg_source_profile=config["pg_source_profile"],
+                        penalty_input_domain=config["penalty_input_domain"],
                         step=step, sha256=hashlib.sha256(
                             (pending / "training.pt").read_bytes()).hexdigest())
         (pending / "checkpoint.json").write_text(json.dumps(metadata, indent=2) + "\n")
@@ -228,9 +232,17 @@ def restore_checkpoint(run, directory):
     """Read RNG tensors on CPU; shared core validates before mutating state."""
     directory = Path(directory)
     meta = json.loads((directory / "checkpoint.json").read_text())
-    if (meta.get("schema") != "moss-pg09-checkpoint-v1" or
+    if (meta.get("schema") not in ("moss-pg09-checkpoint-v1", "moss-pg09-checkpoint-v2") or
             meta.get("objective") != OBJECTIVE or type(meta.get("step")) is not int):
         raise ValueError("Only full PG09 GAN checkpoints can resume training")
+    expected = run.game.export_state_dict()["config"]
+    identity_keys = ("pg_version", "pg_source_profile", "penalty_input_domain")
+    if meta["schema"] == "moss-pg09-checkpoint-v2" or any(key in meta for key in identity_keys):
+        if any(meta.get(key) != expected[key] for key in identity_keys):
+            raise ValueError("GAN checkpoint cohort header differs; use its original pinned environment")
+    elif expected["pg_version"] != "0.9.1":
+        raise ValueError("Legacy checkpoint lacks an explicit PG/profile/domain header; "
+                         "resume with the original pinned source environment")
     path = directory / "training.pt"
     if hashlib.sha256(path.read_bytes()).hexdigest() != meta["sha256"]:
         raise ValueError("GAN checkpoint checksum mismatch")

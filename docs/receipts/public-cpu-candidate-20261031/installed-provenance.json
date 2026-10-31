@@ -1,0 +1,104 @@
+{
+  "profile": "hndl",
+  "product_wheel_sha256": "6ec7d8c6509b7d6de6dcea7fcc21bbb6f18eadb7c72221688fdb6a8443a13659",
+  "packages": {
+    "moss-image-sliders-hndl": {
+      "version": "0.3.0.dev0",
+      "direct_url": {
+        "archive_info": {
+          "hash": "sha256=6ec7d8c6509b7d6de6dcea7fcc21bbb6f18eadb7c72221688fdb6a8443a13659",
+          "hashes": {
+            "sha256": "6ec7d8c6509b7d6de6dcea7fcc21bbb6f18eadb7c72221688fdb6a8443a13659"
+          }
+        },
+        "url": "file:///ml2/codex-storage/future-workspaces/2026-10-31/task-15/evidence/public-core-install/hndl-wheels/moss_image_sliders_hndl-0.3.0.dev0-py3-none-any.whl"
+      }
+    },
+    "particle-sliders-core": {
+      "version": "0.12.0",
+      "direct_url": {
+        "subdirectory": "packages/particle-sliders-core",
+        "url": "https://github.com/HyperGAN/particle-sliders.git",
+        "vcs_info": {
+          "commit_id": "4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231",
+          "requested_revision": "4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231",
+          "vcs": "git"
+        }
+      }
+    },
+    "particlegan": {
+      "version": "0.9.4",
+      "direct_url": null
+    },
+    "torch": {
+      "version": "2.9.1+cpu",
+      "direct_url": {
+        "archive_info": {
+          "hash": "sha256=7417d8c565f219d3455654cb431c6d892a3eb40246055e14d645422de13b9ea1",
+          "hashes": {
+            "sha256": "7417d8c565f219d3455654cb431c6d892a3eb40246055e14d645422de13b9ea1"
+          }
+        },
+        "url": "https://download-r2.pytorch.org/whl/cpu/torch-2.9.1%2Bcpu-cp312-cp312-manylinux_2_28_x86_64.whl"
+      }
+    },
+    "Pillow": {
+      "version": "13.0.0",
+      "direct_url": null
+    },
+    "diffusers": {
+      "version": "0.38.0",
+      "direct_url": null
+    },
+    "transformers": {
+      "version": "5.3.0",
+      "direct_url": null
+    },
+    "hypergan": {
+      "version": "2.0.0",
+      "direct_url": {
+        "url": "https://github.com/HyperGAN/HyperGAN.git",
+        "vcs_info": {
+          "commit_id": "5f368a3770cf5bdae0448995c9f76e29af8049f7",
+          "requested_revision": "5f368a3770cf5bdae0448995c9f76e29af8049f7",
+          "vcs": "git"
+        }
+      }
+    },
+    "hndl": {
+      "version": "0.10.0",
+      "direct_url": null
+    }
+  },
+  "product_source_map": {
+    "moss_sliders/__init__.py": "3155832b9f18c910e02c9f021937fbd1c0aefc2d65697e85e4bcf17f79f71379",
+    "moss_sliders/artifacts.py": "61330a611c291402bed1c15e2d4bc2a1ef5cad463e7df75b3610d7c95c53ce38",
+    "moss_sliders/backend.py": "e8e05b19599d31bf9b49837f77f796a85f1dc6d875e145baface985cfd704850",
+    "moss_sliders/campaign.py": "a4e05a96eab1835dada9fea5b1f1f129c10fe02c582063a9a942c99243be6a97",
+    "moss_sliders/cli.py": "209cfea144939efb2f8f93d52dc7e7069aca1b8eb00deac2139601dec8bb0450",
+    "moss_sliders/gan.py": "2990ee029431acbfc41223c4ca286e6f2ef0ed341b8b0c3a2662cc87a57c3518",
+    "moss_sliders/hndl_cohort.json": "ac9152494672336bcec394594c844f3be1c3ad3215dfdd31dd0ba9caed8000ee",
+    "moss_sliders/inference.py": "d458af6e9b2e4aa813c312c3d39fc04111e009dfe1bb0c604e6c8183d6cf1955",
+    "moss_sliders/lora.py": "196776f500ef60b34b44d04db882898cdecec442327b8cbcfa81d5803693a880",
+    "moss_sliders/native_hndl.py": "1a8d1b10c7bac76c65d31e5ab76675e15c7447136a0f58ef77ebcf79d17d1ace",
+    "moss_sliders/smoke.py": "358dcbb2692d7028279d681a3a729681dad9a9b6d14de10c874ffb5771c54fd4",
+    "moss_sliders/training.py": "f18410d72f3ce9147a076258247406dec073098c014051efa837499b6740a3f1",
+    "moss_sliders/ui.py": "66483ab23c660885e22045091f38dcbed50260c95f66dd078ef60b36741366c3",
+    "moss_sliders/vendor/__init__.py": "bb293ef358aad9fd97c2d323d78395b70c718859116313aa18c24f8c1e7b4bed",
+    "moss_sliders/vendor/pipeline_moss_image.py": "1dac1aca9feb1bfdfc727a401e4b67d61a505d3190706d1b7d2d784f88678b31"
+  },
+  "source_wheel_installed_match": true,
+  "runtime_identity": {
+    "profile": "hypergan-hndl-v2",
+    "hndl_version": "0.10.0",
+    "hypergan_commit": "5f368a3770cf5bdae0448995c9f76e29af8049f7",
+    "hypergan_build_provenance_sha256": "fa0aaed8eea39a1cc545bafb96c9a72eb155b52cb79f2d34c44f505aaf4ac179",
+    "runtime_sources_sha256": "69e65e3daf18ac5c99154fd735d0b6fc8e8c95433c5b0618a074cdd203ed6251",
+    "projection_sha256": "b5efac1cfb0c597e5d6e0839af6077ff36dec916901bfa254be78db9f691c086",
+    "critic_sha256": "31f95ccf2178363d7a027597a00694c571c9d69a170151fcbe36e05326ac4707",
+    "core_commit": "4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231",
+    "core_cohort_sha256": "ac9152494672336bcec394594c844f3be1c3ad3215dfdd31dd0ba9caed8000ee",
+    "lora_graph_sha256": "c9bb30696051cbb1c64080f9b6bcc422743a5d74ceb617c5d4c1127236dbaa9f"
+  },
+  "cuda_initialized": false
+}

@@ -1,0 +1,8 @@
+{
+  "external_receipt": true,
+  "actual_old_pg091_packet": true,
+  "rejection": "Legacy checkpoint lacks an explicit PG/profile/domain header; resume with the original pinned source environment",
+  "torch_load_calls": 0,
+  "receiver_unchanged": true,
+  "cuda_initialized": false
+}

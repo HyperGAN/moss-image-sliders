@@ -30,13 +30,19 @@ def bind_torch_archive(text, url):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--uv', default='uv')
+    parser.add_argument('--profile', choices=('base', 'hndl'), default='base')
     args = parser.parse_args()
-    output = ROOT / 'requirements-runtime-cpu.lock'
-    subprocess.run([args.uv, 'pip', 'compile', 'pyproject.toml', 'requirements-runtime-cpu.in',
+    hndl = args.profile == 'hndl'
+    output = ROOT / ('requirements-hndl-cpu.lock' if hndl else 'requirements-runtime-cpu.lock')
+    project = 'profiles/hypergan-hndl/pyproject.toml' if hndl else 'pyproject.toml'
+    omitted = ['--no-emit-package', 'particle-sliders-core']
+    if hndl:
+        omitted += ['--no-emit-package', 'hypergan']
+    command = 'python tools/lock_runtime_cpu.py' + (' --profile hndl' if hndl else '')
+    subprocess.run([args.uv, 'pip', 'compile', project, 'requirements-runtime-cpu.in',
         '--python-version', '3.12', '--python-platform', 'x86_64-unknown-linux-gnu',
-        '--generate-hashes', '--no-emit-package', 'particle-sliders-core', '--emit-index-url',
-        '--default-index', 'https://pypi.org/simple', '--custom-compile-command',
-        'python tools/lock_runtime_cpu.py', '--output-file', output.name], cwd=ROOT, check=True)
+        '--generate-hashes', *omitted, '--emit-index-url', '--default-index', 'https://pypi.org/simple',
+        '--custom-compile-command', command, '--output-file', output.name], cwd=ROOT, check=True)
     requirement = next(line for line in (ROOT / 'requirements-runtime-cpu.in').read_text().splitlines()
                        if line.startswith('torch @ '))
     output.write_text(bind_torch_archive(output.read_text(), requirement.removeprefix('torch @ ')))

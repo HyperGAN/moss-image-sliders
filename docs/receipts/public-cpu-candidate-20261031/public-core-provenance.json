@@ -1,0 +1,23 @@
+{
+  "sha": "4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231",
+  "tree": "4634fc0b555e5331e37dbac1a0f48a28da2b734c",
+  "html_url": "https://github.com/HyperGAN/particle-sliders/commit/4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231",
+  "pr": "https://github.com/HyperGAN/particle-sliders/pull/148",
+  "pr_state": "open",
+  "pr_draft": true,
+  "pr_head": "4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231",
+  "verified_files": {
+    "pyproject.toml": {
+      "url": "https://raw.githubusercontent.com/HyperGAN/particle-sliders/4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231/packages/particle-sliders-core/pyproject.toml",
+      "sha256": "f6c53441da0c657b44252072b4bce67ec1562a7acdf427fbde299e0374c3ccad"
+    },
+    "src/particle_sliders/fibo_hndl_010_sources.json": {
+      "url": "https://raw.githubusercontent.com/HyperGAN/particle-sliders/4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231/packages/particle-sliders-core/src/particle_sliders/fibo_hndl_010_sources.json",
+      "sha256": "69e65e3daf18ac5c99154fd735d0b6fc8e8c95433c5b0618a074cdd203ed6251"
+    },
+    "src/particle_sliders/pg09.py": {
+      "url": "https://raw.githubusercontent.com/HyperGAN/particle-sliders/4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231/packages/particle-sliders-core/src/particle_sliders/pg09.py",
+      "sha256": "e580a9339630bea7cf3aa82e34c2d08a3e231b8df0aa408b29baa08b8de01671"
+    }
+  }
+}

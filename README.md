@@ -1,6 +1,6 @@
 > Compatibility reconciliation: the patched Pillow minimum conflicts with the current Gradio UI pin. Current UI/full-lock installation is blocked; see [exact status](docs/compatibility-20261031.md). A separate [base-runtime install](docs/runtime-only-install.md) resolves without Gradio.
 
-> An isolated [HyperGAN/HNDL preview](docs/hypergan-hndl-preview.md) adds actual HNDL attention LoRA and shared spatial critic execution. Its exact core0.12 candidate still requires central publication; default and historical checkpoint environments remain on their original cohort.
+> An isolated [HyperGAN/HNDL preview](docs/hypergan-hndl-preview.md) adds actual HNDL attention LoRA and shared spatial critic execution. Its exact public core 0.12 candidate has a separate clean CPU installation path; default and historical checkpoint environments remain on their original cohort.
 
 # MOSS-Image Sliders
 
@@ -20,7 +20,7 @@ the new GAN path. New pretrained CUDA/image validation remains pending.
 
 The package supports **Python 3.11–3.12**. The reproducible CPU lock below is
 specifically for **Python 3.12 / Linux x86-64** and installs 43 runtime packages,
-including Pillow13 and the official Torch2.9.1+cpu archive. From the source root:
+including Pillow 13 and the official Torch 2.9.1+cpu archive. From the source root:
 
 ```bash
 python3.12 -m venv .venv-cpu
@@ -35,8 +35,8 @@ moss-sliders smoke --receipt outputs/gan-smoke.json
 
 Keep this order: hash-locked runtime, exact shared core without dependency
 resolution, then the product without dependency resolution. The base cohort is
-core0.6.0/CDF and official PG0.9.1. Python3.11 remains eligible in package metadata,
-but this platform-specific CPython3.12 lock does not qualify a Python3.11 install.
+core 0.6.0/CDF and official PG 0.9.1. Python3.11 remains eligible in package metadata,
+but this platform-specific CPython 3.12 lock does not qualify a Python3.11 install.
 Use a new environment; do not retarget a running campaign. The CPU smoke uses a
 tiny random MOSS architecture, downloads no pretrained weights and makes no
 GPU or image-quality claim. See [installation and test evidence](docs/runtime-only-install.md).
@@ -44,10 +44,10 @@ GPU or image-quality claim. See [installation and test evidence](docs/runtime-on
 **UI installation remains blocked.** Do not run the historical all-extras
 `uv sync`/`uv run` path, add `.[ui]`, or use `requirements-cpu.lock` as a patched
 current environment. Those historical locks contain incompatible older packages;
-Gradio6.30 requires Pillow<13 while this package requires Pillow>=13. Keep the
+Gradio 6.30 requires Pillow<13 while this package requires Pillow>=13. Keep the
 security floor. Both the UI and a complete UI lock need a verified compatible
 cohort before use. [The isolated HNDL preview](docs/hypergan-hndl-preview.md) has its
-own environment and an unpublished exact core candidate; it is not a base extra.
+own environment and an exact public core candidate; it is not a base extra.
 
 ## Samples
 
@@ -156,7 +156,7 @@ Qwen features plus native time, sign and strength. Frozen edit RMS from training
 states sets the response coordinate scale; no reconstruction/MSE loss is trained.
 The shared recipe owns both optimizers and its public adversarial/penalty terms.
 The four-step rollout uses the actual SFT scheduler grid approximately
-`[1000, 910, 717, 24]`; rendering below uses a distinct50-step grid. See
+`[1000, 910, 717, 24]`; rendering below uses a distinct 50-step grid. See
 [the verified scheduler review](docs/sft-scheduler-review-20261031.md) for both
 grids, historical provenance and the remaining native quality gap.
 
@@ -199,6 +199,20 @@ moss-sliders infer --adapter checkpoints/new-gan-run/adapter \
   --scales -1 -0.5 0 0.5 1 --seed 42 --steps 50 --guidance 3 \
   --width 1024 --height 1024 --output outputs/gan-ramp --offload
 ```
+
+The render default stays at 50 steps. To exercise the same four-step scheduler
+grid used by the example's frozen training rollouts, use a separate diagnostic
+output directory:
+
+```bash
+moss-sliders infer --adapter checkpoints/new-gan-run/adapter \
+  --prompt 'A ceramic teapot on a wooden table, studio photograph.' \
+  --scales -1 -0.5 0 0.5 1 --seed 42 --steps 4 --guidance 3 \
+  --width 1024 --height 1024 --output outputs/gan-ramp-four-step --offload
+```
+
+This reproduces the scheduler grid, not a pretrained quality result or the neutral
+training trajectory. The 50-step example and all strength defaults remain unchanged.
 
 Inference and UI execute the shared MOSS response backend. CFG adapts only the
 conditional branch, keeps the empty-prompt branch frozen, and disables negative

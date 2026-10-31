@@ -97,3 +97,22 @@ def test_hndl_profile_refuses_historical_runtime_before_native_attachment():
     from moss_sliders.native_hndl import build_hndl_run
     with pytest.raises(ValueError, match='separately qualified core'):
         build_hndl_run(object(), (), {})
+
+
+def test_public_hndl_cpu_profile_pins_exact_source_and_keeps_archive_hashes():
+    project = tomllib.loads((ROOT / 'profiles/hypergan-hndl/pyproject.toml').read_text())['project']
+    core = next(Requirement(value) for value in project['dependencies']
+                if Requirement(value).name == 'particle-sliders-core')
+    assert core.extras == {'serialization', 'hypergan-hndl'}
+    assert core.url == ('git+https://github.com/HyperGAN/particle-sliders.git@'
+                        '4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231'
+                        '#subdirectory=packages/particle-sliders-core')
+    text = (ROOT / 'requirements-hndl-cpu.lock').read_text()
+    names = re.findall(r'^([A-Za-z0-9][A-Za-z0-9_.-]*)(?:==| @ )', text, flags=re.M)
+    assert len(names) == 45
+    assert 'pillow==13.0.0' in text and 'particlegan==0.9.4' in text and 'hndl==0.10.0' in text
+    assert 'gradio' not in names and not any(name.startswith('nvidia-') for name in names)
+    assert 'git+' not in text and '--extra-index-url' not in text
+    for entry in re.split(r'\n(?=[A-Za-z0-9][A-Za-z0-9_.-]*(?:==| @ ))', text):
+        if re.search(r'^[A-Za-z0-9][A-Za-z0-9_.-]*(?:==| @ )', entry, flags=re.M):
+            assert re.search(r'--hash=sha256:[0-9a-f]{64}', entry)

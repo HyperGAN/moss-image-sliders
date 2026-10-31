@@ -1,0 +1,30 @@
+{
+  "core_direct_url": {
+    "subdirectory": "packages/particle-sliders-core",
+    "url": "https://github.com/HyperGAN/particle-sliders.git",
+    "vcs_info": {
+      "commit_id": "4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231",
+      "requested_revision": "4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231",
+      "vcs": "git"
+    }
+  },
+  "hypergan_direct_url": {
+    "url": "https://github.com/HyperGAN/HyperGAN.git",
+    "vcs_info": {
+      "commit_id": "5f368a3770cf5bdae0448995c9f76e29af8049f7",
+      "requested_revision": "5f368a3770cf5bdae0448995c9f76e29af8049f7",
+      "vcs": "git"
+    }
+  },
+  "hypergan_build_provenance": {
+    "commit": "5f368a3770cf5bdae0448995c9f76e29af8049f7",
+    "dirty": false,
+    "schema_version": 1
+  },
+  "all_core_source_data_graph_files_match_original_manifest": true,
+  "core_source_file_count": 49,
+  "immutable_cohort_manifest_sha256": "ac9152494672336bcec394594c844f3be1c3ad3215dfdd31dd0ba9caed8000ee",
+  "producer_wheel_sha256": "9afad3afc1f6c653a574074dc14f0da1f1c43975c31ca45c4eac049df0b0b4ad",
+  "rebuilt_public_core_wheel_sha256": "0e4be4ad284a790e2deb019a661b9a577a9da8569ca64774954d7af36c037d1c",
+  "wheel_note": "wheel container metadata differs; every admitted Python/data/graph byte matches the original producer closure"
+}

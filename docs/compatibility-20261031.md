@@ -1,16 +1,16 @@
 # Draft reconciliation, 2026-10-31
 
 The initial security reconciliation at `51dd861` preserved PR1's shared GAN integration at
-`dda9fbcf79a833fa4dc2185d0362f2da06980f02` and its exact core0.6.0 CDF/PG0.9.1
+`dda9fbcf79a833fa4dc2185d0362f2da06980f02` and its exact core 0.6.0 CDF/PG 0.9.1
 cohort. It replayed the two dependency fixes already merged on public main:
 `482a283` (Python>=3.11, Pillow>=13.0.0) and `ba24599` (Brotli1.2.1 hashes).
 That security-only stage changed no GAN, native loader, sampler, adapter,
-checkpoint or old qualification receipt. Core0.11/0.12 are not drop-in replacements:
+checkpoint or old qualification receipt. Core 0.11/0.12 are not drop-in replacements:
 the historical cohort imports
 `particle_sliders.pg09_moss_campaign`, absent from the clean current shared lane.
 
 The combined UI dependency set is currently unsatisfiable. Actual `uv lock`
-resolution rejects Pillow>=13.0.0 against Gradio6.30.0's Pillow<13 requirement.
+resolution rejects Pillow>=13.0.0 against Gradio 6.30.0's Pillow<13 requirement.
 Official latest Gradio6.31.0 also requires Pillow<13, so a simple version bump
 cannot resolve it. Do not relax the patched image minimum, override the resolver,
 or call the previous lock current. The inherited uv.lock and requirements-cpu.lock

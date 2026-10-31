@@ -106,6 +106,24 @@ def make_after_restore(make, saved):
     return run
 
 
+def test_original_v1_header_still_resumes_in_original_pg091_cohort(tmp_path):
+    make, _, _ = fixture()
+    source = make()
+    source.step()
+    saved = save_checkpoint(source, tmp_path)
+    metadata_path = saved / "checkpoint.json"
+    metadata = json.loads(metadata_path.read_text())
+    metadata["schema"] = "moss-pg09-checkpoint-v1"
+    for key in ("pg_version", "pg_source_profile", "penalty_input_domain"):
+        del metadata[key]
+    metadata_path.write_text(json.dumps(metadata))
+    expected = source.step()
+    receiver = make()
+    assert restore_checkpoint(receiver, saved) == 1
+    assert receiver.step() == expected
+    equal(source.game.state_dict(), receiver.game.state_dict())
+
+
 def test_resume_checks_checksum_recipe_and_rejects_legacy_before_mutation(tmp_path):
     make, _, _ = fixture()
     run = make()

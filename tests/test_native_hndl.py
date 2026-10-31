@@ -133,6 +133,52 @@ def test_exact_hndl_checkpoint_restore_and_rejection_without_mutation(tmp_path, 
     equal(packet, receiver.game.state_dict())
 
 
+@pytest.mark.parametrize("field,wrong", [("pg_version", "0.9.1"),
+                                        ("pg_source_profile", "release"),
+                                        ("penalty_input_domain", "continuous"),
+                                        ("pg_source_profile", None)])
+def test_checkpoint_json_cohort_refuses_before_tensor_load(tmp_path, monkeypatch, field, wrong):
+    from moss_sliders.gan import restore_checkpoint, save_checkpoint
+    from test_gan import equal
+    make, _ = make_fixture()
+    receiver = make()
+    before = receiver.game.state_dict()
+    saved = save_checkpoint(receiver, tmp_path)
+    metadata_path = saved / "checkpoint.json"
+    metadata = json.loads(metadata_path.read_text())
+    assert metadata["schema"] == "moss-pg09-checkpoint-v2"
+    assert (metadata["pg_version"], metadata["pg_source_profile"],
+            metadata["penalty_input_domain"]) == ("0.9.4", "release-0.9.4", "auto")
+    metadata[field] = wrong
+    metadata_path.write_text(json.dumps(metadata))
+
+    def forbidden(*args, **kwargs):
+        raise AssertionError("incompatible checkpoint header reached tensor load")
+    monkeypatch.setattr(torch, "load", forbidden)
+    with pytest.raises(ValueError, match="cohort header"):
+        restore_checkpoint(receiver, saved)
+    equal(before, receiver.game.state_dict())
+
+
+def test_legacy_header_refuses_before_tensor_load_in_preview(tmp_path, monkeypatch):
+    from moss_sliders.gan import restore_checkpoint, save_checkpoint
+    make, _ = make_fixture()
+    receiver = make()
+    saved = save_checkpoint(receiver, tmp_path)
+    metadata_path = saved / "checkpoint.json"
+    metadata = json.loads(metadata_path.read_text())
+    metadata["schema"] = "moss-pg09-checkpoint-v1"
+    for key in ("pg_version", "pg_source_profile", "penalty_input_domain"):
+        del metadata[key]
+    metadata_path.write_text(json.dumps(metadata))
+
+    def forbidden(*args, **kwargs):
+        raise AssertionError("unidentified legacy checkpoint reached tensor load")
+    monkeypatch.setattr(torch, "load", forbidden)
+    with pytest.raises(ValueError, match="explicit PG/profile/domain header"):
+        restore_checkpoint(receiver, saved)
+
+
 def test_new_export_records_actual_cohort_and_zero_is_adapter_free(tmp_path):
     from moss_sliders.artifacts import load_slider, save_gan_slider
     from moss_sliders.training import velocity
