@@ -16,8 +16,9 @@ def train_step(model, slider, optimizer, latent, timestep, contexts, strength=1.
 @torch.no_grad()
 def sample_training_state(pipe, slider, neutral, generator, resolution, rollout_steps, index):
     """Partial frozen neutral rollout, using official Euler/time conventions (t=1000*sigma)."""
-    pipe.scheduler.set_timesteps(rollout_steps, device=pipe.transformer.device)
-    times = pipe.scheduler.timesteps
+    scheduler = type(pipe.scheduler).from_config(pipe.scheduler.config)
+    scheduler.set_timesteps(rollout_steps, device=pipe.transformer.device)
+    times = scheduler.timesteps
     stop = index % len(times)
     latent = torch.randn((1, pipe.transformer.config.latent_channels,
                           resolution // 16, resolution // 16), generator=generator,
@@ -25,7 +26,7 @@ def sample_training_state(pipe, slider, neutral, generator, resolution, rollout_
     with slider.at(0):
         for time in times[:stop]:
             prediction = velocity(pipe.transformer, latent, time, neutral)
-            latent = pipe.scheduler.step(prediction, time, latent, return_dict=False)[0]
+            latent = scheduler.step(prediction, time, latent, return_dict=False)[0]
     return latent.detach(), times[stop]
 
 

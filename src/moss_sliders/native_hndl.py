@@ -59,6 +59,20 @@ class HNDLLowRankResidual(nn.Module):
         # The graph references exactly these modules; no shadow leaves exist.
         object.__setattr__(self, "_graph", graph)
 
+    def _apply(self, fn, recurse=True):
+        # HNDL tracks runtime device/dtype alongside its registered leaves.
+        # Convert through the graph once so those contracts move together;
+        # down/up remain registered here under the portable adapter names.
+        if recurse:
+            self._graph._apply(fn, recurse=True)
+            return self
+        return super()._apply(fn, recurse=False)
+
+    def train(self, mode=True):
+        super().train(mode)
+        self._graph.train(mode)
+        return self
+
     def forward(self, value):
         shape = value.shape
         value = value.to(self.down.weight)

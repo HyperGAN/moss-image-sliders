@@ -16,6 +16,39 @@ The historical lighting images below used the earlier MSE baseline and its old
 CFG protocol. They are preserved with their original provenance and do not qualify
 the new GAN path. New pretrained CUDA/image validation remains pending.
 
+## Install the safe base CPU runtime
+
+The package supports **Python 3.11–3.12**. The reproducible CPU lock below is
+specifically for **Python 3.12 / Linux x86-64** and installs 43 runtime packages,
+including Pillow13 and the official Torch2.9.1+cpu archive. From the source root:
+
+```bash
+python3.12 -m venv .venv-cpu
+. .venv-cpu/bin/activate
+python -m pip install --require-hashes -r requirements-runtime-cpu.lock
+python -m pip install --no-deps 'particle-sliders-core[serialization] @ git+https://github.com/HyperGAN/particle-sliders.git@cdfb80a76b882b4b73861b12f555263bd64ffeb7#subdirectory=packages/particle-sliders-core'
+python -m pip install --no-deps .
+python -m pip check
+moss-sliders --help
+moss-sliders smoke --receipt outputs/gan-smoke.json
+```
+
+Keep this order: hash-locked runtime, exact shared core without dependency
+resolution, then the product without dependency resolution. The base cohort is
+core0.6.0/CDF and official PG0.9.1. Python3.11 remains eligible in package metadata,
+but this platform-specific CPython3.12 lock does not qualify a Python3.11 install.
+Use a new environment; do not retarget a running campaign. The CPU smoke uses a
+tiny random MOSS architecture, downloads no pretrained weights and makes no
+GPU or image-quality claim. See [installation and test evidence](docs/runtime-only-install.md).
+
+**UI installation remains blocked.** Do not run the historical all-extras
+`uv sync`/`uv run` path, add `.[ui]`, or use `requirements-cpu.lock` as a patched
+current environment. Those historical locks contain incompatible older packages;
+Gradio6.30 requires Pillow<13 while this package requires Pillow>=13. Keep the
+security floor. Both the UI and a complete UI lock need a verified compatible
+cohort before use. [The isolated HNDL preview](docs/hypergan-hndl-preview.md) has its
+own environment and an unpublished exact core candidate; it is not a base extra.
+
 ## Samples
 
 **Start around magnitude 0.35 for this lighting pilot.** Each row keeps its prompt,
@@ -103,34 +136,6 @@ adapter and private result bundle remain private.
 
 </details>
 
-## Install and CPU qualification
-
-Python 3.10–3.12. The shared package dependency is pinned to the proposed source
-commit `cdfb80a76b882b4b73861b12f555263bd64ffeb7` (pending Ada approval) in `pyproject.toml`; ParticleGAN stays exactly 0.9.1. Install the matching
-shared package before importing training or inference. See
-[the integration audit](docs/shared-pg09-audit.md) for the exact integration pin
-and CPU receipt. Do not retarget an environment used by a running campaign.
-
-```bash
-uv sync --frozen --extra dev --extra ui
-uv run --frozen moss-sliders smoke --receipt outputs/gan-smoke.json
-uv run --frozen pytest -q
-```
-
-The separately hashed `requirements-cpu.lock` contains CPU runtime dependencies.
-After synchronizing it, install the exact shared source and this project without
-resolving a different runtime:
-
-```bash
-uv pip install --no-deps 'particle-sliders-core[serialization] @ git+https://github.com/HyperGAN/particle-sliders.git@cdfb80a76b882b4b73861b12f555263bd64ffeb7#subdirectory=packages/particle-sliders-core'
-uv pip install --no-deps -e .
-```
-
- Never synchronize the CUDA lock into an existing
-CPU environment. CPU tests use a real tiny random MOSS architecture, no pretrained
-weights, VAE, network, or GPU. The smoke executes the shared GAN, portable adapter
-reload and exact full-game disk resume; it makes no image-quality claim.
-
 ## Train a concept
 
 The example JSON recipes explicitly name `pg09_gan_only`, ParticleGAN `0.9.1`,
@@ -150,6 +155,10 @@ the neutral caption. Critic conditions contain mask-weighted normalized neutral
 Qwen features plus native time, sign and strength. Frozen edit RMS from training
 states sets the response coordinate scale; no reconstruction/MSE loss is trained.
 The shared recipe owns both optimizers and its public adversarial/penalty terms.
+The four-step rollout uses the actual SFT scheduler grid approximately
+`[1000, 910, 717, 24]`; rendering below uses a distinct50-step grid. See
+[the verified scheduler review](docs/sft-scheduler-review-20261031.md) for both
+grids, historical provenance and the remaining native quality gap.
 
 The output is a new directory containing `run.json`, metrics, immutable full-game
 checkpoints and an `adapter/` portable v2 export. For an interrupted run, use a new
@@ -189,7 +198,6 @@ moss-sliders infer --adapter checkpoints/new-gan-run/adapter \
   --prompt 'A ceramic teapot on a wooden table, studio photograph.' \
   --scales -1 -0.5 0 0.5 1 --seed 42 --steps 50 --guidance 3 \
   --width 1024 --height 1024 --output outputs/gan-ramp --offload
-moss-sliders ui --adapter checkpoints/new-gan-run/adapter --offload
 ```
 
 Inference and UI execute the shared MOSS response backend. CFG adapts only the
@@ -202,6 +210,8 @@ can differ under the corrected CFG protocol. Raw source-bound campaign exports
 require validation with their original `MossCampaignRun.load_adapter` and explicit
 conversion to portable v2, rather than guessing their parameter mapping.
 
-The UI serializes requests, binds to 127.0.0.1, and creates no public share link.
+The UI is currently blocked by the dependency conflict described above. Its existing
+code serializes requests, binds to 127.0.0.1, and creates no public share link; this
+is not a current installation or UI qualification claim.
 Native CUDA/BF16, real VAE output, offload hooks, peak memory and visual quality
 remain separate coordinator-admitted gates. No trained weights are published.

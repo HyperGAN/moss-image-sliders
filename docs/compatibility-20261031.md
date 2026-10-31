@@ -1,11 +1,12 @@
 # Draft reconciliation, 2026-10-31
 
-This branch preserves existing PR1's shared GAN integration at
+The initial security reconciliation at `51dd861` preserved PR1's shared GAN integration at
 `dda9fbcf79a833fa4dc2185d0362f2da06980f02` and its exact core0.6.0 CDF/PG0.9.1
-cohort. It replays the two dependency fixes already merged on public main:
+cohort. It replayed the two dependency fixes already merged on public main:
 `482a283` (Python>=3.11, Pillow>=13.0.0) and `ba24599` (Brotli1.2.1 hashes).
-No GAN, native loader, sampler, adapter, checkpoint or old qualification receipt
-has been rewritten. Core0.11/0.12 are not drop-in replacements: this draft imports
+That security-only stage changed no GAN, native loader, sampler, adapter,
+checkpoint or old qualification receipt. Core0.11/0.12 are not drop-in replacements:
+the historical cohort imports
 `particle_sliders.pg09_moss_campaign`, absent from the clean current shared lane.
 
 The combined UI dependency set is currently unsatisfiable. Actual `uv lock`
@@ -26,3 +27,8 @@ The base runtime can now be resolved separately without the already optional UI.
 See [runtime-only installation](runtime-only-install.md) and the new
 requirements-runtime-cpu.lock. UI/full uv locking remains blocked; no runtime
 behavior or native qualification changes follow from this packaging path.
+
+Later source changes add the separate [HNDL preview](hypergan-hndl-preview.md)
+and the reviewed [scheduler/graph ownership corrections](sft-scheduler-review-20261031.md).
+Their installed CPU evidence is separate from the initial security-only checks;
+historical checkpoint environments and original receipts remain preserved.

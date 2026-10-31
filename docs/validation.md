@@ -1,8 +1,13 @@
 # Shared PG0.9.1 integration validation
 
-The current derivative uses the final proposed shared package commit
+Current installation instructions are in the [README](../README.md). The
+[2026-10-31 review corrections](sft-scheduler-review-20261031.md) and their
+separate receipts cover later source changes and the isolated HNDL preview.
+The dated results below apply only to their recorded heads, not later code.
+
+The preserved default dependency is shared package commit
 `cdfb80a76b882b4b73861b12f555263bd64ffeb7` (0.6.0) and released ParticleGAN 0.9.1.
-Final qualification is a separate narrow exact-wheel consumer check under
+Its original CDF qualification is a narrow exact-wheel consumer check under
 `receipts/shared-pg09-cdf/`; the prior receipts below retain their original scope.
 Product pin commit `b247a239d3b73b75b32291a85e068c1ec57ef258`, built from its
 exact Git archive, passed **18 narrow installed-wheel CPU checks in 10.770
@@ -27,7 +32,9 @@ actual shared GAN updates, exact full-game replay and portable adapter reload;
 [replacement receipt](receipts/shared-pg09-replacement/receipt.json) binds all wheel
 Python sources and 29 product source hashes, and confirms all 11 active pins match.
 That result qualifies the 4be candidate only. The final CDF exact GitHub commit
-is readable; Ada review and parent merges remain pending. The MOSS public draft target is `HyperGAN/moss-image-sliders:main`.
+is readable. Review/approval statements in those receipts are historical;
+current review and merge routing remain parent-owned. The MOSS public draft
+target is `HyperGAN/moss-image-sliders:main`.
 
 No GPU/native model run or quality claim belongs to this audit. Existing native
 0.9.0 campaigns and their sources are untouched. The receipts below are historical

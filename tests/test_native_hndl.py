@@ -41,6 +41,7 @@ def test_real_graph_updates_own_parameters_and_preserves_native_field_and_base()
     assert all(type(r._graph).__module__.startswith("hndl.") for r in run.slider.residuals)
     assert run.game.response_shape == (1, 4, 2, 2)
     assert run.game.prior is None
+    assert run.game.export_state_dict()["config"]["generator_arm"] == "adapter_gan"
     assert run.game.critic.identity["hypergan_commit"] == "5f368a3770cf5bdae0448995c9f76e29af8049f7"
     g_ids = {id(p) for g in run.game.opt_g.param_groups for p in g["params"]}
     d_ids = {id(p) for g in run.game.opt_d.param_groups for p in g["params"]}
@@ -76,7 +77,39 @@ def test_hndl_attention_lora_matched_weight_forward_and_vjp():
     assert all(torch.equal(a, b) for a, b in zip(first, second))
 
 
-def test_exact_hndl_checkpoint_restore_and_rejection_without_mutation(tmp_path):
+def test_unregistered_graph_keeps_registered_state_and_conversion_contracts():
+    from moss_sliders.native_hndl import HNDLLowRankResidual
+    residual = HNDLLowRankResidual(torch.nn.Linear(8, 12), 2, 2)
+    with torch.no_grad():
+        residual.up.weight.normal_()
+    state = deepcopy(residual.state_dict())
+    assert set(state) == {"down.weight", "up.weight"}
+    assert len(list(residual.parameters())) == 2
+    assert {id(p) for p in residual.parameters()} == {id(p) for p in residual._graph.parameters()}
+    assert list(residual._graph.buffers()) == []
+    assert residual.down is residual._graph["down"] and residual.up is residual._graph["up"]
+    value = torch.randn(2, 5, 8)
+    expected = residual(value)
+    cloned = deepcopy(residual).double().eval()
+    assert cloned.down is cloned._graph["down"] and cloned.up is cloned._graph["up"]
+    assert not cloned._graph.training
+    assert all(p.dtype == torch.float64 for p in cloned.parameters())
+    assert cloned(value).dtype == torch.float64
+    torch.testing.assert_close(cloned(value).float(), expected)
+    # Meta is a state-relocation check only; this is not CUDA qualification.
+    cloned.to_empty(device="meta")
+    assert cloned._graph._runtime_device == torch.device("meta")
+    cloned.to_empty(device="cpu").float().train()
+    cloned.load_state_dict(state)
+    assert cloned._graph._runtime_device == torch.device("cpu")
+    assert cloned._graph.training
+    assert torch.equal(cloned(value), expected)
+
+
+@pytest.mark.parametrize("identity_key,wrong", [("pg_version", "0.9.1"),
+                                               ("pg_source_profile", "release"),
+                                               ("penalty_input_domain", "continuous")])
+def test_exact_hndl_checkpoint_restore_and_rejection_without_mutation(tmp_path, identity_key, wrong):
     from moss_sliders.gan import restore_checkpoint, save_checkpoint
     from test_gan import equal
     make, _ = make_fixture()
@@ -89,8 +122,12 @@ def test_exact_hndl_checkpoint_restore_and_rejection_without_mutation(tmp_path):
     assert receiver.step() == expected
     equal(run.game.state_dict(), receiver.game.state_dict())
     packet = receiver.game.state_dict()
+    assert packet["config"]["pg_version"] == "0.9.4"
+    assert packet["config"]["pg_source_profile"] == "release-0.9.4"
+    assert packet["config"]["backend"]["model_identity"]["network_runtime"]["core_commit"] == (
+        "4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231")
     corrupt = deepcopy(packet)
-    corrupt["config"]["pg_version"] = "0.9.1"
+    corrupt["config"][identity_key] = wrong
     with pytest.raises(ValueError):
         receiver.game.load_state_dict(corrupt)
     equal(packet, receiver.game.state_dict())
@@ -183,3 +220,19 @@ def test_builder_and_core_source_tamper_refuse_before_native_attachment(tmp_path
         patch.setattr(particle_sliders, "__file__", str(tmp_path / "core" / "__init__.py"))
         with pytest.raises(ValueError, match="core source closure"):
             build_hndl_run(object(), (), {})
+
+
+@pytest.mark.parametrize("name", ["pg09.py", "fibo_critic.hndl", "pg094_release.json", "extra.py"])
+def test_entire_core_code_graph_data_closure_rejects_changes(tmp_path, monkeypatch, name):
+    from pathlib import Path
+    import shutil
+    import particle_sliders
+    from moss_sliders.native_hndl import build_hndl_run
+    root = Path(particle_sliders.__file__).parent
+    copied = tmp_path / "particle_sliders"
+    shutil.copytree(root, copied, ignore=shutil.ignore_patterns("__pycache__"))
+    path = copied / name
+    path.write_bytes((path.read_bytes() if path.exists() else b"") + b"\n ")
+    monkeypatch.setattr(particle_sliders, "__file__", str(copied / "__init__.py"))
+    with pytest.raises(ValueError, match="core source closure"):
+        build_hndl_run(object(), (), {})

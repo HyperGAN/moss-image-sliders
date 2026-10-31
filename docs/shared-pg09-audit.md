@@ -58,9 +58,10 @@ ordinary failures clean the newly reserved output and allow retry.
 
 ## Validation and remaining gates
 
-The sole packaging owner's final immutable proposed dependency is
+The preserved default cohort uses the immutable dependency
 `cdfb80a76b882b4b73861b12f555263bd64ffeb7`, `particle-sliders-core` 0.6.0,
-released ParticleGAN 0.9.1. It is pending Ada approval and merge. Its producer wheel
+released ParticleGAN 0.9.1. Approval statements in the original dated receipts
+are historical; current draft review and merge are coordinated separately. Its producer wheel
 SHA256 is `4abc83988fdeb6d7478de830e7ee8ec5d9bd99c20d52f89e4ce594d50dfd39a3`.
 The official ParticleGAN wheel SHA256 is
 `b01b7957169cb3de45887e22b4d525fd54071577e1de58089707cf05fe6992ec`.

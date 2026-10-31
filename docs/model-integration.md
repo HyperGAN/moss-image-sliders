@@ -28,7 +28,9 @@ The advertised quick-start loads `DiffusionPipeline.from_pretrained` with
 `{"default": torch.bfloat16, "vae": torch.float32}`. We instead load the same pinned
 components using the unmodified local copy of those classes. AutoModel and AutoTokenizer
 use library-provided implementations; arbitrary remote Python is not required.
-The exact vendored source SHA256 is tested in CI.
+The exact vendored source SHA256 is checked by the CPU tests. No GitHub CI
+workflow is currently configured. [The scheduler review](sft-scheduler-review-20261031.md)
+records the actual four- and50-step SFT grids and their qualification limits.
 
 The official transformer does not inherit Diffusers' PEFT adapter mixin, and the
 pipeline does not expose `load_lora_weights` or `set_adapters`. Calling the generic
