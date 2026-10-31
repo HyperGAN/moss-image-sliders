@@ -1,3 +1,5 @@
+> Compatibility reconciliation: the patched Pillow minimum conflicts with the current Gradio UI pin. Current UI/full-lock installation is blocked; see [exact status](docs/compatibility-20261031.md).
+
 # MOSS-Image Sliders
 
 Signed concept LoRA controls for the pinned OpenMOSS MOSS-Image-SFT model.
