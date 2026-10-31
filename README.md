@@ -1,4 +1,4 @@
-> Compatibility reconciliation: the patched Pillow minimum conflicts with the current Gradio UI pin. Current UI/full-lock installation is blocked; see [exact status](docs/compatibility-20261031.md).
+> Compatibility reconciliation: the patched Pillow minimum conflicts with the current Gradio UI pin. Current UI/full-lock installation is blocked; see [exact status](docs/compatibility-20261031.md). A separate [base-runtime install](docs/runtime-only-install.md) resolves without Gradio.
 
 # MOSS-Image Sliders
 

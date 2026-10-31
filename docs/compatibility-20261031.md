@@ -21,3 +21,8 @@ backend. That is package construction only, not a complete install or re-run of
 prior model/CPU/GPU qualifications. Publishing this reconciliation or adopting a
 new UI/runtime cohort remains pending. Native libraries, caches, running campaigns,
 original checkpoints and recorded lighting examples remain on their original pins.
+
+The base runtime can now be resolved separately without the already optional UI.
+See [runtime-only installation](runtime-only-install.md) and the new
+requirements-runtime-cpu.lock. UI/full uv locking remains blocked; no runtime
+behavior or native qualification changes follow from this packaging path.
