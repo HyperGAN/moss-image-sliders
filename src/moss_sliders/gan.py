@@ -18,7 +18,6 @@ from particle_sliders.pg09 import ConditionalPG09
 from particle_sliders.pg09_backends import (
     MossResponseAdapter, ResponseRow, checkpoint_with_adapter_scale,
 )
-from particle_sliders.pg09_moss_campaign import CampaignFieldCritic
 
 from . import MODEL_ID, MODEL_REVISION
 from .lora import Slider
@@ -40,8 +39,16 @@ class GanRun:
         return self.game.step()
 
 
-def build_run(pipe, contexts, config, *, checkpointing=True, model_identity=None):
+def build_run(pipe, contexts, config, *, checkpointing=True, model_identity=None,
+              runtime_profile="legacy-pg091"):
     """Validate before attachment and roll back hooks/flags after a failed build."""
+    if runtime_profile == "hypergan-hndl-v2":
+        from .native_hndl import verify_runtime
+        identity = verify_runtime()
+        model_identity = dict(model_identity or {"model": MODEL_ID, "revision": MODEL_REVISION},
+                              network_runtime=identity)
+    elif runtime_profile != "legacy-pg091":
+        raise ValueError("Unknown MOSS runtime profile")
     for key, lower, upper in (("rank", 1, 128), ("batch_size", 2, 512),
                               ("rollout_steps", 2, 50), ("steps", 1, 10000),
                               ("seed", 0, 2**32 - 1), ("resolution", 16, 2048)):
@@ -59,7 +66,8 @@ def build_run(pipe, contexts, config, *, checkpointing=True, model_identity=None
     owner = []
     try:
         return _build_run(pipe, contexts, config, checkpointing=checkpointing,
-                          model_identity=model_identity, owner=owner)
+                          model_identity=model_identity, owner=owner,
+                          runtime_profile=runtime_profile)
     except Exception:
         for slider in owner:
             slider.detach()
@@ -72,14 +80,18 @@ def build_run(pipe, contexts, config, *, checkpointing=True, model_identity=None
         raise
 
 
-def _build_run(pipe, contexts, config, *, checkpointing, model_identity, owner):
+def _build_run(pipe, contexts, config, *, checkpointing, model_identity, owner,
+               runtime_profile="legacy-pg091"):
     """Fixed frozen neutral rollouts, paired signs, and useful context/time features.
 
     Each scheduler position receives a separately seeded frozen neutral rollout.
     Both signs use the identical latent/time and positive-minus-negative teacher.
     The shared game owns independent balanced D/G row and reference-noise streams.
     """
-    if config.get("objective") != OBJECTIVE or config.get("pg_version") != "0.9.1":
+    from particle_sliders.pg09 import PG_VERSION
+    expected_version = "0.9.4" if runtime_profile == "hypergan-hndl-v2" else "0.9.1"
+    if (config.get("objective") != OBJECTIVE or config.get("pg_version") != expected_version
+            or PG_VERSION != expected_version):
         raise ValueError("An explicit PG 0.9 GAN-only recipe is required")
     device = pipe.transformer.device
     devices = ([device.index if device.index is not None else torch.cuda.current_device()]
@@ -90,7 +102,11 @@ def _build_run(pipe, contexts, config, *, checkpointing, model_identity, owner):
         torch.random.default_generator.manual_seed(config["seed"])
         if devices:
             torch.cuda.default_generators[devices[0]].manual_seed(config["seed"])
-        slider = Slider(pipe.transformer, rank=config["rank"])
+        residual_factory = None
+        if runtime_profile == "hypergan-hndl-v2":
+            from .native_hndl import HNDLLowRankResidual
+            residual_factory = HNDLLowRankResidual
+        slider = Slider(pipe.transformer, rank=config["rank"], residual_factory=residual_factory)
         owner.append(slider)
         identity = dict(model_identity or {"model": MODEL_ID, "revision": MODEL_REVISION})
         if hasattr(pipe, "_moss_training_context_identity"):
@@ -123,8 +139,14 @@ def _build_run(pipe, contexts, config, *, checkpointing, model_identity, owner):
         if not 0 < scale < float("inf"):
             slider.detach()
             raise ValueError("Frozen training edit has no finite nonzero response scale")
-        critic = CampaignFieldCritic(rows[0].target.shape[1], conditions.shape[1],
-                                    config.get("critic_width", 32)).to(device)
+        if runtime_profile == "hypergan-hndl-v2":
+            from .native_hndl import MossHNDLFieldCritic
+            critic = MossHNDLFieldCritic(rows[0].target.shape, conditions.shape[1],
+                                        config.get("critic_width", 32)).to(device)
+        else:
+            from particle_sliders.pg09_moss_campaign import CampaignFieldCritic
+            critic = CampaignFieldCritic(rows[0].target.shape[1], conditions.shape[1],
+                                        config.get("critic_width", 32)).to(device)
     if checkpointing:
         for block in pipe.transformer.layers:
             checkpoint_with_adapter_scale(block, backend.network)
@@ -230,7 +252,8 @@ def train_to_budget(run, output, recipe, *, resume=None, checkpoint_every=10):
     if resume is not None:
         restore_checkpoint(run, resume)
     output.mkdir(parents=True)
-    provenance = dict(objective=OBJECTIVE, pg_version="0.9.1", preset="bispf_optimized",
+    provenance = dict(objective=OBJECTIVE, pg_version=run.game.export_state_dict()["config"]["pg_version"],
+                      preset="bispf_optimized",
                       recipe=recipe, resumed_from=str(resume) if resume else None,
                       initial_completed_steps=run.game.completed_steps)
     (output / "run.json").write_text(json.dumps(provenance, indent=2) + "\n")

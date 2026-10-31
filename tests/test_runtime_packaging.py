@@ -88,3 +88,12 @@ def test_torch_direct_archive_hash_is_exact_and_cannot_be_silently_rebound():
         tool.bind_torch_archive(text, url.replace('2.9.1', '2.9.2'))
     with pytest.raises(ValueError, match='omit the published'):
         tool.bind_torch_archive(text.replace(lines[start + 1], '    --hash=sha256:' + '0' * 64, 1), url)
+
+
+def test_hndl_profile_refuses_historical_runtime_before_native_attachment():
+    from importlib.metadata import version
+    if version('particle-sliders-core') != '0.6.0':
+        pytest.skip('historical runtime admission check belongs to the base environment')
+    from moss_sliders.native_hndl import build_hndl_run
+    with pytest.raises(ValueError, match='separately qualified core'):
+        build_hndl_run(object(), (), {})

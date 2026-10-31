@@ -45,14 +45,14 @@ def parser():
     return root
 
 
-def validate_config(config):
+def validate_config(config, *, pg_version="0.9.1"):
     required = {"neutral", "positive", "negative", "steps", "rank", "lr", "resolution",
                 "rollout_steps", "strength", "seed", "max_sequence_length", "objective",
                 "pg_version", "preset", "batch_size"}
     if set(config) != required:
         raise ValueError(f"Expected config keys: {sorted(required)}")
     if (config["objective"], config["pg_version"], config["preset"]) != (
-            "pg09_gan_only", "0.9.1", "bispf_optimized"):
+            "pg09_gan_only", pg_version, "bispf_optimized"):
         raise ValueError("Training requires PG 0.9 GAN-only with the public bispf_optimized preset")
     for key in ("neutral", "positive", "negative"):
         if not isinstance(config[key], str) or not config[key].strip():
@@ -71,8 +71,15 @@ def validate_config(config):
     return config
 
 
-def main(argv=None):
+def main(argv=None, *, runtime_profile="legacy-pg091"):
     args = parser().parse_args(argv)
+    pg_version = "0.9.1"
+    if runtime_profile == "hypergan-hndl-v2":
+        from .native_hndl import verify_runtime
+        verify_runtime()
+        pg_version = "0.9.4"
+        if args.command in ("train-campaign", "ui"):
+            raise RuntimeError("The HNDL profile does not qualify historical cached campaigns or UI")
     if args.command == "doctor":
         import os
         import shutil
@@ -91,7 +98,7 @@ def main(argv=None):
         if not 1 <= args.steps <= 20:
             raise ValueError("Smoke tests are bounded to 1..20 steps")
         from .smoke import run_smoke
-        receipt = json.dumps(run_smoke(args.steps), indent=2)
+        receipt = json.dumps(run_smoke(args.steps, runtime_profile=runtime_profile), indent=2)
         if args.receipt:
             args.receipt.parent.mkdir(parents=True, exist_ok=True)
             args.receipt.write_text(receipt + "\n")
@@ -101,7 +108,7 @@ def main(argv=None):
     if hasattr(args, "output") and args.output.exists():
         raise FileExistsError(f"Output already exists: {args.output}")
     if args.command == "train":
-        config = validate_config(json.loads(args.config.read_text()))
+        config = validate_config(json.loads(args.config.read_text()), pg_version=pg_version)
     elif args.command == "train-campaign":
         if not 1 <= args.steps <= 3840 or not 2 <= args.batch_size <= 512:
             raise ValueError("Invalid campaign steps or batch size")
@@ -141,7 +148,7 @@ def main(argv=None):
         contexts = encode_training_prompts(
             pipe, [config[key] for key in ("neutral", "positive", "negative")], args.device,
             config["max_sequence_length"])
-        run = build_run(pipe, contexts, config)
+        run = build_run(pipe, contexts, config, runtime_profile=runtime_profile)
         train_to_budget(run, args.output, config, resume=args.resume,
                         checkpoint_every=args.checkpoint_every)
     else:

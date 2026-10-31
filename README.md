@@ -1,5 +1,7 @@
 > Compatibility reconciliation: the patched Pillow minimum conflicts with the current Gradio UI pin. Current UI/full-lock installation is blocked; see [exact status](docs/compatibility-20261031.md). A separate [base-runtime install](docs/runtime-only-install.md) resolves without Gradio.
 
+> An isolated [HyperGAN/HNDL preview](docs/hypergan-hndl-preview.md) adds actual HNDL attention LoRA and shared spatial critic execution. Its exact core0.12 candidate still requires central publication; default and historical checkpoint environments remain on their original cohort.
+
 # MOSS-Image Sliders
 
 Signed concept LoRA controls for the pinned OpenMOSS MOSS-Image-SFT model.

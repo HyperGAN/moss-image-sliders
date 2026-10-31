@@ -30,7 +30,7 @@ class LowRankResidual(nn.Module):
 class Slider(nn.Module):
     """One adapter with reversible signed scale and strict MOSS attention targets."""
 
-    def __init__(self, transformer, rank=4, alpha=None, targets=None):
+    def __init__(self, transformer, rank=4, alpha=None, targets=None, *, residual_factory=None):
         super().__init__()
         alpha = rank if alpha is None else alpha
         if type(rank) is not int or rank < 1 or not math.isfinite(alpha) or alpha <= 0:
@@ -45,8 +45,9 @@ class Slider(nn.Module):
         transformer.requires_grad_(False)
         self.rank, self.alpha, self.targets = rank, float(alpha), names
         self.scale = 0.0
+        factory = residual_factory or LowRankResidual
         self.residuals = nn.ModuleList([
-            LowRankResidual(modules[name], rank, alpha) for name in names
+            factory(modules[name], rank, alpha) for name in names
         ])
         self._handles = []
         self._modules_attached = []

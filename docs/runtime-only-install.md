@@ -18,9 +18,14 @@ moss-sliders --help
 The Git package is intentionally a separate exact-commit step: pip's archive-hash
 mode cannot hash a VCS requirement. Its transitive dependencies are included in
 the runtime lock, and existing runtime source/checkpoint identities still apply.
-No global environment or active native campaign should be retargeted. This path
-has dependency-resolution, wheel-build and installed CLI-discovery evidence; a
-complete fresh native installation or model execution was not performed here.
+No global environment or active native campaign should be retargeted. The
+2026-10-31 follow-up completed this base installation in a fresh isolated
+Python3.12.15 environment with actual Torch2.9.1+cpu and Pillow13, built/installed
+the pinned core and product wheels, and passed87 base CPU tests. `pip check`
+passes. Seven separate HNDL-profile tests are skipped in this base environment;
+the incompatible optional UI test is explicitly deselected. Raw installed-wheel
+receipts are in [runtime/HNDL evidence](receipts/runtime-hndl-20261031/receipt.json).
+This is still not pretrained/native GPU or image-quality qualification.
 
 Do not add `.[ui]`, use the historical all-extras lock as a patched environment,
 or lower Pillow to satisfy it. Gradio6.30 and latest6.31 require Pillow<13; the

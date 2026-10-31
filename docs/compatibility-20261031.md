@@ -18,8 +18,8 @@ already merged fix is present, but the Pillow/Gradio conflict remains explicit.
 
 Source wheel building can be checked independently with the declared Hatchling
 backend. That is package construction only, not a complete install or re-run of
-prior model/CPU/GPU qualifications. Publishing this reconciliation or adopting a
-new UI/runtime cohort remains pending. Native libraries, caches, running campaigns,
+prior model/CPU/GPU qualifications. The reconciliation is published on draft PR1;
+merge and adoption of a new UI/runtime cohort remain pending. Native libraries, caches, running campaigns,
 original checkpoints and recorded lighting examples remain on their original pins.
 
 The base runtime can now be resolved separately without the already optional UI.

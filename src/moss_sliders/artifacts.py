@@ -51,6 +51,14 @@ def _validate_gan_config(config, names, shapes, completed_steps):
             raise ValueError("GAN config lacks shared source/conditioning identity: " + key)
     if not config.get("implementation_sources"):
         raise ValueError("GAN config lacks shared implementation source identity")
+    if PG_VERSION == "0.9.4":
+        from .native_hndl import verify_runtime
+        identity = backend.get("model_identity", {}).get("network_runtime")
+        if identity != verify_runtime():
+            raise ValueError("GAN HyperGAN/HNDL runtime identity differs")
+        from . import native_hndl
+        if config["implementation_sources"].get("moss_sliders.native_hndl") != _sha256(Path(native_hndl.__file__)):
+            raise ValueError("GAN native HNDL binding source differs")
 
 
 def save_gan_slider(slider, directory, training, *, core_config, completed_steps):
@@ -65,7 +73,7 @@ def save_gan_slider(slider, directory, training, *, core_config, completed_steps
     if path.exists() or path.is_symlink():
         raise FileExistsError(path)
     manifest = dict(format=V2, base_model=MODEL_ID, revision=MODEL_REVISION,
-                    **slider.manifest(), objective="pg09_gan_only", pg_version="0.9.1",
+                    **slider.manifest(), objective="pg09_gan_only", pg_version=core_config["pg_version"],
                     preset="bispf_optimized", core_config=core_config,
                     completed_steps=completed_steps, training=training or {},
                     adapter_sha256="0" * 64)
@@ -129,8 +137,9 @@ def load_slider(transformer, directory):
         schema[f"residuals.{i}.down.weight"] = (rank, modules[name].in_features)
         schema[f"residuals.{i}.up.weight"] = (modules[name].out_features, rank)
     if manifest["format"] == V2:
+        from particle_sliders.pg09 import PG_VERSION
         if ((manifest.get("objective"), manifest.get("pg_version"), manifest.get("preset"))
-                != ("pg09_gan_only", "0.9.1", "bispf_optimized")):
+                != ("pg09_gan_only", PG_VERSION, "bispf_optimized")):
             raise ValueError("GAN adapter objective, ParticleGAN version or preset mismatch")
         if manifest.get("adapter_sha256") != _sha256(path / "adapter.safetensors"):
             raise ValueError("GAN adapter checksum mismatch")
@@ -142,7 +151,11 @@ def load_slider(transformer, directory):
     if any(t.dtype != torch.float32 or not t.isfinite().all() for t in state.values()):
         raise ValueError("Adapter contains non-finite or non-float32 weights")
     # The full artifact is validated before hooks are attached or base flags change.
-    slider = Slider(transformer, rank, alpha, manifest["targets"])
+    factory = None
+    if manifest["format"] == V2 and manifest["pg_version"] == "0.9.4":
+        from .native_hndl import HNDLLowRankResidual
+        factory = HNDLLowRankResidual
+    slider = Slider(transformer, rank, alpha, manifest["targets"], residual_factory=factory)
     try:
         slider.load_state_dict(state, strict=True)
     except Exception:
