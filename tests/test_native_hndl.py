@@ -125,7 +125,7 @@ def test_exact_hndl_checkpoint_restore_and_rejection_without_mutation(tmp_path, 
     assert packet["config"]["pg_version"] == "0.9.4"
     assert packet["config"]["pg_source_profile"] == "release-0.9.4"
     assert packet["config"]["backend"]["model_identity"]["network_runtime"]["core_commit"] == (
-        "4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231")
+        "a794e3b4a8813b012f2c4faa3da82b78d4a90214")
     corrupt = deepcopy(packet)
     corrupt["config"][identity_key] = wrong
     with pytest.raises(ValueError):
@@ -282,3 +282,33 @@ def test_entire_core_code_graph_data_closure_rejects_changes(tmp_path, monkeypat
     monkeypatch.setattr(particle_sliders, "__file__", str(copied / "__init__.py"))
     with pytest.raises(ValueError, match="core source closure"):
         build_hndl_run(object(), (), {})
+
+
+def test_failed_modern_build_rolls_back_and_same_pipeline_can_retry(monkeypatch):
+    from moss_sliders import gan
+    from moss_sliders.native_hndl import build_hndl_run
+    from moss_sliders.smoke import tiny_model
+    from moss_sliders.vendor.pipeline_moss_image import MOSSImagePipeline, MOSSImageScheduler
+    torch.set_num_threads(1)
+    model = tiny_model()
+    pipe = MOSSImagePipeline(model, MOSSImageScheduler())
+    contexts = [(torch.randn(1, 3, 16), torch.ones(1, 3, dtype=torch.bool)) for _ in range(3)]
+    config = dict(objective="pg09_gan_only", pg_version="0.9.4", rank=2, seed=17,
+                  resolution=32, rollout_steps=2, strength=1., batch_size=2,
+                  steps=4, lr=.001, critic_width=8)
+    flags = [p.requires_grad for p in model.parameters()]
+    forwards = [block.forward for block in model.layers]
+    rng = torch.get_rng_state().clone()
+    def failure(*args, **kwargs):
+        raise RuntimeError("late construction failure")
+    with monkeypatch.context() as patch:
+        patch.setattr(gan, "ConditionalPG09", failure)
+        with pytest.raises(RuntimeError, match="late construction failure"):
+            build_hndl_run(pipe, contexts, config)
+    assert [p.requires_grad for p in model.parameters()] == flags
+    assert [block.forward for block in model.layers] == forwards
+    assert torch.equal(rng, torch.get_rng_state())
+    assert not any(getattr(m, "_moss_slider_attached", False) for m in model.modules())
+    run = build_hndl_run(pipe, contexts, config)
+    metric = run.step()
+    assert run.game.completed_steps == 1 and torch.isfinite(torch.tensor(metric["g_loss"]))

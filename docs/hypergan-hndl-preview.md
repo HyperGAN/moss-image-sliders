@@ -17,7 +17,7 @@ two incompatible exact core versions would be unsatisfiable.
 ## Build and admission
 
 The exact core candidate
-[`4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231`](https://github.com/HyperGAN/particle-sliders/commit/4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231)
+[`a794e3b4a8813b012f2c4faa3da82b78d4a90214`](https://github.com/HyperGAN/particle-sliders/commit/a794e3b4a8813b012f2c4faa3da82b78d4a90214)
 is now publicly reachable as [draft PR148](https://github.com/HyperGAN/particle-sliders/pull/148).
 The preview metadata pins that full Git commit, including the serialization and
 HyperGAN/HNDL extras. This is source availability, not a merged release or
@@ -25,13 +25,15 @@ pretrained/GPU qualification. The complete core Python/data/graph closure still
 has to match the packaged `hndl_cohort.json`; another core 0.12 build cannot bypass
 that check by sharing its version number.
 
-The producer-wheel hash in that manifest remains
-`9afad3afc1f6c653a574074dc14f0da1f1c43975c31ca45c4eac049df0b0b4ad`.
-Its `published: false` field records the original immutable qualification snapshot,
-not a live network status or admission switch. The manifest is unchanged so
-publication alone does not change existing preview checkpoint identities. The
-new public-source build is verified against the same source closure and exact
-Git commit; its own wheel/build provenance is recorded separately.
+This modern preview is a new cohort, version `0.3.0.dev1`. The recursive manifest
+now covers every package source/data file and the compatibility namespace. Its
+qualification build wheel SHA256 is
+`46fbe99cf0cf9e4cbd7143dd220c479ccbb8820dc348ee850da04047f1cea1ec`.
+The old `4abc` manifest is preserved under
+`profiles/hypergan-hndl/history/core-4abc-cohort.json`. Old preview full packets
+and portable exports are not relabelled or migrated: source/config/runtime
+identity mismatches fail closed. Restore those with their original source and
+core cohort. Default core 0.6.0/PG 0.9.1 and historical locks are unchanged.
 
 ### Clean CPU installation
 
@@ -42,13 +44,13 @@ exact public VCS packages into a fresh runtime environment:
 ```bash
 python3.12 -m venv .venv-hndl-build
 .venv-hndl-build/bin/python -m pip install 'hatchling==1.28.0'
-.venv-hndl-build/bin/python tools/build_hndl_profile.py --output dist/hndl
+.venv-hndl-build/bin/python tools/build_hndl_profile.py --sdist --output dist/hndl
 python3.12 -m venv .venv-hndl
 . .venv-hndl/bin/activate
 python -m pip install --require-hashes -r requirements-hndl-cpu.lock
 python -m pip install --no-deps 'hypergan @ git+https://github.com/HyperGAN/HyperGAN.git@5f368a3770cf5bdae0448995c9f76e29af8049f7'
-python -m pip install --no-deps 'particle-sliders-core[serialization,hypergan-hndl] @ git+https://github.com/HyperGAN/particle-sliders.git@4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231#subdirectory=packages/particle-sliders-core'
-python -m pip install --no-deps dist/hndl/moss_image_sliders_hndl-0.3.0.dev0-py3-none-any.whl
+python -m pip install --no-deps 'particle-sliders-core[serialization,hypergan-hndl] @ git+https://github.com/HyperGAN/particle-sliders.git@a794e3b4a8813b012f2c4faa3da82b78d4a90214#subdirectory=packages/particle-sliders-core'
+python -m pip install --no-deps dist/hndl/moss_image_sliders_hndl-0.3.0.dev1-py3-none-any.whl
 python -m pip check
 moss-hndl --help
 moss-hndl smoke --steps 4
@@ -67,7 +69,7 @@ Regenerate only this candidate lock with
 The clean public-source environment passed `pip check`, source/builder admission,
 installed CLI discovery, tiny native CPU smoke and the focused installed-package
 suite. The public source availability and CPU installation blocker is closed;
-[the independent receipts](receipts/public-cpu-candidate-20261031/receipt.json)
+[the independent receipts](receipts/core-a794-migration/receipt.json)
 record the exact commits, commands, archive count and qualification scope.
 No UI extra is defined. The `train` command still requires an explicit
 `pg_version: "0.9.4"` recipe; use `examples/warm-light.json` as a structural
@@ -108,3 +110,13 @@ unchanged frozen base, exact full-game resume, incompatible checkpoint rejection
 portable actual-weight reload and zero-strength behavior. Pretrained weights,
 CUDA/BF16, native image quality, offload, memory and performance are unrun. No
 model downloads, GPU training, package publication or deployment are performed.
+
+## Scope of this migration
+
+The parent-qualified core includes synthetic CUDA software evidence. This MOSS
+migration adds only CPU installed-package evidence and does not qualify native
+MOSS weights, GPU training, media quality or a new response domain. No domain or
+width guard is relaxed. The MOSS binding exposes raw adapter evaluation; it does
+not advertise EMA selection. Existing zero-strength, exact-resume, failure/retry
+and source-tamper tests remain the relevant product contract. Full migration
+identity and old-packet rejection receipts are in `receipts/core-a794-migration/`.

@@ -23,10 +23,15 @@ def verify_runtime():
     manifest_path = Path(__file__).with_name("hndl_cohort.json")
     cohort = json.loads(manifest_path.read_text())
     root = Path(particle_sliders.__file__).parent
-    actual = {str(p.relative_to(root)): hashlib.sha256(p.read_bytes()).hexdigest()
-              for p in root.rglob("*") if p.suffix in (".py", ".json", ".hndl")}
+    def closure(directory):
+        return {str(p.relative_to(directory)): hashlib.sha256(p.read_bytes()).hexdigest()
+                for p in directory.rglob("*") if p.is_file()
+                and "__pycache__" not in p.parts and p.suffix != ".pyc"}
+    actual = closure(root)
     if actual != cohort["sources"]:
         raise ValueError("MOSS HNDL core source closure differs from the exact local candidate")
+    if closure(root.parent / "concept_slider_core") != cohort["compatibility_sources"]:
+        raise ValueError("MOSS HNDL compatibility source closure differs from the exact candidate")
     from particle_sliders.pg09 import PG_VERSION, validate_pg09_domain
     from particle_sliders.fibo_hndl import verified_builder
     if PG_VERSION != "0.9.4":

@@ -1,0 +1,36 @@
+{
+  "product_version": "0.3.0.dev1",
+  "core_origin": "/ml2/codex-storage/future-workspaces/2026-10-31/task-15/.venv-a794/lib/python3.12/site-packages/particle_sliders/__init__.py",
+  "core_direct_url": {
+    "url": "https://github.com/HyperGAN/particle-sliders.git",
+    "vcs_info": {
+      "vcs": "git",
+      "commit_id": "a794e3b4a8813b012f2c4faa3da82b78d4a90214",
+      "requested_revision": "a794e3b4a8813b012f2c4faa3da82b78d4a90214"
+    },
+    "subdirectory": "packages/particle-sliders-core"
+  },
+  "runtime_identity": {
+    "profile": "hypergan-hndl-v2",
+    "hndl_version": "0.10.0",
+    "hypergan_commit": "5f368a3770cf5bdae0448995c9f76e29af8049f7",
+    "hypergan_build_provenance_sha256": "fa0aaed8eea39a1cc545bafb96c9a72eb155b52cb79f2d34c44f505aaf4ac179",
+    "runtime_sources_sha256": "69e65e3daf18ac5c99154fd735d0b6fc8e8c95433c5b0618a074cdd203ed6251",
+    "projection_sha256": "b5efac1cfb0c597e5d6e0839af6077ff36dec916901bfa254be78db9f691c086",
+    "critic_sha256": "31f95ccf2178363d7a027597a00694c571c9d69a170151fcbe36e05326ac4707",
+    "core_commit": "a794e3b4a8813b012f2c4faa3da82b78d4a90214",
+    "core_cohort_sha256": "63ad0d53df055e323d3d64c5fafad3ba724559ef2b6fd57f69548fb91cf7954b",
+    "lora_graph_sha256": "c9bb30696051cbb1c64080f9b6bcc422743a5d74ceb617c5d4c1127236dbaa9f"
+  },
+  "hypergan_build_provenance": {
+    "commit": "5f368a3770cf5bdae0448995c9f76e29af8049f7",
+    "dirty": false,
+    "schema_version": 1
+  },
+  "product_wheel_source_installed_bytes_match": true,
+  "checkout_on_import_path": false,
+  "artifact_sha256": {
+    "moss_image_sliders_hndl-0.3.0.dev1-py3-none-any.whl": "8aad6f415dfde4f1ac4470d12cd3ee40c791a9e9c657dc1f979530f7c46b8921",
+    "moss_image_sliders_hndl-0.3.0.dev1.tar.gz": "032e3f248e51e27e358826fab41617367ba5153cc6ffd8d55bbbd4758b008483"
+  }
+}

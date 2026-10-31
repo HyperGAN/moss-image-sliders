@@ -105,7 +105,7 @@ def test_public_hndl_cpu_profile_pins_exact_source_and_keeps_archive_hashes():
                 if Requirement(value).name == 'particle-sliders-core')
     assert core.extras == {'serialization', 'hypergan-hndl'}
     assert core.url == ('git+https://github.com/HyperGAN/particle-sliders.git@'
-                        '4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231'
+                        'a794e3b4a8813b012f2c4faa3da82b78d4a90214'
                         '#subdirectory=packages/particle-sliders-core')
     text = (ROOT / 'requirements-hndl-cpu.lock').read_text()
     names = re.findall(r'^([A-Za-z0-9][A-Za-z0-9_.-]*)(?:==| @ )', text, flags=re.M)
