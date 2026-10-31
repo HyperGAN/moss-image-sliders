@@ -11,13 +11,13 @@
     "requirements-runtime-cpu.in": "5e9fdef1ac2ca55268cb5c73bd018373b2de4b63",
     "src/moss_sliders/gan.py": "332c265f018851b3b1fc21edcb89c4818ecc60c4"
   },
-  "source_closure": "all50 particle_sliders package files plus1 compatibility namespace file, recursive including LICENSE/data; excludes interpreter pycache only",
+  "source_closure": "all 50 particle_sliders package files plus 1 compatibility namespace file, recursive including LICENSE/data; excludes interpreter pycache only",
   "core_wheel_sha256": "46fbe99cf0cf9e4cbd7143dd220c479ccbb8820dc348ee850da04047f1cea1ec",
   "artifact_sha256": {
     "moss_image_sliders_hndl-0.3.0.dev1-py3-none-any.whl": "8aad6f415dfde4f1ac4470d12cd3ee40c791a9e9c657dc1f979530f7c46b8921",
     "moss_image_sliders_hndl-0.3.0.dev1.tar.gz": "032e3f248e51e27e358826fab41617367ba5153cc6ffd8d55bbbd4758b008483"
   },
-  "resolution": "modern lock regenerated once from exact VCS dependency;45 hash-checked CPU archives; clean isolated .venv-a794 with exact VCS provenance; pip check passes",
+  "resolution": "modern lock regenerated once from exact VCS dependency; 45 hash-checked CPU archives; clean isolated .venv-a794 with exact VCS provenance; pip check passes",
   "tests": {
     "wheel": {
       "passed": 24,
@@ -36,7 +36,7 @@
       "builder/code/data/source tamper refusal",
       "late construction failure rollback and same-pipeline retry",
       "header profile refusal before tensor load",
-      "old4abc full-packet/export rejection without state mutation"
+      "old 4abc full-packet/export rejection without state mutation"
     ]
   },
   "ema": "product exposes raw game/adapter evaluation, not EMA selection; no product EMA claim",

@@ -18,7 +18,7 @@ two incompatible exact core versions would be unsatisfiable.
 
 The exact core candidate
 [`a794e3b4a8813b012f2c4faa3da82b78d4a90214`](https://github.com/HyperGAN/particle-sliders/commit/a794e3b4a8813b012f2c4faa3da82b78d4a90214)
-is now publicly reachable as [draft PR148](https://github.com/HyperGAN/particle-sliders/pull/148).
+is now publicly reachable as [draft PR 148](https://github.com/HyperGAN/particle-sliders/pull/148).
 The preview metadata pins that full Git commit, including the serialization and
 HyperGAN/HNDL extras. This is source availability, not a merged release or
 pretrained/GPU qualification. The complete core Python/data/graph closure still
