@@ -32,7 +32,13 @@ The command header in the lock records reproducible generation from pyproject,
 using `--no-emit-package particle-sliders-core` to keep the exact VCS step separate.
 Historical `uv.lock` and `requirements-cpu.lock` retain their cohort meaning.
 
-When regenerating, retain the explicit PyTorch CPU index line. uv resolves
-`--torch-backend cpu` dynamically but did not emit that index in this tool version;
-the lock therefore declares the same resolved official artifact source for pip.
-All resolved archive requirements remain hash-checked.
+`requirements-runtime-cpu.in` binds the exact official CPython3.12/Linux CPU
+Torch archive and its published SHA256. Other packages remain on PyPI, so no
+broad extra-index search or relaxed uv index policy is needed. The lock header
+records generation from both pyproject.toml and this platform-specific input.
+All emitted archive requirements remain hash-checked.
+
+Regenerate with `python tools/lock_runtime_cpu.py --uv /path/to/uv`. The tool
+requires the official input hash to appear in resolved hashes, then narrows
+uv release-wide Torch hashes to that one explicitly named archive. It does not
+turn off hash validation, relax index policy, or change package versions.
