@@ -27,6 +27,13 @@ packet nor its metadata is relabelled. Resume old packets using product
 `fc1dad414ed0b98666528cc4d8672a629ea072b8` and its exact original core. New
 artifacts are a separate cohort, despite core retaining version 0.12.0.
 
+The old-artifact check is a **separate external probe**, not one of the 24 pytest
+cases. [Producer provenance, saved hashes, exact generation/refusal commands and
+output](receipts/core-a794-migration/old-artifact-provenance.json) identify the
+retained `fc1dad4` wheel and `4abc` core. These are controlled tiny CPU fixtures
+generated before migration, not production or pretrained checkpoints. Their
+metadata and payloads were not relabelled.
+
 ## Installed CPU evidence
 
 The exact VCS dependency was resolved and installed in a fresh isolated CPU

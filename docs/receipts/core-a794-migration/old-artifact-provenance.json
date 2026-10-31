@@ -1,0 +1,74 @@
+{
+  "fixture_kind": "controlled tiny native CPU fixture generated with retained old installed software before active preview migration; not a production or pretrained checkpoint",
+  "producer_product_head": "fc1dad414ed0b98666528cc4d8672a629ea072b8",
+  "producer_product_version": "0.3.0.dev0",
+  "producer_wheel_sha256": "6ec7d8c6509b7d6de6dcea7fcc21bbb6f18eadb7c72221688fdb6a8443a13659",
+  "all_producer_wheel_installed_git_files_equal": true,
+  "compared_file_count": 15,
+  "core_direct_url": {
+    "subdirectory": "packages/particle-sliders-core",
+    "url": "https://github.com/HyperGAN/particle-sliders.git",
+    "vcs_info": {
+      "commit_id": "4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231",
+      "requested_revision": "4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231",
+      "vcs": "git"
+    }
+  },
+  "saved_packet_identity": {
+    "core_cohort_sha256": "ac9152494672336bcec394594c844f3be1c3ad3215dfdd31dd0ba9caed8000ee",
+    "core_commit": "4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231",
+    "critic_sha256": "31f95ccf2178363d7a027597a00694c571c9d69a170151fcbe36e05326ac4707",
+    "hndl_version": "0.10.0",
+    "hypergan_build_provenance_sha256": "fa0aaed8eea39a1cc545bafb96c9a72eb155b52cb79f2d34c44f505aaf4ac179",
+    "hypergan_commit": "5f368a3770cf5bdae0448995c9f76e29af8049f7",
+    "lora_graph_sha256": "c9bb30696051cbb1c64080f9b6bcc422743a5d74ceb617c5d4c1127236dbaa9f",
+    "profile": "hypergan-hndl-v2",
+    "projection_sha256": "b5efac1cfb0c597e5d6e0839af6077ff36dec916901bfa254be78db9f691c086",
+    "runtime_sources_sha256": "69e65e3daf18ac5c99154fd735d0b6fc8e8c95433c5b0618a074cdd203ed6251"
+  },
+  "saved_packet_pg_identity": {
+    "pg_version": "0.9.4",
+    "pg_source_profile": "release-0.9.4",
+    "penalty_input_domain": "auto"
+  },
+  "completed_steps": 1,
+  "packet_and_portable_configs_equal": true,
+  "file_checksums_valid": true,
+  "files": {
+    "old-preview/step-000001/checkpoint.json": {
+      "sha256": "7393b871d3d04801e61ca388d0da8c0b81f9904b4aeb34a4576c863ab20b616f",
+      "bytes": 266
+    },
+    "old-preview/step-000001/training.pt": {
+      "sha256": "e1959871017fc79c294ffb70afe5c60b174ee8fbc74e4b1d29fb8b441bf45547",
+      "bytes": 87395
+    },
+    "old-export/slider.json": {
+      "sha256": "11781382c9811e14c652e50364813c71ae05659a532222f9b4f4b9a44dfecf7a",
+      "bytes": 56357
+    },
+    "old-export/adapter.safetensors": {
+      "sha256": "3ae9c82c12e753d475a59fd1e2fce68e8e3c0abb4f57b636a08e2f414d3bc011",
+      "bytes": 5480
+    }
+  },
+  "external_probe_not_in_24_pytest_cases": true,
+  "binaries_published": false,
+  "producer_cwd": "moss-image-sliders checkout at fc1dad414ed0b98666528cc4d8672a629ea072b8 before the migration edits",
+  "producer_command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 ../.venv-public-hndl/bin/python - <<'PY'\nimport sys\nsys.path.insert(0, 'tests')\nfrom test_native_hndl import make_fixture\nfrom moss_sliders.gan import save_checkpoint\nfrom moss_sliders.artifacts import save_gan_slider\nmake, _ = make_fixture()\nrun = make()\nrun.step()\nsave_checkpoint(run, '../evidence/a794-migration/old-preview')\nsave_gan_slider(run.slider, '../evidence/a794-migration/old-export', {}, core_config=run.game.export_state_dict()['config'], completed_steps=run.game.completed_steps)\nPY",
+  "consumer_cwd": "evidence/a794-migration/test-run, copied test bundle with no product src",
+  "consumer_command": "CUDA_VISIBLE_DEVICES='' HF_HUB_OFFLINE=1 PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 ../../../.venv-a794/bin/python - <<'PY'\nimport sys, json, hashlib\nfrom pathlib import Path\nsys.path.insert(0, str(Path('tests').resolve()))\nfrom test_native_hndl import make_fixture\nfrom test_gan import equal\nfrom moss_sliders.gan import restore_checkpoint\nfrom moss_sliders.artifacts import load_slider\nfrom moss_sliders.smoke import tiny_model\nmake, _ = make_fixture()\nreceiver = make()\nbefore = receiver.game.state_dict()\nout = {}\nfor name, action in [('old_full_packet', lambda: restore_checkpoint(receiver, '../old-preview/step-000001')), ('old_portable', lambda: load_slider(tiny_model(), '../old-export'))]:\n    try:\n        action()\n    except ValueError as exc:\n        out[name] = {'rejected': True, 'reason': str(exc)}\n    else:\n        raise AssertionError(name + ' admitted')\nequal(before, receiver.game.state_dict())\nout['receiver_unchanged'] = True\nout['old_metadata_sha256'] = hashlib.sha256(Path('../old-preview/step-000001/checkpoint.json').read_bytes()).hexdigest()\nPath('../old-cohort-rejection.json').write_text(json.dumps(out, indent=2) + '\\n')\nprint(json.dumps(out, indent=2))\nPY",
+  "consumer_output": {
+    "old_full_packet": {
+      "rejected": true,
+      "reason": "checkpoint objective, recipe, domain, source or conditioning mismatch; resume with the original pinned source/model/data cohort or start a fresh cohort; automatic checkpoint migration is not supported"
+    },
+    "old_portable": {
+      "rejected": true,
+      "reason": "GAN HyperGAN/HNDL runtime identity differs"
+    },
+    "receiver_unchanged": true,
+    "old_metadata_sha256": "7393b871d3d04801e61ca388d0da8c0b81f9904b4aeb34a4576c863ab20b616f"
+  },
+  "invocation_format": "Original standalone calls from the tool transcript, with whitespace and local variable formatting normalized; no fixture regeneration or metadata edits were used for this provenance verification."
+}

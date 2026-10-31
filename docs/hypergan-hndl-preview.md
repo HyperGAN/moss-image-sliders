@@ -20,7 +20,9 @@ The exact core candidate
 [`a794e3b4a8813b012f2c4faa3da82b78d4a90214`](https://github.com/HyperGAN/particle-sliders/commit/a794e3b4a8813b012f2c4faa3da82b78d4a90214)
 is now publicly reachable as [draft PR 148](https://github.com/HyperGAN/particle-sliders/pull/148).
 The preview metadata pins that full Git commit, including the serialization and
-HyperGAN/HNDL extras. This is source availability, not a merged release or
+HyperGAN/HNDL extras. The manifest field `published: true` records only that
+the exact source commit was publicly reachable. It does not mean a package or
+model release, a merge, or native/GPU qualification. This is source availability, not a merged release or
 pretrained/GPU qualification. The complete core Python/data/graph closure still
 has to match the packaged `hndl_cohort.json`; another core 0.12 build cannot bypass
 that check by sharing its version number.

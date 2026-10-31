@@ -35,8 +35,7 @@
       "exact full resume",
       "builder/code/data/source tamper refusal",
       "late construction failure rollback and same-pipeline retry",
-      "header profile refusal before tensor load",
-      "old 4abc full-packet/export rejection without state mutation"
+      "header profile refusal before tensor load"
     ]
   },
   "ema": "product exposes raw game/adapter evaluation, not EMA selection; no product EMA claim",
@@ -64,5 +63,12 @@
     "pretrained/GPU/BF16/offload/image-quality/performance unrun",
     "root-coordinated Claude RETURN required before landing"
   ],
-  "ci_release": "no workflow/access/release/deployment changes; existing draft update only"
+  "ci_release": "no workflow/access/release/deployment changes; existing draft update only",
+  "external_old_artifact_probe": {
+    "included_in_24_pytest_cases": false,
+    "provenance_and_exact_invocations": "old-artifact-provenance.json",
+    "output": "old-cohort-rejection.json",
+    "scope": "controlled tiny CPU artifacts produced by actual retained fc1dad4/4abc installed software before migration; not production checkpoints; full-packet receiver equality checked"
+  },
+  "published_flag_semantics": "hndl_cohort.json published=true records that the exact source commit is publicly reachable; it does not assert a package/model release, merge or native qualification"
 }
