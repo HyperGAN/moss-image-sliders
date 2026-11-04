@@ -71,10 +71,18 @@ def main(argv=None):
     parser.add_argument("--checkpoint-every", type=int, default=32)
     parser.add_argument("--resume", type=Path)
     parser.add_argument("--device")
+    parser.add_argument("--lr", type=float, help="Override configured PG generator/base LR")
+    parser.add_argument("--d-lr-mult", type=float,
+                        help="Critic LR multiplier; default is the PG preset's 1.5")
     parser.add_argument("--fixture", action="store_true")
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args(argv)
-    config = validate_training(json.loads(args.config.read_text()), fixture=args.fixture)
+    config = json.loads(args.config.read_text())
+    for key in ("lr", "d_lr_mult"):
+        value = getattr(args, key)
+        if value is not None:
+            config[key] = value
+    config = validate_training(config, fixture=args.fixture)
     if args.checkpoint_every < 1:
         raise ValueError("checkpoint-every must be positive")
     if args.fixture and args.device not in (None, "cpu"):

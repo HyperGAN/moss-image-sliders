@@ -30,6 +30,9 @@ def parser():
             cmd.add_argument("--output", type=Path, required=True)
             cmd.add_argument("--resume", type=Path, help="Full GAN checkpoint; never an MSE optimizer/export")
             cmd.add_argument("--checkpoint-every", type=int, default=10)
+            cmd.add_argument("--lr", type=float, help="Override configured PG generator/base LR")
+            cmd.add_argument("--d-lr-mult", type=float,
+                             help="Critic LR multiplier; default is the PG preset's 1.5")
         else:
             cmd.add_argument("--adapter", type=Path, required=True)
             cmd.add_argument("--offload", action="store_true")
@@ -49,8 +52,11 @@ def validate_config(config, *, pg_version="0.9.4", fixture=False):
     required = {"neutral", "positive", "negative", "steps", "rank", "lr", "resolution",
                 "rollout_steps", "strength", "seed", "max_sequence_length", "objective",
                 "pg_version", "preset", "batch_size"}
-    if set(config) != required:
+    optional = {"d_lr_mult"}
+    if not required <= set(config) or set(config) - required - optional:
         raise ValueError(f"Expected config keys: {sorted(required)}")
+    from .learning_rates import recipe_overrides
+    recipe_overrides(config)
     if (config["objective"], config["pg_version"], config["preset"]) != (
             "pg09_gan_only", pg_version, "bispf_optimized"):
         raise ValueError("Training requires PG 0.9 GAN-only with the public bispf_optimized preset")
@@ -109,7 +115,12 @@ def main(argv=None, *, runtime_profile="hypergan-hndl-v2"):
     if hasattr(args, "output") and args.output.exists():
         raise FileExistsError(f"Output already exists: {args.output}")
     if args.command == "train":
-        config = validate_config(json.loads(args.config.read_text()), pg_version=pg_version)
+        config = json.loads(args.config.read_text())
+        for key in ("lr", "d_lr_mult"):
+            value = getattr(args, key)
+            if value is not None:
+                config[key] = value
+        config = validate_config(config, pg_version=pg_version)
     elif args.command == "train-campaign":
         if not 1 <= args.steps <= 3840 or not 2 <= args.batch_size <= 512:
             raise ValueError("Invalid campaign steps or batch size")
