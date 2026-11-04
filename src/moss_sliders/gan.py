@@ -21,6 +21,7 @@ from particle_sliders.pg09_backends import (
 
 from . import MODEL_ID, MODEL_REVISION
 from .lora import Slider
+from .learning_rates import recipe_overrides as rate_overrides
 from .training import sample_training_state
 
 OBJECTIVE = "pg09_gan_only"
@@ -49,6 +50,7 @@ def build_run(pipe, contexts, config, *, checkpointing=True, model_identity=None
                               network_runtime=identity)
     elif runtime_profile != "legacy-pg091":
         raise ValueError("Unknown MOSS runtime profile")
+    rate_overrides(config)  # Preserve source admission before config/native mutation.
     for key, lower, upper in (("rank", 1, 128), ("batch_size", 2, 512),
                               ("rollout_steps", 2, 50), ("steps", 1, 10000),
                               ("seed", 0, 2**32 - 1), ("resolution", 16, 2048)):
@@ -155,7 +157,7 @@ def _build_run(pipe, contexts, config, *, checkpointing, model_identity, owner,
         response_scale=scale, response_domain="continuous_field",
         preset="bispf_optimized", sampling="balanced",
         batch_size=config["batch_size"], total_steps=config["steps"], seed=config["seed"],
-        recipe_overrides={"lr": config["lr"]},
+        recipe_overrides=rate_overrides(config),
     )
     return GanRun(backend, game)
 
