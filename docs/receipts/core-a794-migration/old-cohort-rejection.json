@@ -1,0 +1,12 @@
+{
+  "old_full_packet": {
+    "rejected": true,
+    "reason": "checkpoint objective, recipe, domain, source or conditioning mismatch; resume with the original pinned source/model/data cohort or start a fresh cohort; automatic checkpoint migration is not supported"
+  },
+  "old_portable": {
+    "rejected": true,
+    "reason": "GAN HyperGAN/HNDL runtime identity differs"
+  },
+  "receiver_unchanged": true,
+  "old_metadata_sha256": "7393b871d3d04801e61ca388d0da8c0b81f9904b4aeb34a4576c863ab20b616f"
+}

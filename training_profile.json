@@ -1,0 +1,13 @@
+{
+  "schema": "particle-slider-profile-v1",
+  "name": "moss",
+  "product": "moss-image-sliders",
+  "config_kind": "native",
+  "status": "source_only",
+  "reason": "CPU software conformance only; pretrained CUDA/BF16/offload and media quality remain unqualified",
+  "command": ["{python}", "-m", "moss_sliders.execution"],
+  "runtime": {},
+  "target_steps_path": "steps",
+  "default_checkpoint_every": 32,
+  "capabilities": {"check": true, "resume": true, "periodic_checkpoint": true, "device": true}
+}

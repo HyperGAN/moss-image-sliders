@@ -1,0 +1,73 @@
+{
+  "profile": "base",
+  "product_wheel_sha256": "3dab61eeb8222ee201898c1f305b83d4706b9cc71cf3819877bcf967066b6018",
+  "packages": {
+    "moss-image-sliders": {
+      "version": "0.2.0",
+      "direct_url": {
+        "archive_info": {
+          "hash": "sha256=3dab61eeb8222ee201898c1f305b83d4706b9cc71cf3819877bcf967066b6018",
+          "hashes": {
+            "sha256": "3dab61eeb8222ee201898c1f305b83d4706b9cc71cf3819877bcf967066b6018"
+          }
+        },
+        "url": "file:///ml2/codex-storage/future-workspaces/2026-10-31/task-15/evidence/wheels/moss_image_sliders-0.2.0-py3-none-any.whl"
+      }
+    },
+    "particle-sliders-core": {
+      "version": "0.6.0",
+      "direct_url": {
+        "url": "https://github.com/HyperGAN/particle-sliders.git",
+        "vcs_info": {
+          "vcs": "git",
+          "commit_id": "cdfb80a76b882b4b73861b12f555263bd64ffeb7",
+          "requested_revision": "cdfb80a76b882b4b73861b12f555263bd64ffeb7"
+        },
+        "subdirectory": "packages/particle-sliders-core"
+      }
+    },
+    "particlegan": {
+      "version": "0.9.1",
+      "direct_url": null
+    },
+    "torch": {
+      "version": "2.9.1+cpu",
+      "direct_url": {
+        "url": "https://download-r2.pytorch.org/whl/cpu/torch-2.9.1%2Bcpu-cp312-cp312-manylinux_2_28_x86_64.whl",
+        "archive_info": {}
+      }
+    },
+    "Pillow": {
+      "version": "13.0.0",
+      "direct_url": null
+    },
+    "diffusers": {
+      "version": "0.38.0",
+      "direct_url": null
+    },
+    "transformers": {
+      "version": "5.3.0",
+      "direct_url": null
+    }
+  },
+  "product_source_map": {
+    "moss_sliders/__init__.py": "3155832b9f18c910e02c9f021937fbd1c0aefc2d65697e85e4bcf17f79f71379",
+    "moss_sliders/artifacts.py": "61330a611c291402bed1c15e2d4bc2a1ef5cad463e7df75b3610d7c95c53ce38",
+    "moss_sliders/backend.py": "e8e05b19599d31bf9b49837f77f796a85f1dc6d875e145baface985cfd704850",
+    "moss_sliders/campaign.py": "a4e05a96eab1835dada9fea5b1f1f129c10fe02c582063a9a942c99243be6a97",
+    "moss_sliders/cli.py": "209cfea144939efb2f8f93d52dc7e7069aca1b8eb00deac2139601dec8bb0450",
+    "moss_sliders/gan.py": "06ec4e9de21a9e01136779b620204a38d8033ef12fc46a76118b2f811b14ff4c",
+    "moss_sliders/hndl_cohort.json": "ac9152494672336bcec394594c844f3be1c3ad3215dfdd31dd0ba9caed8000ee",
+    "moss_sliders/inference.py": "d458af6e9b2e4aa813c312c3d39fc04111e009dfe1bb0c604e6c8183d6cf1955",
+    "moss_sliders/lora.py": "196776f500ef60b34b44d04db882898cdecec442327b8cbcfa81d5803693a880",
+    "moss_sliders/native_hndl.py": "061f8d6dba03f5e6227fccd1bc844f2597e4bc47be0a3b57064c04e4435b1e25",
+    "moss_sliders/smoke.py": "358dcbb2692d7028279d681a3a729681dad9a9b6d14de10c874ffb5771c54fd4",
+    "moss_sliders/training.py": "b934a50f9f134b8d51e1e078571ed886c59b478680a8b5fca5ec79a32d25d1b3",
+    "moss_sliders/ui.py": "66483ab23c660885e22045091f38dcbed50260c95f66dd078ef60b36741366c3",
+    "moss_sliders/vendor/__init__.py": "bb293ef358aad9fd97c2d323d78395b70c718859116313aa18c24f8c1e7b4bed",
+    "moss_sliders/vendor/pipeline_moss_image.py": "1dac1aca9feb1bfdfc727a401e4b67d61a505d3190706d1b7d2d784f88678b31"
+  },
+  "source_wheel_installed_match": true,
+  "runtime_identity": null,
+  "cuda_initialized": false
+}

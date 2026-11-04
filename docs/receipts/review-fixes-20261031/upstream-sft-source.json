@@ -1,0 +1,17 @@
+{
+  "model_index.json": {
+    "url": "https://huggingface.co/OpenMOSS-Team/MOSS-Image-SFT/raw/fc5de0d56fc910cbca6f6625a70f5f582b26deb1/model_index.json",
+    "bytes": 412,
+    "sha256": "ca80b1f562a506e0eb24afb1acb464fb583163e3c240c04e4bc69fea090db173"
+  },
+  "scheduler/scheduler_config.json": {
+    "url": "https://huggingface.co/OpenMOSS-Team/MOSS-Image-SFT/raw/fc5de0d56fc910cbca6f6625a70f5f582b26deb1/scheduler/scheduler_config.json",
+    "bytes": 494,
+    "sha256": "707322832cc507dfb8c51c0e0cd04d44ee2d30a9b036b6f3c47d6c17aa71adf0"
+  },
+  "pipeline_moss_image.py": {
+    "url": "https://huggingface.co/OpenMOSS-Team/MOSS-Image-SFT/raw/fc5de0d56fc910cbca6f6625a70f5f582b26deb1/pipeline_moss_image.py",
+    "bytes": 25060,
+    "sha256": "1dac1aca9feb1bfdfc727a401e4b67d61a505d3190706d1b7d2d784f88678b31"
+  }
+}

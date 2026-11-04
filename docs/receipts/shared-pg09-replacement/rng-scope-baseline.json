@@ -1,0 +1,29 @@
+{
+  "schema": "moss-rng-scope-baseline-v1",
+  "product_head": "cfc3fee448719ce38b9639a82f6c11c030f18acb",
+  "gan_source_sha256": "06d92208e1cdf1f1f4b642da5ab85ec51e6e4340392944437742e70bd498c55c",
+  "test": "tests/test_rng_scope.py::test_actual_tiny_build_never_seeds_unowned_cuda_and_restores_cpu_rng",
+  "result": "1 failed in 3.51s",
+  "expected_failure": true,
+  "failure": "AssertionError: Initialization must not seed unowned CUDA generators",
+  "call_chain": [
+    "moss_sliders.gan.build_run",
+    "moss_sliders.gan._build_run",
+    "torch.manual_seed",
+    "torch.random._manual_seed_impl",
+    "torch.cuda.manual_seed_all (CPU-only forbidden mock)"
+  ],
+  "runtime": {
+    "interpreter": "/mnt/nvme/sliders/qualification/envs/pg090/bin/python",
+    "pythonpath": [
+      "/ml2/codex-storage/future-workspaces/2026-10-17/task-8/moss-derivative-audit/src",
+      "/tmp/moss-audit-installed-final"
+    ],
+    "CUDA_VISIBLE_DEVICES": "",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "pytest_cache": false,
+    "native_gpu_calls": false
+  }
+}

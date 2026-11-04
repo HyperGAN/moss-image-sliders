@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "moss-image-sliders"
-version = "0.1.0"
+version = "0.3.0.dev2"
 description = "Signed concept LoRA sliders for OpenMOSS MOSS-Image-SFT"
 readme = "README.md"
 requires-python = ">=3.11,<3.13"
@@ -14,7 +14,8 @@ authors = [{name = "HyperGAN contributors"}]
 dependencies = [
   "torch==2.9.1", "diffusers==0.38.0", "transformers==5.3.0",
   "accelerate==1.10.1", "safetensors==0.8.0", "Pillow>=13.0.0",
-  "huggingface-hub==1.16.0",
+  "huggingface-hub==1.16.0", "particlegan==0.9.4", "hndl==0.10.0",
+  "particle-sliders-core[serialization,hypergan-hndl] @ git+https://github.com/HyperGAN/particle-sliders.git@ddb41423bcefc1fe76cd94d0f9b367353b3ea137#subdirectory=packages/particle-sliders-core",
 ]
 
 [project.optional-dependencies]
@@ -23,6 +24,14 @@ dev = ["pytest==8.4.2", "ruff==0.14.1"]
 
 [project.scripts]
 moss-sliders = "moss_sliders.cli:main"
+moss-hndl = "moss_sliders.native_hndl:main"
+
+[project.entry-points."particle_sliders.training_profiles"]
+moss = "moss_sliders.execution:profile"
+moss-cpu-fixture = "moss_sliders.execution:fixture_profile"
+
+[tool.hatch.metadata]
+allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/moss_sliders"]

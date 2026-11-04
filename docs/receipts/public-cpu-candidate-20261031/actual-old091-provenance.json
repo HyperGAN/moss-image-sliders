@@ -1,0 +1,14 @@
+{
+  "external_checkpoint": "../evidence/legacy-checkpoint/step-000001",
+  "file_sha256": "f602c33f8a65e8341ca59422ce84d67b08a73d921585ec0bfb0e91046e0cc320",
+  "metadata": {
+    "schema": "moss-pg09-checkpoint-v1",
+    "objective": "pg09_gan_only",
+    "step": 1,
+    "sha256": "f602c33f8a65e8341ca59422ce84d67b08a73d921585ec0bfb0e91046e0cc320"
+  },
+  "pg_version": "0.9.1",
+  "pg_source_profile": "release",
+  "penalty_input_domain": "auto",
+  "binary_published": false
+}

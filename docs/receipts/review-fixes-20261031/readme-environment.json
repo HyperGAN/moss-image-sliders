@@ -1,0 +1,41 @@
+{
+  "torch": {
+    "version": "2.9.1+cpu",
+    "direct_url": {
+      "archive_info": {
+        "hash": "sha256=7417d8c565f219d3455654cb431c6d892a3eb40246055e14d645422de13b9ea1",
+        "hashes": {
+          "sha256": "7417d8c565f219d3455654cb431c6d892a3eb40246055e14d645422de13b9ea1"
+        }
+      },
+      "url": "https://download-r2.pytorch.org/whl/cpu/torch-2.9.1%2Bcpu-cp312-cp312-manylinux_2_28_x86_64.whl"
+    }
+  },
+  "Pillow": {
+    "version": "13.0.0",
+    "direct_url": null
+  },
+  "particlegan": {
+    "version": "0.9.1",
+    "direct_url": null
+  },
+  "particle-sliders-core": {
+    "version": "0.6.0",
+    "direct_url": {
+      "subdirectory": "packages/particle-sliders-core",
+      "url": "https://github.com/HyperGAN/particle-sliders.git",
+      "vcs_info": {
+        "commit_id": "cdfb80a76b882b4b73861b12f555263bd64ffeb7",
+        "requested_revision": "cdfb80a76b882b4b73861b12f555263bd64ffeb7",
+        "vcs": "git"
+      }
+    }
+  },
+  "moss-image-sliders": {
+    "version": "0.2.0",
+    "direct_url": {
+      "dir_info": {},
+      "url": "file:///ml2/codex-storage/future-workspaces/2026-10-31/task-15/moss-image-sliders"
+    }
+  }
+}

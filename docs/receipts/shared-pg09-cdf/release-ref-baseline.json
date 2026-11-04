@@ -1,0 +1,19 @@
+{
+  "schema": "moss-cdf-explicit-ref-baseline-v1",
+  "utc": "2026-10-17T19:45:16.707656+00:00",
+  "remote": "https://github.com/HyperGAN/moss-image-sliders.git",
+  "heads": {
+    "refs/heads/audit/moss-pg09-shared-integration-20261017": "7a911f19b4bfb8a2d7e6a4436bfa2b871fdc85d3",
+    "refs/heads/feat/moss-image-sliders": "dd17198e20387433e4627cbf956bbb09c1222677",
+    "refs/heads/main": "477278a2e87f77d8a56a38bd6b952741231f1b3e",
+    "refs/heads/train/resumable-nonlighting-campaign": "0aa3867965aad20f3ee653dcf14e49a1fbca06d9"
+  },
+  "heads_readback_matched": true,
+  "readonly_push_config": {
+    "global_push_default": "tracking",
+    "explicit_remote_push": false,
+    "mirror": false,
+    "pushurl_override": false
+  },
+  "allowed_refspec": "HEAD:refs/heads/audit/moss-pg09-shared-integration-20261017"
+}

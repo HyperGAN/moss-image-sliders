@@ -1,0 +1,127 @@
+{
+  "schema": "moss-pg09-derivative-audit-v1",
+  "utc": "2026-10-17T19:19:57.726685+00:00",
+  "repository": "HyperGAN/moss-image-sliders",
+  "public_base": "477278a2e87f77d8a56a38bd6b952741231f1b3e",
+  "campaign_base": "0aa3867965aad20f3ee653dcf14e49a1fbca06d9",
+  "implementation_commit": "ccd5599efeb752d8d4d4e437354d1c3c6255506d",
+  "branch": "audit/moss-pg09-shared-integration-20261017",
+  "dependency": {
+    "repository": "HyperGAN/particle-sliders",
+    "commit": "42a2e371c537180bd189fd4a288b640f9f1c98fc",
+    "version": "0.6.0",
+    "wheel_sha256": "7418efe0d89782b2fd266c6a8e536539243d06dd42ff5d393e409bf4b0f2c872",
+    "status": "PROPOSED_PENDING_ADA_AND_MERGE",
+    "public_ref_check": "pending owner publication; exact Git object seeded from immutable local clone for lock resolution"
+  },
+  "particlegan": {
+    "version": "0.9.1",
+    "wheel_sha256": "b01b7957169cb3de45887e22b4d525fd54071577e1de58089707cf05fe6992ec",
+    "profile": "release",
+    "active_090_cohorts_unchanged": true
+  },
+  "product_wheel": {
+    "file": "moss_image_sliders-0.2.0-py3-none-any.whl",
+    "sha256": "e2416c5fc4795d6097f688f8c6bc5039e6855ccc70ad6c5660702dc18f4ca8df",
+    "built_from": "git archive ccd5599efeb752d8d4d4e437354d1c3c6255506d",
+    "byte_identical_to_tested_wheel": true
+  },
+  "tests": {
+    "tests": 48,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 7.431,
+    "junit": "installed-wheel-tests.xml",
+    "command": "CUDA_VISIBLE_DEVICES='' PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 PYTHONPATH=/tmp/moss-audit-installed-final /mnt/nvme/sliders/moss-image-sliders/.venv/bin/python -m pytest -q -p no:cacheprovider -o pythonpath='' --junitxml=docs/receipts/shared-pg09-audit/installed-wheel-tests.xml"
+  },
+  "isolated_smoke": "installed-wheel-smoke.json; Python -I from /tmp, all three imports from installed wheels, conceptmod absent",
+  "checks": {
+    "ruff": "passed src tests tools + original regression probe",
+    "diff_check": "passed",
+    "uv_lock_check": "passed --check --offline,100packages",
+    "cpu_runtime_resolution": "71 runtime versions match pinned CPU lock after PG0.9.1 addition",
+    "other_dependency_versions_changed": []
+  },
+  "source_sha256": {
+    "examples/warm-light.json": "a31c2e145b7a72f78760c58aae239282ea3ffad4fc5d96d3b3c6a7e1368215fb",
+    "examples/watercolor.json": "13dff58e3133d2e38d2da10f2205bdf8692f62c98f22d3bf529a7f97d7405ed8",
+    "pyproject.toml": "b37bbbc8313eee2cec7d68df51ce3667ef46057ab90b3dc38addd603d60d4dbd",
+    "requirements-cpu.lock": "3a29ab241062af3d77482db6b7dd85d421827ecf9d784e914cb2cd3e4c3b94b6",
+    "src/moss_sliders/__init__.py": "3155832b9f18c910e02c9f021937fbd1c0aefc2d65697e85e4bcf17f79f71379",
+    "src/moss_sliders/artifacts.py": "19977af3fa5470117bb5ca9eb6b37e1de9a98798d5541de176f98a17209e8689",
+    "src/moss_sliders/backend.py": "1b8acbce102d96ab6ff63e9293416d49a1c5956fb28ba80bfc273042b8c34af8",
+    "src/moss_sliders/campaign.py": "a4e05a96eab1835dada9fea5b1f1f129c10fe02c582063a9a942c99243be6a97",
+    "src/moss_sliders/cli.py": "868b8117f51c2aadddf4c5510be2b1d2413b26d8c7ff44328ffe5d403e44093e",
+    "src/moss_sliders/gan.py": "06d92208e1cdf1f1f4b642da5ab85ec51e6e4340392944437742e70bd498c55c",
+    "src/moss_sliders/inference.py": "f067ac7f8d2ffaf951dbb6ac994616898ed880e252b6516324eb3895bbe46788",
+    "src/moss_sliders/lora.py": "6b8f76f202a01d1a42a5a4338a6127698f6eb63aef367a136adf41489ef23d4d",
+    "src/moss_sliders/smoke.py": "cc40603e745b8bfe73ff8d88f8c5743e799754091618d63de2c759434c53c338",
+    "src/moss_sliders/training.py": "b934a50f9f134b8d51e1e078571ed886c59b478680a8b5fca5ec79a32d25d1b3",
+    "src/moss_sliders/ui.py": "66483ab23c660885e22045091f38dcbed50260c95f66dd078ef60b36741366c3",
+    "src/moss_sliders/vendor/__init__.py": "bb293ef358aad9fd97c2d323d78395b70c718859116313aa18c24f8c1e7b4bed",
+    "src/moss_sliders/vendor/pipeline_moss_image.py": "1dac1aca9feb1bfdfc727a401e4b67d61a505d3190706d1b7d2d784f88678b31",
+    "tests/test_campaign.py": "5c05d8d83c274230fbb6444b4f10ddb7bfaf891d20a19f6307ddbe382d578ee4",
+    "tests/test_gan.py": "33bda0de5baca031ae7e4ab590c0c3f0179b00618373100a070f0d293bfa79be",
+    "tests/test_inference_pg09.py": "e6ed1b12d8f438ede738dd6d3188fddbf5b98b236d182fda4d5cf9a65a2eadf2",
+    "tests/test_integration.py": "9ca10619d4dafe82d78e81575f7a5895f8e74b0d7dab9b2b15cb9ce4cee59049",
+    "tests/test_sliders.py": "2615e92e841ee84ef1c04c789750ff9fde9bcd6668ac8db62cec41d113588fbe",
+    "tools/cuda_campaign_smoke.py": "886010bccf0be77cb4adba6c69abe68f1b8fea0058b59335251df7ed553e345b",
+    "tools/monitor_campaign.py": "0dfb85fd59097e43061b5da9d8523427d0a61811c9d34980f71f421b647cc020",
+    "tools/train_campaign.py": "efae6f6f882678489df60745017bc40cc281b7d580beb03631b3118a929f3248",
+    "uv.lock": "47455eeb172e30601ce3d8bc138ef07526db1964333aabb1363b444514983a62"
+  },
+  "source_safety": {
+    "utc": "2026-10-17T19:13:54.439460+00:00",
+    "source_count": 11,
+    "matched": 11,
+    "changed": [],
+    "sha256": {
+      "/mnt/nvme/sliders/moss-image-sliders-campaign/tools/train_campaign.py": "215a7beef0493ba4902399cf77b0089ac84d4268bdb86eda480f31f26ea3f7b0",
+      "/mnt/nvme/sliders/moss-image-sliders-campaign/tools/monitor_campaign.py": "0b924ac4bee0969abf08c30e7f39bf939de5ea48f7134ca0b183550607bd6b7e",
+      "/mnt/nvme/sliders/moss-image-sliders-campaign/tools/cuda_campaign_smoke.py": "92cd31febc54533258744ca49bbb087a3404ad17efeb063697c4e604f7601fe4",
+      "/mnt/nvme/sliders/moss-image-sliders-campaign/src/moss_sliders/training.py": "0fa3d5b06633b219569827609b81b80c9ec347c55047c4c158eea459fad4ba6e",
+      "/mnt/nvme/sliders/moss-image-sliders-campaign/src/moss_sliders/campaign.py": "8939094f17361b3328455ccf7f4d859eb6d79cb70f5b2330bffd26574efd8042",
+      "/mnt/nvme/sliders/moss-image-sliders-campaign/src/moss_sliders/lora.py": "6b8f76f202a01d1a42a5a4338a6127698f6eb63aef367a136adf41489ef23d4d",
+      "/mnt/nvme/sliders/moss-image-sliders-campaign/src/moss_sliders/vendor/pipeline_moss_image.py": "1dac1aca9feb1bfdfc727a401e4b67d61a505d3190706d1b7d2d784f88678b31",
+      "/mnt/nvme/sliders/backend-adapters-pg09-20261017/conceptmod/textsliders/pg09_backends.py": "e540d77bf56810e2e2411fb5d0122de2a025cccfa8757671d9ea577c4d07e1fe",
+      "/mnt/nvme/sliders/backend-adapters-pg09-20261017/conceptmod/textsliders/pg09_moss_campaign.py": "32f8f042d3a76af531b566e07c4048ec2557acb31cadcc8988ee0518dbc3d565",
+      "/mnt/nvme/sliders/backend-adapters-pg09-20261017/conceptmod/textsliders/pg09_moss_worker.py": "d958a47d3a93ee191d0bd96b832113657831ef8b6846abdabadf0759cdb26649",
+      "/ml2/codex-storage/future-workspaces/2026-10-16/task-6/particle-sliders-pg09-core/packages/particle-sliders-core/src/particle_sliders/pg09.py": "426abc25323aea96be91e92f1f4101063d5b3c4062f042e869c729027b4f9256"
+    },
+    "gpu_jobs_launched": false,
+    "resident_services_changed": false
+  },
+  "native_gates": [
+    "Ada review of exact shared and product heads; parent owns merges",
+    "Coordinator-only GPU admission and source pins",
+    "Fresh native CUDA/BF16 disk replay under new lineage",
+    "Actual model memory/timing and text/offload hooks",
+    "Finite native VAE decode; unattached/off exact latent+image baseline",
+    "Signed/moderate/interim visual panel and separate final quality qualification"
+  ],
+  "no_gpu_jobs": true,
+  "no_pretrained_load_or_download": true,
+  "no_model_publication": true,
+  "no_resident_service_changes": true,
+  "no_permissions_or_credential_changes": true,
+  "no_merges": true,
+  "runtime": {
+    "python": "3.12.13",
+    "torch": "2.9.1+cu128",
+    "cuda_compiled": "12.8",
+    "cuda_initialized": false,
+    "default_dtype": "torch.float32",
+    "packages": {
+      "numpy": "2.5.4",
+      "diffusers": "0.38.0",
+      "transformers": "5.3.0",
+      "safetensors": "0.8.0",
+      "gradio": "6.30.0",
+      "pytest": "8.4.2",
+      "particlegan": "0.9.1",
+      "particle-sliders-core": "0.6.0",
+      "moss-image-sliders": "0.2.0"
+    }
+  }
+}

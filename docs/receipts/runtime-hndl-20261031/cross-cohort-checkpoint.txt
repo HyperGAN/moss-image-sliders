@@ -1,0 +1,2 @@
+Actual old PG0.9.1 packet rejected: checkpoint PG source/cohort mismatch (PG 0.9.1, profile release); resume with the original pinned particle-sliders-core/ParticleGAN source environment. Use a fresh cohort for this release; automatic checkpoint migration is not supported
+Receiver state unchanged; CUDA uninitialized

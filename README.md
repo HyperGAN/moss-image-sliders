@@ -1,16 +1,72 @@
 # MOSS-Image Sliders
 
-A separately maintained HyperGAN project for signed concept LoRA controls on
-[OpenMOSS-Team/MOSS-Image-SFT](https://huggingface.co/OpenMOSS-Team/MOSS-Image-SFT).
-Adapted from [particle-sliders](https://github.com/HyperGAN/particle-sliders), with
-a MOSS-specific backend, trainable attention adapters, reproducible ramp inference,
-and a local Gradio control panel. The original repository is untouched.
+Signed concept LoRA controls for pinned OpenMOSS MOSS-Image-SFT. The current
+`moss-image-sliders 0.3.0.dev2` package and `moss-sliders train` use official
+**ParticleGAN 0.9.4**, shared **particle-sliders-core 0.12.0** at
+`ddb41423bcefc1fe76cd94d0f9b367353b3ea137`, HyperGAN develop builder
+`5f368a3770cf5bdae0448995c9f76e29af8049f7`, and HNDL 0.10.0. Actual HNDL
+attention LoRA and the shared spatial field critic execute the public
+`bispf_optimized` adapter GAN; the shared core owns losses, optimizers,
+sampling and full-state checkpoint validation. **There is no particle bank**:
+`particles=None` is the legitimate adapter-only generator arm.
 
-**Status:** A real 60-update MOSS-Image-SFT GPU pilot produced the lighting examples
-below. Moderate strengths give a visible cool-to-warm change with better shape preservation;
-full strengths can change geometry. Trained adapter weights remain private. The pilot uses
-signed LoRA velocity distillation. This project does not implement the separate ParticleGAN
-BISPF upgrade.
+CPU software checks use the real tiny random MOSS architecture. Pretrained CUDA,
+BF16, offload, real VAE output, performance and media quality remain unqualified
+for this new source cohort. Model loading still requires CUDA and defaults to
+local cached weights. Old weights, four historical controls, MSE pilots and
+PG0.9.0/0.9.1 run records retain their original objective/version and are not
+retrained by this package update. [Migration and exact limits](docs/pg094-current.md).
+
+## Install the current CPU runtime
+
+The package supports Python 3.11–3.12. This hash-checked runtime lock is specifically
+for CPython 3.12/Linux x86-64 and uses the official Torch 2.9.1+cpu archive.
+Create a new environment; never repin an active campaign:
+
+```bash
+python3.12 -m venv .venv-cpu
+. .venv-cpu/bin/activate
+python -m pip install --require-hashes -r requirements-runtime-cpu.lock
+python -m pip install --no-deps 'particle-sliders-core[serialization,hypergan-hndl] @ git+https://github.com/HyperGAN/particle-sliders.git@ddb41423bcefc1fe76cd94d0f9b367353b3ea137#subdirectory=packages/particle-sliders-core'
+python -m pip install --no-deps 'hypergan @ git+https://github.com/HyperGAN/HyperGAN.git@5f368a3770cf5bdae0448995c9f76e29af8049f7'
+python -m pip install --no-deps .
+python -m pip check
+moss-sliders --help
+moss-sliders smoke --receipt outputs/gan-smoke.json
+```
+
+`moss-hndl` remains a compatibility command for the same current native path.
+`profiles/hypergan-hndl` no longer selects a different core from the base package.
+The old root `uv.lock`/`requirements-cpu.lock` and base PG0.9.1 lock are archived
+unchanged in [profiles/legacy-pg091](profiles/legacy-pg091/README.md).
+
+**UI installation remains blocked**: Gradio 6.30 requires Pillow<13 while this
+package keeps Pillow>=13. Do not add `.[ui]` or use the archived full/UI lock as a
+current environment. The security floor is preserved.
+
+## One training command
+
+The merged core frontend discovers the installed product profiles:
+
+```bash
+particle-slider train --config examples/warm-light.json --profile moss --check --no-reporting
+particle-slider train --config examples/warm-light.json --profile moss --out /new/run
+```
+
+The native profile is explicitly `source_only` until the new model cohort is
+qualified. `--check` validates recipe/runtime sources without loading weights.
+Execution uses this product's native factory and existing CUDA/local-cache gate.
+To run the bounded CPU architecture fixture, explicitly select its profile and
+`dummy=true` recipe:
+
+```bash
+particle-slider train --config examples/cpu-fixture.json --profile moss-cpu-fixture --out /new/cpu-fixture --no-reporting
+```
+
+Resume accepts a complete source-compatible checkpoint directory using `--resume`.
+The original `moss-sliders train --config ... --output ...` interface remains.
+Neither training command searches learning rates, renders images or publishes
+weights. [Unified execution details](TRAINING.md).
 
 ## Samples
 
@@ -99,113 +155,92 @@ adapter and private result bundle remain private.
 
 </details>
 
-## Install
-
-Python 3.10–3.12, recommended 3.12; uv 0.13.1. CUDA builds use the PyTorch 2.9.1
-runtime selected by `uv.lock`; verify compatibility with your installed driver first.
-
-```bash
-git clone https://github.com/HyperGAN/moss-image-sliders.git
-cd moss-image-sliders
-uv sync --frozen --extra dev --extra ui
-uv run --frozen moss-sliders doctor
-```
-
-For CPU-only development, use the separately hashed CPU lock (Linux x86_64 / Python 3.12).
-It avoids downloading CUDA runtimes. Both locks pin all transitive dependencies.
-
-```bash
-uv venv --python 3.12
-uv pip sync requirements-cpu.lock --torch-backend cpu --require-hashes
-uv pip install --no-deps -e .
-.venv/bin/pytest -q
-.venv/bin/moss-sliders smoke --receipt outputs/smoke.json
-```
-
-Do not use `uv run` with the CPU environment: it would synchronize the CUDA lock.
-CPU smoke tests use no network, no model cache and no pretrained weights.
-The same checks are provided in [a CI workflow example](docs/ci-workflow.example.yml).
-Automatic Actions installation awaits a maintainer with workflow permissions; the
-publishing token's permissions were preserved.
-
 ## Train a concept
 
-Inspect and edit `examples/warm-light.json` or `examples/watercolor.json`. Each recipe
-specifies neutral/positive/negative descriptions, LoRA rank, learning rate, training
-steps, rollout steps, resolution, seed, direction strength and token budget.
-The default example is a bounded 20-step pilot at 512px, not a quality claim.
+The example JSON recipes explicitly name `pg09_gan_only`, ParticleGAN `0.9.1`,
+`bispf_optimized`, and batch size. Recipes from the old MSE trainer fail validation.
+Training and inference preflight the full native chat template before any
+encoder forward. An over-budget prompt fails instead of being silently truncated.
 
 ```bash
-# Optional: point this at a verified writable cache with >=40 GB free.
-export HF_HOME=/path/to/writable/cache
-uv run --frozen moss-sliders train --config examples/warm-light.json \
-  --output checkpoints/warm-light-pilot --device cuda:0 --download
+moss-sliders train --config examples/warm-light.json \
+  --output checkpoints/new-gan-run --device cuda:0
 ```
 
-`--download` explicitly allows the pinned model download (about 28 GB); otherwise
-loading is local-cache-only. It never selects or modifies storage automatically.
-Output directories must be new. Training saves only `adapter.safetensors`,
-`slider.json` (base revision, target names and recipe), and `metrics.json`.
-There is no automatic long training job, tracking upload, or checkpoint publication.
-Interrupted runs do not have resumable optimizer checkpoints in v0.1.
+Model loading is local-only unless `--download` is explicitly supplied. Real runs
+require coordinator GPU admission. For each frozen neutral rollout state the two
+signed teachers are `base +/- strength * (positive - negative)`. The student uses
+the neutral caption. Critic conditions contain mask-weighted normalized neutral
+Qwen features plus native time, sign and strength. Frozen edit RMS from training
+states sets the response coordinate scale; no reconstruction/MSE loss is trained.
+The shared recipe owns both optimizers and its public adversarial/penalty terms.
+The four-step rollout uses the actual SFT scheduler grid approximately
+`[1000, 910, 717, 24]`; rendering below uses a distinct 50-step grid. See
+[the verified scheduler review](docs/sft-scheduler-review-20261031.md) for both
+grids, historical provenance and the remaining native quality gap.
 
-The frozen neutral model first denoises a shared noise sample to one of the official
-scheduler timesteps. At this same latent and time, frozen positive and negative prompts
-define a velocity difference. The neutral-caption student learns
-`v_base + scale * strength * (v_positive - v_negative)` at scales +1 and -1.
-Only low-rank q/k/v/o residuals in the main DiT blocks receive gradients. The text
-encoder and base transformer stay frozen. This is a contrastive concept distillation
-baseline; it reuses particle-sliders' signed adapter mechanism, not its full experimental
-particle objectives. Scale zero bypasses every adapter exactly. Intermediate and
-extrapolated scale behavior must be inspected; a linear residual need not yield a
-linear perceptual change. Wider prompt generalization needs multiple training scenes
-and a subsequent evaluation extension; this release trains one prompt triplet per run.
+The output is a new directory containing `run.json`, metrics, immutable full-game
+checkpoints and an `adapter/` portable v2 export. For an interrupted run, use a new
+output directory and the original full checkpoint and unchanged recipe:
+
+```bash
+moss-sliders train --config examples/warm-light.json \
+  --resume checkpoints/new-gan-run/checkpoints/step-000010 \
+  --output checkpoints/resumed-gan-run --device cuda:0
+```
+
+Resume restores actual completed steps, both optimizers, critic, adapter, model
+RNG, independent noise/row streams, shuffled orders, cursors and exposure counts.
+The total budget remains the original recipe's budget. Model, prompt, conditioning,
+source, runtime, recipe or objective changes fail closed. Adapter-only exports and
+legacy MSE optimizer packets cannot resume a GAN run. Existing source-bound native
+campaign checkpoints must continue under their original admitted runtime; package
+relocation is a new lineage and requires a new cohort or reviewed migration.
+
+## Historical frozen campaign caches
+
+Cached campaigns require their original PG/core/product source cohort. Current
+`train-campaign` fails before any model load; its old shared campaign module is
+not part of the current core. Continue historical campaigns from the exact
+recorded environment or [legacy reproduction instructions](profiles/legacy-pg091/README.md).
+The current native factory builds signed frozen rollouts through the supported
+shared API. No cache, run directory or old artifact was modified.
 
 ## Render a matched-seed ramp
 
 ```bash
-uv run --frozen moss-sliders infer --adapter checkpoints/warm-light-pilot \
+moss-sliders infer --adapter checkpoints/new-gan-run/adapter \
   --prompt 'A ceramic teapot on a wooden table, studio photograph.' \
   --scales -1 -0.5 0 0.5 1 --seed 42 --steps 50 --guidance 3 \
-  --width 1024 --height 1024 --output outputs/warm-light-ramp --offload
+  --width 1024 --height 1024 --output outputs/gan-ramp --offload
 ```
 
-Each image uses a fresh generator with the same seed; the output folder includes
-generation parameters. Adapter/model revision mismatches fail before attachment.
-Different CFG values and layer skipping can change slider behavior: start with the
-official defaults (50 steps, CFG 3, shift 5, negative branch skip at layer 22).
-The training velocity teachers do not apply sampling CFG or layer skipping.
-
-## Local interface
+The render default stays at 50 steps. To exercise the same four-step scheduler
+grid used by the example's frozen training rollouts, use a separate diagnostic
+output directory:
 
 ```bash
-uv run --frozen moss-sliders ui --adapter checkpoints/warm-light-pilot --offload
+moss-sliders infer --adapter checkpoints/new-gan-run/adapter \
+  --prompt 'A ceramic teapot on a wooden table, studio photograph.' \
+  --scales -1 -0.5 0 0.5 1 --seed 42 --steps 4 --guidance 3 \
+  --width 1024 --height 1024 --output outputs/gan-ramp-four-step --offload
 ```
 
-Controls include signed concept strength, seed, dimensions, steps and CFG. Requests
-are serialized because scale and scheduler state are mutable. The UI binds to
-127.0.0.1 and does not create a public share link. Training controls live in the
-explicit JSON recipe and CLI to keep expensive runs deliberate.
+This reproduces the scheduler grid, not a pretrained quality result or the neutral
+training trajectory. The 50-step example and all strength defaults remain unchanged.
 
-## Resource planning and acceptance
+Inference and UI execute the shared MOSS response backend. CFG adapts only the
+conditional branch, keeps the empty-prompt branch frozen, and disables negative
+layer skipping. Each strength gets fresh identical-seed FP32 noise and a fresh
+copy of the native scheduler. The shared decoder retains native VAE normalization
+and unpacking. At zero, latents match an unattached native baseline under this
+same no-skip protocol. Historical v1 adapters remain readable; their appearance
+can differ under the corrected CFG protocol. Raw source-bound campaign exports
+require validation with their original `MossCampaignRun.load_adapter` and explicit
+conversion to portable v2, rather than guessing their parameter mapping.
 
-The 5.08B DiT alone is about 10.16 GB of stored BF16 weights. The bundled Qwen3.5
-encoder contributes about 16.79 GB; the FP32 VAE adds more. A full resident pipeline
-therefore needs considerably more than 27 GB VRAM including activations and workspaces.
-48 GB A6000 inference is a plausible starting point, not measured here; component
-offload lowers resident use. Training caches the three prompt encodings, moves the
-encoder to CPU, and loads only the DiT on the selected GPU (no VAE). Main block
-activation checkpointing is enabled. Use one GPU for the first pilot; this release
-does not pool two GPUs or offer distributed training. Budget at least 40 GB of cache
-disk and ample CPU RAM (64 GB or more recommended). Check free VRAM before launching;
-512px is the pilot resolution. Do not infer 96 GB pooled VRAM from two 48 GB cards.
-
-After CUDA is available, run the 20-step pilot, inspect finite losses, load its saved
-adapter in a fresh process, then compare -1/0/+1 ramps on the training prompt and held-out
-scenes. Check that the zero image matches an adapter-free run with identical sampler,
-seed and prompt, and inspect preservation of unrelated composition. GPU timing, peak
-memory and visual quality should be recorded before increasing training steps.
-No pretrained weight download or real GPU training was performed in the initial release.
-
-See [model integration](docs/model-integration.md), [test receipts](docs/validation.md),
-[NOTICE](NOTICE), and retained [licenses](LICENSES).
+The UI is currently blocked by the dependency conflict described above. Its existing
+code serializes requests, binds to 127.0.0.1, and creates no public share link; this
+is not a current installation or UI qualification claim.
+Native CUDA/BF16, real VAE output, offload hooks, peak memory and visual quality
+remain separate coordinator-admitted gates. No trained weights are published.

@@ -1,0 +1,21 @@
+{
+  "utc": "2026-10-17T19:13:54.439460+00:00",
+  "source_count": 11,
+  "matched": 11,
+  "changed": [],
+  "sha256": {
+    "/mnt/nvme/sliders/moss-image-sliders-campaign/tools/train_campaign.py": "215a7beef0493ba4902399cf77b0089ac84d4268bdb86eda480f31f26ea3f7b0",
+    "/mnt/nvme/sliders/moss-image-sliders-campaign/tools/monitor_campaign.py": "0b924ac4bee0969abf08c30e7f39bf939de5ea48f7134ca0b183550607bd6b7e",
+    "/mnt/nvme/sliders/moss-image-sliders-campaign/tools/cuda_campaign_smoke.py": "92cd31febc54533258744ca49bbb087a3404ad17efeb063697c4e604f7601fe4",
+    "/mnt/nvme/sliders/moss-image-sliders-campaign/src/moss_sliders/training.py": "0fa3d5b06633b219569827609b81b80c9ec347c55047c4c158eea459fad4ba6e",
+    "/mnt/nvme/sliders/moss-image-sliders-campaign/src/moss_sliders/campaign.py": "8939094f17361b3328455ccf7f4d859eb6d79cb70f5b2330bffd26574efd8042",
+    "/mnt/nvme/sliders/moss-image-sliders-campaign/src/moss_sliders/lora.py": "6b8f76f202a01d1a42a5a4338a6127698f6eb63aef367a136adf41489ef23d4d",
+    "/mnt/nvme/sliders/moss-image-sliders-campaign/src/moss_sliders/vendor/pipeline_moss_image.py": "1dac1aca9feb1bfdfc727a401e4b67d61a505d3190706d1b7d2d784f88678b31",
+    "/mnt/nvme/sliders/backend-adapters-pg09-20261017/conceptmod/textsliders/pg09_backends.py": "e540d77bf56810e2e2411fb5d0122de2a025cccfa8757671d9ea577c4d07e1fe",
+    "/mnt/nvme/sliders/backend-adapters-pg09-20261017/conceptmod/textsliders/pg09_moss_campaign.py": "32f8f042d3a76af531b566e07c4048ec2557acb31cadcc8988ee0518dbc3d565",
+    "/mnt/nvme/sliders/backend-adapters-pg09-20261017/conceptmod/textsliders/pg09_moss_worker.py": "d958a47d3a93ee191d0bd96b832113657831ef8b6846abdabadf0759cdb26649",
+    "/ml2/codex-storage/future-workspaces/2026-10-16/task-6/particle-sliders-pg09-core/packages/particle-sliders-core/src/particle_sliders/pg09.py": "426abc25323aea96be91e92f1f4101063d5b3c4062f042e869c729027b4f9256"
+  },
+  "gpu_jobs_launched": false,
+  "resident_services_changed": false
+}

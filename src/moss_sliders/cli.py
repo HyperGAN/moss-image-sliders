@@ -13,6 +13,14 @@ def parser():
     smoke.add_argument("--steps", type=int, default=4)
     smoke.add_argument("--receipt", type=Path)
     commands.add_parser("doctor", help="Report CUDA and NVMe availability; makes no changes")
+    cached = commands.add_parser("train-campaign", help="Train GAN-only from a verified frozen cache")
+    cached.add_argument("--cache", type=Path, required=True)
+    cached.add_argument("--output", type=Path, required=True)
+    cached.add_argument("--device", default="cuda:0")
+    cached.add_argument("--steps", type=int, default=3840)
+    cached.add_argument("--batch-size", type=int, default=8)
+    cached.add_argument("--resume", type=Path)
+    cached.add_argument("--checkpoint-every", type=int, default=80)
     for name in ("train", "infer", "ui"):
         cmd = commands.add_parser(name)
         cmd.add_argument("--device", default="cuda:0")
@@ -20,6 +28,8 @@ def parser():
         if name == "train":
             cmd.add_argument("--config", type=Path, required=True)
             cmd.add_argument("--output", type=Path, required=True)
+            cmd.add_argument("--resume", type=Path, help="Full GAN checkpoint; never an MSE optimizer/export")
+            cmd.add_argument("--checkpoint-every", type=int, default=10)
         else:
             cmd.add_argument("--adapter", type=Path, required=True)
             cmd.add_argument("--offload", action="store_true")
@@ -35,17 +45,22 @@ def parser():
     return root
 
 
-def validate_config(config):
+def validate_config(config, *, pg_version="0.9.4", fixture=False):
     required = {"neutral", "positive", "negative", "steps", "rank", "lr", "resolution",
-                "rollout_steps", "strength", "seed", "max_sequence_length"}
+                "rollout_steps", "strength", "seed", "max_sequence_length", "objective",
+                "pg_version", "preset", "batch_size"}
     if set(config) != required:
         raise ValueError(f"Expected config keys: {sorted(required)}")
+    if (config["objective"], config["pg_version"], config["preset"]) != (
+            "pg09_gan_only", pg_version, "bispf_optimized"):
+        raise ValueError("Training requires PG 0.9 GAN-only with the public bispf_optimized preset")
     for key in ("neutral", "positive", "negative"):
         if not isinstance(config[key], str) or not config[key].strip():
             raise ValueError(f"{key} must be nonempty text")
     for key, lower, upper in [("steps", 1, 10000), ("rank", 1, 128),
-                              ("rollout_steps", 2, 50), ("resolution", 256, 2048),
-                              ("max_sequence_length", 1, 4096), ("seed", 0, 2**32 - 1)]:
+                              ("rollout_steps", 2, 50), ("resolution", 16 if fixture else 256, 2048),
+                              ("max_sequence_length", 1, 4096), ("seed", 0, 2**32 - 1),
+                              ("batch_size", 2, 512)]:
         if type(config[key]) is not int or not lower <= config[key] <= upper:
             raise ValueError(f"{key} must be an integer in [{lower}, {upper}]")
     if config["resolution"] % 16:
@@ -56,8 +71,16 @@ def validate_config(config):
     return config
 
 
-def main(argv=None):
+def main(argv=None, *, runtime_profile="hypergan-hndl-v2"):
     args = parser().parse_args(argv)
+    pg_version = "0.9.4" if runtime_profile == "hypergan-hndl-v2" else "0.9.1"
+    if runtime_profile == "hypergan-hndl-v2":
+        from .native_hndl import verify_runtime
+        if args.command in ("train", "smoke"):
+            verify_runtime()
+        pg_version = "0.9.4"
+        if args.command in ("train-campaign", "ui"):
+            raise RuntimeError("Current MOSS does not qualify legacy cached campaigns or UI; see docs/pg094-current.md")
     if args.command == "doctor":
         import os
         import shutil
@@ -76,7 +99,7 @@ def main(argv=None):
         if not 1 <= args.steps <= 20:
             raise ValueError("Smoke tests are bounded to 1..20 steps")
         from .smoke import run_smoke
-        receipt = json.dumps(run_smoke(args.steps), indent=2)
+        receipt = json.dumps(run_smoke(args.steps, runtime_profile=runtime_profile), indent=2)
         if args.receipt:
             args.receipt.parent.mkdir(parents=True, exist_ok=True)
             args.receipt.write_text(receipt + "\n")
@@ -86,7 +109,10 @@ def main(argv=None):
     if hasattr(args, "output") and args.output.exists():
         raise FileExistsError(f"Output already exists: {args.output}")
     if args.command == "train":
-        config = validate_config(json.loads(args.config.read_text()))
+        config = validate_config(json.loads(args.config.read_text()), pg_version=pg_version)
+    elif args.command == "train-campaign":
+        if not 1 <= args.steps <= 3840 or not 2 <= args.batch_size <= 512:
+            raise ValueError("Invalid campaign steps or batch size")
     elif args.command == "infer":
         if any(not math.isfinite(s) or abs(s) > 3 for s in args.scales):
             raise ValueError("Scales must be finite and in [-3, 3]")
@@ -94,33 +120,38 @@ def main(argv=None):
             raise ValueError("Dimensions must be positive multiples of 16")
         if args.steps < 1 or not math.isfinite(args.guidance) or args.guidance < 0:
             raise ValueError("Invalid steps or guidance")
-    import torch
+    if args.command in ("train", "train-campaign") and args.checkpoint_every < 1:
+        raise ValueError("checkpoint-every must be positive")
+    if args.command in ("train", "train-campaign") and args.resume is not None:
+        if not (args.resume / "checkpoint.json").is_file() or not (args.resume / "training.pt").is_file():
+            raise FileNotFoundError("A complete full GAN checkpoint is required for resume")
+    if args.command == "train-campaign":
+        from .backend import load_transformer
+        from .gan import build_cached_run, prepare_cached_rows, train_to_budget
+        provider = prepare_cached_rows(args.cache)
+        transformer = load_transformer(device=args.device, local_files_only=True)
+        run = build_cached_run(transformer, args.cache, total_steps=args.steps,
+                               batch_size=args.batch_size, provider=provider)
+        train_to_budget(run, args.output, {"cache": str(args.cache), "steps": args.steps,
+                                          "batch_size": args.batch_size},
+                        resume=args.resume, checkpoint_every=args.checkpoint_every)
+        return
+    # Resolve the actual shared dependency before loading any large components.
+    if args.command == "train":
+        from .gan import build_run, train_to_budget
+    else:
+        from .inference import render
     from .backend import load_pipeline
     pipe = load_pipeline(device=args.device, local_files_only=not args.download,
                          training=args.command == "train", offload=getattr(args, "offload", False))
     if args.command == "train":
-        from .artifacts import save_slider
         from .backend import encode_training_prompts
-        from .lora import Slider
-        from .training import checkpoint_blocks, sample_training_state, train_step
-        torch.manual_seed(config["seed"])
         contexts = encode_training_prompts(
             pipe, [config[key] for key in ("neutral", "positive", "negative")], args.device,
             config["max_sequence_length"])
-        slider = Slider(pipe.transformer, rank=config["rank"])
-        checkpoint_blocks(pipe.transformer)
-        optimizer = torch.optim.AdamW(slider.parameters(), lr=config["lr"])
-        generator = torch.Generator("cpu").manual_seed(config["seed"])
-        metrics = []
-        for step in range(config["steps"]):
-            latent, time = sample_training_state(pipe, slider, contexts[0], generator,
-                                                 config["resolution"], config["rollout_steps"], step)
-            result = train_step(pipe.transformer, slider, optimizer, latent, time, contexts,
-                                config["strength"])
-            metrics.append({"step": step + 1, **result})
-            print(json.dumps(metrics[-1]), flush=True)
-        save_slider(slider, args.output, config)
-        (args.output / "metrics.json").write_text(json.dumps(metrics, indent=2) + "\n")
+        run = build_run(pipe, contexts, config, runtime_profile=runtime_profile)
+        train_to_budget(run, args.output, config, resume=args.resume,
+                        checkpoint_every=args.checkpoint_every)
     else:
         from .artifacts import load_slider
         slider = load_slider(pipe.transformer, args.adapter)
@@ -129,7 +160,6 @@ def main(argv=None):
             from .ui import launch
             launch(pipe, slider)
         else:
-            from .inference import render
             args.output.mkdir(parents=True, exist_ok=False)
             for index, scale in enumerate(args.scales):
                 image = render(pipe, slider, args.prompt, scale=scale, seed=args.seed,

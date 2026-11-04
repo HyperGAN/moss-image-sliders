@@ -1,0 +1,19 @@
+INFO add_decision: Id::<PubGrubPackage>(0) @ 0a0.dev0 without checking dependencies
+INFO add_decision: Id::<PubGrubPackage>(1) @ 0.6.0 without checking dependencies
+INFO add_decision: Id::<PubGrubPackage>(2) @ 0.6.0 without checking dependencies
+INFO add_decision: Id::<PubGrubPackage>(12) @ 0.6.0 without checking dependencies
+INFO add_decision: Id::<PubGrubPackage>(3) @ 2.9.1 without checking dependencies
+INFO add_decision: Id::<PubGrubPackage>(4) @ 0.38.0 without checking dependencies
+INFO add_decision: Id::<PubGrubPackage>(5) @ 5.3.0 without checking dependencies
+INFO add_decision: Id::<PubGrubPackage>(6) @ 1.10.1 without checking dependencies
+INFO add_decision: Id::<PubGrubPackage>(7) @ 0.8.0 without checking dependencies
+INFO add_decision: Id::<PubGrubPackage>(9) @ 1.16.0 without checking dependencies
+INFO add_decision: Id::<PubGrubPackage>(10) @ 0.9.1 without checking dependencies
+INFO add_decision: Id::<PubGrubPackage>(11) @ 6.30.0 without checking dependencies
+INFO Start conflict resolution because incompat satisfied:
+   gradio >6.29.1, <6.31.0 depends on pillow >=8.0, <13.0
+INFO prior cause: gradio >6.29.1, <6.31.0, moss-image-sliders ==0a0.dev0 are incompatible
+INFO prior cause: moss-image-sliders ==0a0.dev0 is forbidden
+error: No solution found when resolving dependencies
+  cause: Because gradio==6.30.0 depends on pillow>=8.0,<13.0 and moss-image-sliders depends on pillow>=13.0.0, we can conclude that your requirements and gradio==6.30.0 are incompatible.
+         And because moss-image-sliders depends on gradio==6.30.0, we can conclude that your requirements are unsatisfiable.

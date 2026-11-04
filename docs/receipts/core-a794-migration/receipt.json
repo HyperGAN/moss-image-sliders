@@ -1,0 +1,74 @@
+{
+  "schema": "moss-modern-a794-migration-v1",
+  "previous_product_head": "fc1dad414ed0b98666528cc4d8672a629ea072b8",
+  "modern_version": "0.3.0.dev1",
+  "core_commit": "a794e3b4a8813b012f2c4faa3da82b78d4a90214",
+  "preserved_default_and_checkpoint_metadata_blobs": {
+    "pyproject.toml": "10590c96f8022e28320549f803d0b0e51d62ab2b",
+    "uv.lock": "1a4781a7b7f0906b27c5dd65b776dfdb3c530b33",
+    "requirements-cpu.lock": "a1bb17fb49bc356b4225e00a3b66c2622abc6a7e",
+    "requirements-runtime-cpu.lock": "0c662062fa7cb27fd530db2f0acd90cac5f5f03e",
+    "requirements-runtime-cpu.in": "5e9fdef1ac2ca55268cb5c73bd018373b2de4b63",
+    "src/moss_sliders/gan.py": "332c265f018851b3b1fc21edcb89c4818ecc60c4"
+  },
+  "source_closure": "all 50 particle_sliders package files plus 1 compatibility namespace file, recursive including LICENSE/data; excludes interpreter pycache only",
+  "core_wheel_sha256": "46fbe99cf0cf9e4cbd7143dd220c479ccbb8820dc348ee850da04047f1cea1ec",
+  "artifact_sha256": {
+    "moss_image_sliders_hndl-0.3.0.dev1-py3-none-any.whl": "8aad6f415dfde4f1ac4470d12cd3ee40c791a9e9c657dc1f979530f7c46b8921",
+    "moss_image_sliders_hndl-0.3.0.dev1.tar.gz": "032e3f248e51e27e358826fab41617367ba5153cc6ffd8d55bbbd4758b008483"
+  },
+  "resolution": "modern lock regenerated once from exact VCS dependency; 45 hash-checked CPU archives; clean isolated .venv-a794 with exact VCS provenance; pip check passes",
+  "tests": {
+    "wheel": {
+      "passed": 24,
+      "skipped": 0
+    },
+    "sdist": {
+      "passed": 24,
+      "skipped": 0
+    },
+    "command": "CUDA_VISIBLE_DEVICES='' HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 ../../../.venv-a794/bin/python -m pytest -q tests/test_native_hndl.py tests/test_training_scheduler.py tests/test_runtime_packaging.py::test_public_hndl_cpu_profile_pins_exact_source_and_keeps_archive_hashes -p no:cacheprovider -o pythonpath=",
+    "cwd": "copied test-run bundle with no src/product checkout; all product/core imports site-packages",
+    "coverage": [
+      "raw adapter GAN updates/gradient ownership",
+      "OFF/zero exact frozen response and raw export/reload",
+      "exact full resume",
+      "builder/code/data/source tamper refusal",
+      "late construction failure rollback and same-pipeline retry",
+      "header profile refusal before tensor load"
+    ]
+  },
+  "ema": "product exposes raw game/adapter evaluation, not EMA selection; no product EMA claim",
+  "old_cohort": "manifest preserved byte-for-byte under profiles/hypergan-hndl/history; real prior full packet/export retained locally and rejected; no metadata relabel",
+  "scope": "CPU software fixture qualification only; no GPU job/pretrained weights/native quality/width admission change",
+  "source_hashes": {
+    "src/moss_sliders/__init__.py": "3155832b9f18c910e02c9f021937fbd1c0aefc2d65697e85e4bcf17f79f71379",
+    "src/moss_sliders/artifacts.py": "61330a611c291402bed1c15e2d4bc2a1ef5cad463e7df75b3610d7c95c53ce38",
+    "src/moss_sliders/backend.py": "e8e05b19599d31bf9b49837f77f796a85f1dc6d875e145baface985cfd704850",
+    "src/moss_sliders/campaign.py": "a4e05a96eab1835dada9fea5b1f1f129c10fe02c582063a9a942c99243be6a97",
+    "src/moss_sliders/cli.py": "209cfea144939efb2f8f93d52dc7e7069aca1b8eb00deac2139601dec8bb0450",
+    "src/moss_sliders/gan.py": "2990ee029431acbfc41223c4ca286e6f2ef0ed341b8b0c3a2662cc87a57c3518",
+    "src/moss_sliders/hndl_cohort.json": "63ad0d53df055e323d3d64c5fafad3ba724559ef2b6fd57f69548fb91cf7954b",
+    "src/moss_sliders/inference.py": "d458af6e9b2e4aa813c312c3d39fc04111e009dfe1bb0c604e6c8183d6cf1955",
+    "src/moss_sliders/lora.py": "196776f500ef60b34b44d04db882898cdecec442327b8cbcfa81d5803693a880",
+    "src/moss_sliders/native_hndl.py": "7c7d4d35bc045fff5d910a6059ab3f90671ab64486e26acba0ac951ba5836b0c",
+    "src/moss_sliders/smoke.py": "358dcbb2692d7028279d681a3a729681dad9a9b6d14de10c874ffb5771c54fd4",
+    "src/moss_sliders/training.py": "f18410d72f3ce9147a076258247406dec073098c014051efa837499b6740a3f1",
+    "src/moss_sliders/ui.py": "66483ab23c660885e22045091f38dcbed50260c95f66dd078ef60b36741366c3",
+    "src/moss_sliders/vendor/__init__.py": "bb293ef358aad9fd97c2d323d78395b70c718859116313aa18c24f8c1e7b4bed",
+    "src/moss_sliders/vendor/pipeline_moss_image.py": "1dac1aca9feb1bfdfc727a401e4b67d61a505d3190706d1b7d2d784f88678b31"
+  },
+  "remaining": [
+    "UI Pillow/Gradio conflict unchanged",
+    "pretrained/GPU/BF16/offload/image-quality/performance unrun",
+    "root-coordinated Claude RETURN required before landing"
+  ],
+  "ci_release": "no workflow/access/release/deployment changes; existing draft update only",
+  "external_old_artifact_probe": {
+    "included_in_24_pytest_cases": false,
+    "provenance_and_exact_invocations": "old-artifact-provenance.json",
+    "output": "old-cohort-rejection.json",
+    "scope": "controlled tiny CPU artifacts produced by actual retained fc1dad4/4abc installed software before migration; not production checkpoints; full-packet receiver equality checked"
+  },
+  "published_flag_semantics": "hndl_cohort.json published=true records that the exact source commit is publicly reachable; it does not assert a package/model release, merge or native qualification"
+}

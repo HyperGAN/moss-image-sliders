@@ -1,0 +1,60 @@
+{
+  "schema": "moss-review-corrections-v1",
+  "reviewed_previous_head": "05a39ce923610ca73aa3353bce0dbef0931877a7",
+  "date": "2026-10-31",
+  "issues": {
+    "install_docs": "Prominent Python3.12/LinuxCPU 43-package hash lock -> exact core060 VCS --no-deps -> product --no-deps. Executed all commands in third fresh venv; pip check/help/4-update native smoke pass. Python eligibility3.11-3.12; supplied lock qualifies3.12 only. UI commands removed; old lock paths explicitly historical.",
+    "scheduler_grid": "Pinned SFT upstream pipeline SHA equals vendored source. Existing four-step output already1000/909.9999389648438/717/24;50-grid recorded separately. Historical provenance records4/50. No new schedule/strength adopted; quality gap remains.",
+    "borrowed_scheduler": "Fixed training helper resetting/advancing caller scheduler; use fresh from_config scheduler. Bit-exact prior trajectory and full borrowed state/identity preserved on success and forward error.",
+    "hndl_storage": "Fixed stale HNDL runtime device/dtype after registered-leaf conversion by delegating _apply through actual graph once. Train/eval propagates. Shared leaf identity,2 state keys,no hidden buffers,deepcopy,float64 roundtrip and CPU/meta/CPU state reload pass. No CUDA claim.",
+    "particles": "Actual shared game priorNone and generator_arm adapter_gan asserted. HNDL builder profile is distinct from routed Fibo architecture; no bank added and strengths unchanged.",
+    "checkpoint_and_closure": "Actual packet explicitly PG094/release0.9.4/auto/exact core+runtime identity; corrupt PG/profile/domain refuse without state mutation. Entire core py/json/hndl plus unexpectedextra.py changes reject before hooks; builder closure active."
+  },
+  "tests": {
+    "base": {
+      "passed": 90,
+      "skipped": 14,
+      "deselected": 1,
+      "command": "CUDA_VISIBLE_DEVICES='' HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 ../.venv/bin/python -m pytest -q --deselect tests/test_integration.py::test_gradio_controls_build_offline -p no:cacheprovider -o pythonpath= --junitxml=../evidence/review-fixes/base-installed-tests.xml",
+      "scope": "14 HNDL cases skipped in legacy env; incompatible UI deselected"
+    },
+    "hndl": {
+      "passed": 17,
+      "skipped": 0,
+      "deselected": 0,
+      "command": "CUDA_VISIBLE_DEVICES='' HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 ../.venv-hndl/bin/python -m pytest -q tests/test_native_hndl.py tests/test_training_scheduler.py -p no:cacheprovider -o pythonpath= --junitxml=../evidence/review-fixes/hndl-installed-tests.xml"
+    },
+    "pip_checks": "pass in base,preview,and fresh README env",
+    "ruff": "pass src/tests/tools excluding vendor",
+    "diff_check": "pass",
+    "hndl_smoke": "4 steps plus exact replay/export/reload; CUDA uninitialized",
+    "old_checkpoint": "actual PG091 file rejected without receiver mutation"
+  },
+  "remaining_blockers": [
+    "UI Gradio6.30 Pillow<13 versus patched floor>=13",
+    "preview exact core4abc0eb remains local/unpublished",
+    "pretrained/GPU/BF16/offload/image-quality/memory/performance unrun"
+  ],
+  "release_impact": "draft update only; no workflows/releases/deployments/weights publication added",
+  "source_hashes": {
+    "src/moss_sliders/__init__.py": "3155832b9f18c910e02c9f021937fbd1c0aefc2d65697e85e4bcf17f79f71379",
+    "src/moss_sliders/artifacts.py": "61330a611c291402bed1c15e2d4bc2a1ef5cad463e7df75b3610d7c95c53ce38",
+    "src/moss_sliders/backend.py": "e8e05b19599d31bf9b49837f77f796a85f1dc6d875e145baface985cfd704850",
+    "src/moss_sliders/campaign.py": "a4e05a96eab1835dada9fea5b1f1f129c10fe02c582063a9a942c99243be6a97",
+    "src/moss_sliders/cli.py": "209cfea144939efb2f8f93d52dc7e7069aca1b8eb00deac2139601dec8bb0450",
+    "src/moss_sliders/gan.py": "06ec4e9de21a9e01136779b620204a38d8033ef12fc46a76118b2f811b14ff4c",
+    "src/moss_sliders/hndl_cohort.json": "ac9152494672336bcec394594c844f3be1c3ad3215dfdd31dd0ba9caed8000ee",
+    "src/moss_sliders/inference.py": "d458af6e9b2e4aa813c312c3d39fc04111e009dfe1bb0c604e6c8183d6cf1955",
+    "src/moss_sliders/lora.py": "196776f500ef60b34b44d04db882898cdecec442327b8cbcfa81d5803693a880",
+    "src/moss_sliders/native_hndl.py": "1a8d1b10c7bac76c65d31e5ab76675e15c7447136a0f58ef77ebcf79d17d1ace",
+    "src/moss_sliders/smoke.py": "358dcbb2692d7028279d681a3a729681dad9a9b6d14de10c874ffb5771c54fd4",
+    "src/moss_sliders/training.py": "f18410d72f3ce9147a076258247406dec073098c014051efa837499b6740a3f1",
+    "src/moss_sliders/ui.py": "66483ab23c660885e22045091f38dcbed50260c95f66dd078ef60b36741366c3",
+    "src/moss_sliders/vendor/__init__.py": "bb293ef358aad9fd97c2d323d78395b70c718859116313aa18c24f8c1e7b4bed",
+    "src/moss_sliders/vendor/pipeline_moss_image.py": "1dac1aca9feb1bfdfc727a401e4b67d61a505d3190706d1b7d2d784f88678b31"
+  },
+  "test_hashes": {
+    "tests/test_native_hndl.py": "78eb5260ad93258f4df9449af2e5479b7be554b2a4a7d6d6d024a53b6a9c0740",
+    "tests/test_training_scheduler.py": "d54a8723a53ef00ec92f4e08348e0c5cdd3e6356824525d483fba8c63f2bb0cd"
+  }
+}

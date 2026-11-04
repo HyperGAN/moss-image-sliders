@@ -1,0 +1,27 @@
+{
+  "schema": "moss-explicit-ref-release-baseline-v1",
+  "utc": "2026-10-17T19:24:36.305830+00:00",
+  "repo": "HyperGAN/moss-image-sliders",
+  "remote": "upstream",
+  "url": "https://github.com/HyperGAN/moss-image-sliders.git",
+  "push_config_readonly": {
+    "global_push_default": "tracking",
+    "remote_push_refspecs": [],
+    "remote_mirror": false,
+    "pushurl_override": false
+  },
+  "intended_source": "HEAD",
+  "intended_destination": "refs/heads/audit/moss-pg09-shared-integration-20261017",
+  "heads": {
+    "refs/heads/audit/moss-pg09-shared-integration-20261017": "cfc3fee448719ce38b9639a82f6c11c030f18acb",
+    "refs/heads/feat/moss-image-sliders": "dd17198e20387433e4627cbf956bbb09c1222677",
+    "refs/heads/main": "477278a2e87f77d8a56a38bd6b952741231f1b3e",
+    "refs/heads/train/resumable-nonlighting-campaign": "0aa3867965aad20f3ee653dcf14e49a1fbca06d9"
+  },
+  "scope": "Baseline before replacement dependency feature-branch publication. No settings or refs changed.",
+  "prior_publication": {
+    "explicit_refspec": "HEAD:refs/heads/audit/moss-pg09-shared-integration-20261017",
+    "remote_reported_only_new_audit_branch": true,
+    "post_main_matches_captured_public_base": true
+  }
+}

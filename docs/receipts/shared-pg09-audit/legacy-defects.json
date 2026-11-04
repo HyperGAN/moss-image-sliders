@@ -1,0 +1,21 @@
+{
+  "immutable_source": "0aa3867965aad20f3ee653dcf14e49a1fbca06d9",
+  "training_sha256": "0fa3d5b06633b219569827609b81b80c9ec347c55047c4c158eea459fad4ba6e",
+  "inference_sha256": "cefcf464f395a48ac7e6f3f1790ebd29e1ddab9ed6522b987b3c288aef2a51a6",
+  "delayed_signed_backward": {
+    "confirmed": true,
+    "error": "CheckpointError",
+    "message": "torch.utils.checkpoint: A different number of tensors was saved during the original forward and recomputation.\nNumber of tensors saved during forward: 62\nNumber of tensors saved during recomputation: 46.\n\nTip: To see a more detailed error message, either pass `debug=True` to\n`torch.utils.checkpoint.checkpoint(...)` or wrap the code block\nwith `with torch.utils.checkpoint.set_checkpoint_debug_enabled(True):` to\nenable checkpoint\u2011debug mode globally.\n"
+  },
+  "legacy_cfg_scope": {
+    "conditional_adapter_scale": 1.0,
+    "negative_adapter_scale": 1.0,
+    "negative_skip": [
+      22
+    ],
+    "required_negative_scale": 0.0,
+    "required_negative_skip": []
+  },
+  "cuda_initialized": false,
+  "pretrained_weights_loaded": false
+}

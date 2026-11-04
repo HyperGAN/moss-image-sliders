@@ -1,0 +1,77 @@
+{
+  "schema": "moss-public-cpu-candidate-install-v1",
+  "previous_head": "d21da731eb2504c8ba42a54810adb071624ae0a4",
+  "date": "2026-10-31",
+  "public_core_commit": "4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231",
+  "public_core_pr": "https://github.com/HyperGAN/particle-sliders/pull/148",
+  "source_availability_verified": true,
+  "core_release_or_merge_claimed": false,
+  "fresh_environment": ".venv-public-hndl,Python3.12.15; no prior Torch or shared package;45 hash-checked archives followed by2 public exact VCS builds and product wheel",
+  "installation_commands": [
+    "python -m pip install --require-hashes -r requirements-hndl-cpu.lock",
+    "python -m pip install --no-deps 'hypergan @ git+https://github.com/HyperGAN/HyperGAN.git@5f368a3770cf5bdae0448995c9f76e29af8049f7'",
+    "python -m pip install --no-deps 'particle-sliders-core[serialization,hypergan-hndl] @ git+https://github.com/HyperGAN/particle-sliders.git@4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231#subdirectory=packages/particle-sliders-core'",
+    "python -m pip install --no-deps moss_image_sliders_hndl-0.3.0.dev0-py3-none-any.whl",
+    "python -m pip check",
+    "moss-hndl --help",
+    "moss-hndl smoke --steps 4"
+  ],
+  "all_install_check_help_smoke_commands_passed": true,
+  "runtime_archive_count": 45,
+  "runtime_lock_sha256": "35b8fe79a418a46e29612e1645e1f951c2d9a1196a239e57d1fd22d8eba5d9da",
+  "preserved_git_blobs": {
+    "uv.lock": "1a4781a7b7f0906b27c5dd65b776dfdb3c530b33",
+    "requirements-cpu.lock": "a1bb17fb49bc356b4225e00a3b66c2622abc6a7e",
+    "requirements-runtime-cpu.lock": "0c662062fa7cb27fd530db2f0acd90cac5f5f03e",
+    "src/moss_sliders/hndl_cohort.json": "b5acb7b39666d246d6c03d25338df23157afbd92"
+  },
+  "candidate_tests": {
+    "passed": 23,
+    "skipped": 0,
+    "command": "CUDA_VISIBLE_DEVICES='' HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 ../.venv-public-hndl/bin/python -m pytest -q tests/test_native_hndl.py tests/test_training_scheduler.py tests/test_runtime_packaging.py::test_public_hndl_cpu_profile_pins_exact_source_and_keeps_archive_hashes -p no:cacheprovider -o pythonpath= --junitxml=../evidence/public-core-install/installed-tests.xml"
+  },
+  "base_tests": {
+    "passed": 92,
+    "skipped": 19,
+    "deselected": 1,
+    "scope": "19 separate HNDL cases skipped; incompatible optional UI deselected",
+    "command": "CUDA_VISIBLE_DEVICES='' HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 ../.venv/bin/python -m pytest -q --deselect tests/test_integration.py::test_gradio_controls_build_offline -p no:cacheprovider -o pythonpath= --junitxml=../evidence/public-core-install/base-installed-tests.xml"
+  },
+  "checkpoint_delta": "new v2 JSON explicitly records PG version/profile/domain; mismatched/incomplete/legacy unidentified headers reject before torch.load in preview. Original v1 remains supported in PG091 original cohort; exact resume test passes. External actual old091 receipt confirms0 tensor loads and unchanged receiver.",
+  "qualification": "clean CPU resolution/install/import/checkpoint/software qualification only; historical/default environments not retargeted",
+  "remaining_blockers": [
+    "UI Gradio Pillow<13 conflict remains;security floor>=13 preserved",
+    "pretrained/GPU/BF16/offload/image-quality/memory/performance unrun",
+    "core remains a reviewed draft candidate,not a merged stable release"
+  ],
+  "source_hashes": {
+    "src/moss_sliders/__init__.py": "3155832b9f18c910e02c9f021937fbd1c0aefc2d65697e85e4bcf17f79f71379",
+    "src/moss_sliders/artifacts.py": "61330a611c291402bed1c15e2d4bc2a1ef5cad463e7df75b3610d7c95c53ce38",
+    "src/moss_sliders/backend.py": "e8e05b19599d31bf9b49837f77f796a85f1dc6d875e145baface985cfd704850",
+    "src/moss_sliders/campaign.py": "a4e05a96eab1835dada9fea5b1f1f129c10fe02c582063a9a942c99243be6a97",
+    "src/moss_sliders/cli.py": "209cfea144939efb2f8f93d52dc7e7069aca1b8eb00deac2139601dec8bb0450",
+    "src/moss_sliders/gan.py": "2990ee029431acbfc41223c4ca286e6f2ef0ed341b8b0c3a2662cc87a57c3518",
+    "src/moss_sliders/hndl_cohort.json": "ac9152494672336bcec394594c844f3be1c3ad3215dfdd31dd0ba9caed8000ee",
+    "src/moss_sliders/inference.py": "d458af6e9b2e4aa813c312c3d39fc04111e009dfe1bb0c604e6c8183d6cf1955",
+    "src/moss_sliders/lora.py": "196776f500ef60b34b44d04db882898cdecec442327b8cbcfa81d5803693a880",
+    "src/moss_sliders/native_hndl.py": "1a8d1b10c7bac76c65d31e5ab76675e15c7447136a0f58ef77ebcf79d17d1ace",
+    "src/moss_sliders/smoke.py": "358dcbb2692d7028279d681a3a729681dad9a9b6d14de10c874ffb5771c54fd4",
+    "src/moss_sliders/training.py": "f18410d72f3ce9147a076258247406dec073098c014051efa837499b6740a3f1",
+    "src/moss_sliders/ui.py": "66483ab23c660885e22045091f38dcbed50260c95f66dd078ef60b36741366c3",
+    "src/moss_sliders/vendor/__init__.py": "bb293ef358aad9fd97c2d323d78395b70c718859116313aa18c24f8c1e7b4bed",
+    "src/moss_sliders/vendor/pipeline_moss_image.py": "1dac1aca9feb1bfdfc727a401e4b67d61a505d3190706d1b7d2d784f88678b31"
+  },
+  "test_hashes": {
+    "tests/test_campaign.py": "5c05d8d83c274230fbb6444b4f10ddb7bfaf891d20a19f6307ddbe382d578ee4",
+    "tests/test_checkpoint_replacement.py": "3cf6ec296f300c8c5484fa4bddea14feb62de7dc1b8025056014c15244756133",
+    "tests/test_gan.py": "cebdf1683284db8d57195975b5d2560e1d3ff24b158df3046e5d5a5385ef8fe2",
+    "tests/test_inference_export_edges.py": "49e0a78c50986e742a62ab0a364c394d239c6a7e029b3eb0261c9b22ed59a8a5",
+    "tests/test_inference_pg09.py": "f8e9b923f28861738fcab6f746b9d162fde1e07f68fe132ad88ef903b80a77d5",
+    "tests/test_integration.py": "72f2408fe5ccb522fcb7641a91e7b2cb30ca5036e95e94411c89a2bf63b85927",
+    "tests/test_native_hndl.py": "165a1389c982ec80427237e9fd6d33007e964ad677cd9abfe848b7864fddb63c",
+    "tests/test_rng_scope.py": "5e2e2b28c7436cde922672afb79510401e9b2c084eae80e697ba2c5113c28904",
+    "tests/test_runtime_packaging.py": "fd6089fb3b8f90d74947a6c92d0ff1dc041acedcb6c7dd7a5c53420160280d3d",
+    "tests/test_sliders.py": "2615e92e841ee84ef1c04c789750ff9fde9bcd6668ac8db62cec41d113588fbe",
+    "tests/test_training_scheduler.py": "d54a8723a53ef00ec92f4e08348e0c5cdd3e6356824525d483fba8c63f2bb0cd"
+  }
+}

@@ -14,7 +14,7 @@ No weights are vendored or redistributed.
 | Scheduler | MOSSImageScheduler, flow Euler, shift 5, nearest training-grid schedule; transformer timestep in scheduler units |
 | Precision | BF16 DiT/encoder, FP32 VAE, noise and CFG composition |
 | Images | Positive width/height multiples of 16; official recommendation ≥50 sampling steps |
-| Sampling guidance | CFG 3, empty negative prompt, negative branch skips layer 22 by default |
+| Shared GAN sampling guidance | CFG 3, empty negative prompt, conditional adapter only, no negative layer skipping |
 | License | Weights and bundled inference source Apache-2.0, full license retained |
 
 Sources: [model card](https://huggingface.co/OpenMOSS-Team/MOSS-Image-SFT),
@@ -28,7 +28,9 @@ The advertised quick-start loads `DiffusionPipeline.from_pretrained` with
 `{"default": torch.bfloat16, "vae": torch.float32}`. We instead load the same pinned
 components using the unmodified local copy of those classes. AutoModel and AutoTokenizer
 use library-provided implementations; arbitrary remote Python is not required.
-The exact vendored source SHA256 is tested in CI.
+The exact vendored source SHA256 is checked by the CPU tests. No GitHub CI
+workflow is currently configured. [The scheduler review](sft-scheduler-review-20261031.md)
+records the actual four- and50-step SFT grids and their qualification limits.
 
 The official transformer does not inherit Diffusers' PEFT adapter mixin, and the
 pipeline does not expose `load_lora_weights` or `set_adapters`. Calling the generic
@@ -40,6 +42,5 @@ ComfyUI/PEFT adapter loaders. Rank/alpha follow particle-sliders' alpha/rank sca
 
 The official guide recommends freezing the text encoder during post-training. We
 also freeze the VAE (unused in training) and all transformer base weights. Training
-uses the official scheduler rather than assuming a DDPM epsilon loss. This new
-contrastive velocity recipe is experimental; the official release does not provide
+uses the official scheduler rather than assuming a DDPM epsilon loss. The shared conditional GAN is experimental; the official release does not provide
 a slider training objective or quality guarantee.
