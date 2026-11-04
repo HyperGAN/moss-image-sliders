@@ -1,0 +1,19 @@
+{
+  "schema": "particle-slider-profile-v1",
+  "name": "moss-image-sliders-unavailable",
+  "product": "moss-image-sliders",
+  "config_kind": "native",
+  "status": "blocked",
+  "reason": "Default source uses signed contrastive velocity MSE and has no shared lifecycle/full-state checkpoint bridge. The separate machine-local PG0.9.4 profile is explicit; this profile does not relabel default training as PG.",
+  "runtime": {
+    "python": "python3"
+  },
+  "capabilities": {
+    "resume": false,
+    "periodic_checkpoint": false,
+    "check": false
+  },
+  "target_steps_path": "steps",
+  "evidence": "README.md",
+  "source_revision": "38d856fafb5a7d1629d9cbdf1e4740559cb95255"
+}

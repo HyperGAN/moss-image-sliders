@@ -1,0 +1,24 @@
+{
+  "schema": "particle-slider-profile-v1",
+  "name": "moss-local-pg094",
+  "product": "moss-image-sliders",
+  "config_kind": "native",
+  "status": "native",
+  "command": [
+    "{python}",
+    "tools/train_local_pg.py"
+  ],
+  "runtime": {
+    "python": "/ml2/codex-storage/future-workspaces/2026-10-31/task-14/.venv-qwen-native/bin/python",
+    "device": "cuda:0"
+  },
+  "capabilities": {
+    "resume": true,
+    "periodic_checkpoint": true,
+    "check": true
+  },
+  "target_steps_path": "steps",
+  "default_checkpoint_every": 32,
+  "evidence": "/ml2/particlesliders-working/moss_training/concept-runs/dressed-to-kill-20261104T003306.131976Z/TRAINING_COMPLETE_VERIFIED.json",
+  "source_sha256": "ff27a2c749be2221181b25158ca59bf26e4c8e0520e44a80899629031a9babcb"
+}
