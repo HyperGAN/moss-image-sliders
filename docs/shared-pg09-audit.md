@@ -1,3 +1,5 @@
+> Historical cohort/evidence. Current package installation and training are described in [PG0.9.4 current](pg094-current.md). Original receipts below remain unchanged.
+
 # MOSS shared ParticleGAN integration audit
 
 The inspected public repository is `HyperGAN/moss-image-sliders`, public main

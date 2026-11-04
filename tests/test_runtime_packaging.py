@@ -19,10 +19,10 @@ def test_ui_is_optional_and_runtime_lock_keeps_patched_numeric_cohort():
     assert 'gradio' not in base
     assert project['optional-dependencies']['ui'] == ['gradio==6.30.0']
     assert 'Pillow>=13.0.0' in project['dependencies']
-    assert any('cdfb80a76b882b4b73861b12f555263bd64ffeb7' in value for value in project['dependencies'])
+    assert any('ddb41423bcefc1fe76cd94d0f9b367353b3ea137' in value for value in project['dependencies'])
     text = (ROOT / 'requirements-runtime-cpu.lock').read_text()
     assert 'pillow==13.0.0' in text
-    assert 'particlegan==0.9.1' in text
+    assert 'particlegan==0.9.4' in text
     assert 'torch @ https://download-r2.pytorch.org/whl/cpu/torch-2.9.1%2Bcpu-cp312-cp312-manylinux_2_28_x86_64.whl' in text
     assert '--index-url https://pypi.org/simple' in text
     assert '--extra-index-url' not in text
@@ -90,13 +90,13 @@ def test_torch_direct_archive_hash_is_exact_and_cannot_be_silently_rebound():
         tool.bind_torch_archive(text.replace(lines[start + 1], '    --hash=sha256:' + '0' * 64, 1), url)
 
 
-def test_hndl_profile_refuses_historical_runtime_before_native_attachment():
-    from importlib.metadata import version
-    if version('particle-sliders-core') != '0.6.0':
-        pytest.skip('historical runtime admission check belongs to the base environment')
-    from moss_sliders.native_hndl import build_hndl_run
-    with pytest.raises(ValueError, match='separately qualified core'):
-        build_hndl_run(object(), (), {})
+def test_hndl_profile_refuses_historical_runtime_before_native_attachment(monkeypatch):
+    from moss_sliders import native_hndl
+    def historical(name):
+        return '0.6.0'
+    monkeypatch.setattr(native_hndl, 'version', historical)
+    with pytest.raises(ValueError, match='qualified core'):
+        native_hndl.build_hndl_run(object(), (), {})
 
 
 def test_public_hndl_cpu_profile_pins_exact_source_and_keeps_archive_hashes():
@@ -105,7 +105,7 @@ def test_public_hndl_cpu_profile_pins_exact_source_and_keeps_archive_hashes():
                 if Requirement(value).name == 'particle-sliders-core')
     assert core.extras == {'serialization', 'hypergan-hndl'}
     assert core.url == ('git+https://github.com/HyperGAN/particle-sliders.git@'
-                        'a794e3b4a8813b012f2c4faa3da82b78d4a90214'
+                        'ddb41423bcefc1fe76cd94d0f9b367353b3ea137'
                         '#subdirectory=packages/particle-sliders-core')
     text = (ROOT / 'requirements-hndl-cpu.lock').read_text()
     names = re.findall(r'^([A-Za-z0-9][A-Za-z0-9_.-]*)(?:==| @ )', text, flags=re.M)

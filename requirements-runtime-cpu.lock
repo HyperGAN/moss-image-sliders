@@ -206,6 +206,14 @@ filelock==4.2.6 \
     #   diffusers
     #   huggingface-hub
     #   torch
+foldlitedb==0.1.4 \
+    --hash=sha256:53104efa7510e818f0a8f1cc249a532a53443f0ce161f21e2071c280dd77a21b \
+    --hash=sha256:66efcdc4a551c41b0caa529c02f61ad5df7e77795592527d0ab55a8d1805a757 \
+    --hash=sha256:87f49c33d17594c758a539037bc1692e6c6951ed3f462a86916e17582e7a521d \
+    --hash=sha256:8c488792f384266198ffa6260d38ceb24255c2167756b9abfbf5cbd09080bafa \
+    --hash=sha256:b8c0684475d93b03d876e01a0e90310303fd5a25e0bdd3064fcd46614981e9ca \
+    --hash=sha256:e9a15964fbcd5e754ee486088f917818d62da3c96077a71409b57b8a7de6f59a
+    # via hypergan
 fsspec==2026.9.0 \
     --hash=sha256:0f08147951c8cb31d844c3547d631053b127863b60be04cf06e121333ee0e2fe \
     --hash=sha256:8dd6e646e99ea382bd85f97a45e6b526a442d79423a7dc673f1e2756d05fcb5f
@@ -235,6 +243,12 @@ hf-xet==1.8.0 \
     --hash=sha256:e00d8f60170cd3dd55d98306e41dbaf28b27ff1bcfefbfa84279d197221be83e \
     --hash=sha256:f42940869572dc2b05dfe06f4cc398c6291503e086ddc4eddfb7a6ab9409ad01
     # via huggingface-hub
+hndl==0.10.0 \
+    --hash=sha256:b3130dcf1f11acdafb4465a184ff63cc007a0e33bc1268d61c23e0d68e1cfd4a \
+    --hash=sha256:e36a92da0cd34304c05c477a81d37c61dbab10d724bd07b421149f93b3b8c188
+    # via
+    #   moss-image-sliders (pyproject.toml)
+    #   particle-sliders-core
 httpcore==1.0.9 \
     --hash=sha256:2d400746a40668fc9dec9810239072b40b4484b640a8c38fd654a024c7a1bf55 \
     --hash=sha256:6e34463af53fd2ab5d807f399a9b45ea31c3dfa2276f15a2c3f00afff6e176e8
@@ -517,9 +531,9 @@ packaging==26.3 \
     #   accelerate
     #   huggingface-hub
     #   transformers
-particlegan==0.9.1 \
-    --hash=sha256:58282cda3fefa8b31509283d12dda612ae1ce33d1e044422a874ed135da2bc07 \
-    --hash=sha256:b01b7957169cb3de45887e22b4d525fd54071577e1de58089707cf05fe6992ec
+particlegan==0.9.4 \
+    --hash=sha256:ad21eeaea861cf0582fc39aa96eb3fd8ab8cf21e8e0f0179f0597a9c42eb99b6 \
+    --hash=sha256:cd792dffd8aaaee9f7468b256fae7e6913fd78e3d64349d1cd775565c835b65e
     # via
     #   moss-image-sliders (pyproject.toml)
     #   particle-sliders-core
@@ -925,6 +939,7 @@ torch @ https://download-r2.pytorch.org/whl/cpu/torch-2.9.1%2Bcpu-cp312-cp312-ma
     #   -r requirements-runtime-cpu.in
     #   moss-image-sliders (pyproject.toml)
     #   accelerate
+    #   hndl
     #   particle-sliders-core
     #   particlegan
 tqdm==4.70.1 \
@@ -961,3 +976,4 @@ zipp==4.1.2 \
 
 # The following packages were excluded from the output:
 # particle-sliders-core
+# hypergan

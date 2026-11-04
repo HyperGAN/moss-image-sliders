@@ -125,7 +125,7 @@ def test_exact_hndl_checkpoint_restore_and_rejection_without_mutation(tmp_path, 
     assert packet["config"]["pg_version"] == "0.9.4"
     assert packet["config"]["pg_source_profile"] == "release-0.9.4"
     assert packet["config"]["backend"]["model_identity"]["network_runtime"]["core_commit"] == (
-        "a794e3b4a8813b012f2c4faa3da82b78d4a90214")
+        "ddb41423bcefc1fe76cd94d0f9b367353b3ea137")
     corrupt = deepcopy(packet)
     corrupt["config"][identity_key] = wrong
     with pytest.raises(ValueError):

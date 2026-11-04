@@ -133,12 +133,15 @@ def test_real_tiny_architecture_end_to_end():
 
 def test_examples_and_config_guards():
     for path in Path('examples').glob('*.json'):
-        config = validate_config(json.loads(path.read_text()))
+        from moss_sliders.execution import validate_training
+        raw = json.loads(path.read_text())
+        fixture = raw.get('dummy') is True
+        config = validate_training(raw, fixture=fixture)
         for key, value in [('steps', 0), ('rank', 0), ('resolution', 513),
                            ('lr', float('nan')), ('neutral', '')]:
             invalid = {**config, key: value}
             with pytest.raises(ValueError):
-                validate_config(invalid)
+                validate_config(invalid, fixture=fixture)
 
 
 def test_official_source_checksum():

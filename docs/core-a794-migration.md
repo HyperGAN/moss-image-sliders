@@ -1,3 +1,5 @@
+> Historical cohort/evidence. Current package installation and training are described in [PG0.9.4 current](pg094-current.md). Original receipts below remain unchanged.
+
 # MOSS modern core migration: Claude RETURN packet
 
 The active modern preview alone moves from core `4abc0eb` to exact

@@ -1,0 +1,26 @@
+# Shared training frontend
+
+Install the current product and exact shared core in a separate environment as
+shown in README.md. The installed `moss` and `moss-cpu-fixture` profiles use
+`particle-slider train`, the merged isolated execution API, and a product-owned
+native worker/factory. Every GAN update still executes `ConditionalPG09`.
+
+`moss` is source_only: CPU source and software checks do not qualify pretrained
+CUDA/BF16/offload/media output. Its execution keeps the existing pinned model,
+CUDA-only and local-files-only defaults. An allocation-free `--check` verifies
+the recipe, complete resume-file presence and exact source/runtime closure; it
+does not load a pretrained model or promise device/model readiness.
+
+`moss-cpu-fixture` is fixture: it requires `dummy=true`, device cpu, at most 20
+updates, rank 4, 64px, four rollout positions and batch 4. It uses a tiny random
+native MOSS architecture; no model files are downloaded. It writes ordinary
+shared-game full checkpoints and portable adapter exports labelled dummy=true.
+The shared dispatcher owns process isolation and output/progress bookkeeping;
+the product owns native model construction, GAN artifacts and source admission.
+Native workers support periodic checkpoints and same-cohort resume. Raw adapter
+selection is product owned; EMA selection and export-format overrides are not
+advertised. `--stop-after` is a session-only API and is not advertised here.
+
+The old machine-local bridge on feat/unified-training-command-20261104 is a
+separate source-bound experiment and is unchanged. Its provenance does not
+qualify this portable factory. Historical source cohorts remain separate.

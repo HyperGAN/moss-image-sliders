@@ -1,3 +1,5 @@
+> Historical cohort/evidence. Current package installation and training are described in [PG0.9.4 current](pg094-current.md). Original receipts below remain unchanged.
+
 # Isolated HyperGAN/HNDL preview
 
 This preview executes official PG 0.9.4 through shared core 0.12.0, the exact

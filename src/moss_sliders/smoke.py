@@ -12,7 +12,7 @@ def tiny_model():
                                 text_dim=16, freq_dim=16, latent_channels=4).eval()
 
 
-def run_smoke(steps=4, *, runtime_profile="legacy-pg091"):
+def run_smoke(steps=4, *, runtime_profile="hypergan-hndl-v2"):
     from .gan import build_run, restore_checkpoint, save_checkpoint
     from .artifacts import save_gan_slider
     from particle_sliders.pg09_backends import FlowSchedule, ResponseRow

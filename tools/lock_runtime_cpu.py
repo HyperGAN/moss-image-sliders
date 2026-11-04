@@ -35,9 +35,7 @@ def main():
     hndl = args.profile == 'hndl'
     output = ROOT / ('requirements-hndl-cpu.lock' if hndl else 'requirements-runtime-cpu.lock')
     project = 'profiles/hypergan-hndl/pyproject.toml' if hndl else 'pyproject.toml'
-    omitted = ['--no-emit-package', 'particle-sliders-core']
-    if hndl:
-        omitted += ['--no-emit-package', 'hypergan']
+    omitted = ['--no-emit-package', 'particle-sliders-core', '--no-emit-package', 'hypergan']
     command = 'python tools/lock_runtime_cpu.py' + (' --profile hndl' if hndl else '')
     subprocess.run([args.uv, 'pip', 'compile', project, 'requirements-runtime-cpu.in',
         '--python-version', '3.12', '--python-platform', 'x86_64-unknown-linux-gnu',

@@ -40,7 +40,7 @@ class GanRun:
 
 
 def build_run(pipe, contexts, config, *, checkpointing=True, model_identity=None,
-              runtime_profile="legacy-pg091"):
+              runtime_profile="hypergan-hndl-v2"):
     """Validate before attachment and roll back hooks/flags after a failed build."""
     if runtime_profile == "hypergan-hndl-v2":
         from .native_hndl import verify_runtime
@@ -81,7 +81,7 @@ def build_run(pipe, contexts, config, *, checkpointing=True, model_identity=None
 
 
 def _build_run(pipe, contexts, config, *, checkpointing, model_identity, owner,
-               runtime_profile="legacy-pg091"):
+               runtime_profile="hypergan-hndl-v2"):
     """Fixed frozen neutral rollouts, paired signs, and useful context/time features.
 
     Each scheduler position receives a separately seeded frozen neutral rollout.
@@ -162,6 +162,9 @@ def _build_run(pipe, contexts, config, *, checkpointing, model_identity, owner,
 
 def prepare_cached_rows(cache):
     """Validate cache identity and shared runtime before loading a real model."""
+    from particle_sliders.pg09 import PG_VERSION
+    if PG_VERSION != "0.9.1":
+        raise RuntimeError("Legacy cached campaigns require their original PG0.9.1/core cohort; see docs/pg094-current.md")
     from particle_sliders.pg09_moss_campaign import MossCampaignRows
     from particle_sliders.pg09 import validate_pg09_domain
     provider = MossCampaignRows(cache)
@@ -178,6 +181,9 @@ def build_cached_run(transformer, cache, *, total_steps=3840, batch_size=8,
         raise ValueError("batch_size must be an integer in [2,512]")
     if type(total_steps) is not int or not 1 <= total_steps <= 3840:
         raise ValueError("Campaign total_steps must be an integer in [1,3840]")
+    from particle_sliders.pg09 import PG_VERSION
+    if PG_VERSION != "0.9.1":
+        raise RuntimeError("Legacy cached campaigns require their original PG0.9.1/core cohort; see docs/pg094-current.md")
     from particle_sliders.pg09_moss_campaign import build_campaign_run
     provider = prepare_cached_rows(cache) if provider is None else provider
     run = build_campaign_run(

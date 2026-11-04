@@ -1,4 +1,4 @@
-"""Opt-in MOSS spatial binding to the verified shared HyperGAN/HNDL graph.
+"""Current MOSS spatial binding to the verified shared HyperGAN/HNDL graph.
 
 The shared core owns the graph, GAN game, losses, optimizers and domain admission.
 The product owns its frozen transformer, signed attention LoRA and velocity layout.
@@ -18,7 +18,7 @@ linear(down, $output_width, bias=False, name="up")'''
 def verify_runtime():
     """Reject a historical environment before attaching or loading native weights."""
     if version("particle-sliders-core") != "0.12.0":
-        raise ValueError("MOSS HNDL requires the separately qualified core 0.12.0 profile")
+        raise ValueError("MOSS HNDL requires the qualified core 0.12.0 profile")
     import particle_sliders
     manifest_path = Path(__file__).with_name("hndl_cohort.json")
     cohort = json.loads(manifest_path.read_text())
@@ -29,7 +29,7 @@ def verify_runtime():
                 and "__pycache__" not in p.parts and p.suffix != ".pyc"}
     actual = closure(root)
     if actual != cohort["sources"]:
-        raise ValueError("MOSS HNDL core source closure differs from the exact local candidate")
+        raise ValueError("MOSS HNDL core source closure differs from the exact qualified candidate")
     if closure(root.parent / "concept_slider_core") != cohort["compatibility_sources"]:
         raise ValueError("MOSS HNDL compatibility source closure differs from the exact candidate")
     from particle_sliders.pg09 import PG_VERSION, validate_pg09_domain

@@ -1,53 +1,72 @@
-> Compatibility reconciliation: the patched Pillow minimum conflicts with the current Gradio UI pin. Current UI/full-lock installation is blocked; see [exact status](docs/compatibility-20261031.md). A separate [base-runtime install](docs/runtime-only-install.md) resolves without Gradio.
-
-> An isolated [HyperGAN/HNDL preview](docs/hypergan-hndl-preview.md) adds actual HNDL attention LoRA and shared spatial critic execution. Its exact public core 0.12 candidate has a separate clean CPU installation path; default and historical checkpoint environments remain on their original cohort.
-
 # MOSS-Image Sliders
 
-Signed concept LoRA controls for the pinned OpenMOSS MOSS-Image-SFT model.
-Training now executes the installed `particle-sliders-core` conditional GAN with
-**ParticleGAN 0.9.1**, public `bispf_optimized`, native velocity fields, and
-independent balanced generator/critic sampling. Losses and optimizers live in the
-shared package; this derivative contains the MOSS model loader and adapter hooks.
+Signed concept LoRA controls for pinned OpenMOSS MOSS-Image-SFT. The current
+`moss-image-sliders 0.3.0.dev2` package and `moss-sliders train` use official
+**ParticleGAN 0.9.4**, shared **particle-sliders-core 0.12.0** at
+`ddb41423bcefc1fe76cd94d0f9b367353b3ea137`, HyperGAN develop builder
+`5f368a3770cf5bdae0448995c9f76e29af8049f7`, and HNDL 0.10.0. Actual HNDL
+attention LoRA and the shared spatial field critic execute the public
+`bispf_optimized` adapter GAN; the shared core owns losses, optimizers,
+sampling and full-state checkpoint validation. **There is no particle bank**:
+`particles=None` is the legitimate adapter-only generator arm.
 
-This is an adapter GAN. There is no routed particle bank to regularize. Only
-attention LoRA leaves train; transformer weights and Qwen conditioning stay frozen.
-The historical lighting images below used the earlier MSE baseline and its old
-CFG protocol. They are preserved with their original provenance and do not qualify
-the new GAN path. New pretrained CUDA/image validation remains pending.
+CPU software checks use the real tiny random MOSS architecture. Pretrained CUDA,
+BF16, offload, real VAE output, performance and media quality remain unqualified
+for this new source cohort. Model loading still requires CUDA and defaults to
+local cached weights. Old weights, four historical controls, MSE pilots and
+PG0.9.0/0.9.1 run records retain their original objective/version and are not
+retrained by this package update. [Migration and exact limits](docs/pg094-current.md).
 
-## Install the safe base CPU runtime
+## Install the current CPU runtime
 
-The package supports **Python 3.11–3.12**. The reproducible CPU lock below is
-specifically for **Python 3.12 / Linux x86-64** and installs 43 runtime packages,
-including Pillow 13 and the official Torch 2.9.1+cpu archive. From the source root:
+The package supports Python 3.11–3.12. This hash-checked runtime lock is specifically
+for CPython 3.12/Linux x86-64 and uses the official Torch 2.9.1+cpu archive.
+Create a new environment; never repin an active campaign:
 
 ```bash
 python3.12 -m venv .venv-cpu
 . .venv-cpu/bin/activate
 python -m pip install --require-hashes -r requirements-runtime-cpu.lock
-python -m pip install --no-deps 'particle-sliders-core[serialization] @ git+https://github.com/HyperGAN/particle-sliders.git@cdfb80a76b882b4b73861b12f555263bd64ffeb7#subdirectory=packages/particle-sliders-core'
+python -m pip install --no-deps 'particle-sliders-core[serialization,hypergan-hndl] @ git+https://github.com/HyperGAN/particle-sliders.git@ddb41423bcefc1fe76cd94d0f9b367353b3ea137#subdirectory=packages/particle-sliders-core'
+python -m pip install --no-deps 'hypergan @ git+https://github.com/HyperGAN/HyperGAN.git@5f368a3770cf5bdae0448995c9f76e29af8049f7'
 python -m pip install --no-deps .
 python -m pip check
 moss-sliders --help
 moss-sliders smoke --receipt outputs/gan-smoke.json
 ```
 
-Keep this order: hash-locked runtime, exact shared core without dependency
-resolution, then the product without dependency resolution. The base cohort is
-core 0.6.0/CDF and official PG 0.9.1. Python3.11 remains eligible in package metadata,
-but this platform-specific CPython 3.12 lock does not qualify a Python3.11 install.
-Use a new environment; do not retarget a running campaign. The CPU smoke uses a
-tiny random MOSS architecture, downloads no pretrained weights and makes no
-GPU or image-quality claim. See [installation and test evidence](docs/runtime-only-install.md).
+`moss-hndl` remains a compatibility command for the same current native path.
+`profiles/hypergan-hndl` no longer selects a different core from the base package.
+The old root `uv.lock`/`requirements-cpu.lock` and base PG0.9.1 lock are archived
+unchanged in [profiles/legacy-pg091](profiles/legacy-pg091/README.md).
 
-**UI installation remains blocked.** Do not run the historical all-extras
-`uv sync`/`uv run` path, add `.[ui]`, or use `requirements-cpu.lock` as a patched
-current environment. Those historical locks contain incompatible older packages;
-Gradio 6.30 requires Pillow<13 while this package requires Pillow>=13. Keep the
-security floor. Both the UI and a complete UI lock need a verified compatible
-cohort before use. [The isolated HNDL preview](docs/hypergan-hndl-preview.md) has its
-own environment and an exact public core candidate; it is not a base extra.
+**UI installation remains blocked**: Gradio 6.30 requires Pillow<13 while this
+package keeps Pillow>=13. Do not add `.[ui]` or use the archived full/UI lock as a
+current environment. The security floor is preserved.
+
+## One training command
+
+The merged core frontend discovers the installed product profiles:
+
+```bash
+particle-slider train --config examples/warm-light.json --profile moss --check --no-reporting
+particle-slider train --config examples/warm-light.json --profile moss --out /new/run
+```
+
+The native profile is explicitly `source_only` until the new model cohort is
+qualified. `--check` validates recipe/runtime sources without loading weights.
+Execution uses this product's native factory and existing CUDA/local-cache gate.
+To run the bounded CPU architecture fixture, explicitly select its profile and
+`dummy=true` recipe:
+
+```bash
+particle-slider train --config examples/cpu-fixture.json --profile moss-cpu-fixture --out /new/cpu-fixture --no-reporting
+```
+
+Resume accepts a complete source-compatible checkpoint directory using `--resume`.
+The original `moss-sliders train --config ... --output ...` interface remains.
+Neither training command searches learning rates, renders images or publishes
+weights. [Unified execution details](TRAINING.md).
 
 ## Samples
 
@@ -178,18 +197,14 @@ legacy MSE optimizer packets cannot resume a GAN run. Existing source-bound nati
 campaign checkpoints must continue under their original admitted runtime; package
 relocation is a new lineage and requires a new cohort or reviewed migration.
 
-## Frozen campaign caches
+## Historical frozen campaign caches
 
-`moss-sliders train-campaign --cache /path/to/cache --output /new/run` executes the
-same shared game using `MossCampaignRows` and `build_campaign_run`. It reads verified
-cached targets lazily and never changes the original cache. Conditions, paired
-signs, native fields, train-only scale calibration and balanced coverage are shared
-with the upstream campaign implementation. The legacy `tools/train_campaign.py`
-now forwards explicitly to this command and requires a new `--output`.
-
-`tools/monitor_campaign.py` and the autonomous CUDA smoke are retired and start
-no processes. GPU admission and native qualification belong to the coordinator.
-No user command dispatches the old hard-coded active campaign checkout.
+Cached campaigns require their original PG/core/product source cohort. Current
+`train-campaign` fails before any model load; its old shared campaign module is
+not part of the current core. Continue historical campaigns from the exact
+recorded environment or [legacy reproduction instructions](profiles/legacy-pg091/README.md).
+The current native factory builds signed frozen rollouts through the supported
+shared API. No cache, run directory or old artifact was modified.
 
 ## Render a matched-seed ramp
 

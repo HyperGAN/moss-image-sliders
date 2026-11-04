@@ -1,0 +1,127 @@
+{
+  "artifacts": {
+    "moss_image_sliders-0.3.0.dev2-py3-none-any.whl": "9dce628962d6b57d3694cf2174ec54495b1a219462aa436b61570b2496ef6a5d",
+    "moss_image_sliders-0.3.0.dev2.tar.gz": "c9049256be7f9b8d6a7bfc7d3b772c41f86a4184ed227f84a75b3c2c787531ef"
+  },
+  "checks": {
+    "cli_smoke": "2 CPU updates, exact full-game replay, frozen base, signed ramp, no downloads",
+    "pip_check_sdist": "No broken requirements found.",
+    "pip_check_wheel": "No broken requirements found.",
+    "sdist": "22 passed; native HNDL and unified execution contract lane",
+    "source_match": "all installed product package bytes match final wheel and checkout; all 574 core namespace files match ddb source",
+    "unified_dispatcher": "installed profile check, actual fixture train and exact same-budget resume; explicit dummy=true; no reporting configured",
+    "wheel": "114 passed, 1 skipped; optional blocked UI not installed"
+  },
+  "commands": [
+    "uv pip install --require-hashes --python ../moss-venv/bin/python -r requirements-runtime-cpu.lock",
+    "python -m pip install --no-cache-dir --no-deps --force-reinstall hypergan@git+https://github.com/HyperGAN/HyperGAN.git@5f368a3770cf5bdae0448995c9f76e29af8049f7",
+    "python -m build --wheel --sdist --outdir ../moss-final-artifacts",
+    "python -I -m pytest tests -q --tb=short --junitxml=../moss-final-wheel-tests.xml (separate harness; no product src)",
+    "python -m pip install --no-deps --no-build-isolation --force-reinstall ../moss-final-artifacts/moss_image_sliders-0.3.0.dev2.tar.gz",
+    "python -I -m pytest tests/test_native_hndl.py tests/test_execution.py -q --tb=short --junitxml=../moss-sdist-tests.xml (same separate harness)",
+    "moss-sliders smoke --steps 2 --receipt ../moss-cli-smoke.json"
+  ],
+  "core_commit": "ddb41423bcefc1fe76cd94d0f9b367353b3ea137",
+  "core_namespace_files": 574,
+  "installed": {
+    "diffusers": {
+      "direct_url": null,
+      "version": "0.38.0"
+    },
+    "hndl": {
+      "direct_url": null,
+      "version": "0.10.0"
+    },
+    "hypergan": {
+      "direct_url": {
+        "url": "https://github.com/HyperGAN/HyperGAN.git",
+        "vcs_info": {
+          "commit_id": "5f368a3770cf5bdae0448995c9f76e29af8049f7",
+          "requested_revision": "5f368a3770cf5bdae0448995c9f76e29af8049f7",
+          "vcs": "git"
+        }
+      },
+      "version": "2.0.0"
+    },
+    "moss-image-sliders": {
+      "direct_url": {
+        "archive_info": {
+          "hash": "sha256=c9049256be7f9b8d6a7bfc7d3b772c41f86a4184ed227f84a75b3c2c787531ef",
+          "hashes": {
+            "sha256": "c9049256be7f9b8d6a7bfc7d3b772c41f86a4184ed227f84a75b3c2c787531ef"
+          }
+        },
+        "url": "file:///ml2/particlesliders-working/pg094-upgrades/moss-final-artifacts/moss_image_sliders-0.3.0.dev2.tar.gz"
+      },
+      "version": "0.3.0.dev2"
+    },
+    "particle-sliders-core": {
+      "direct_url": {
+        "archive_info": {},
+        "url": "file:///ml2/particlesliders-working/pg094-upgrades/base-wheels-merged/particle_sliders_core-0.12.0-py3-none-any.whl"
+      },
+      "version": "0.12.0"
+    },
+    "particlegan": {
+      "direct_url": null,
+      "version": "0.9.4"
+    },
+    "pillow": {
+      "direct_url": null,
+      "version": "13.0.0"
+    },
+    "torch": {
+      "direct_url": {
+        "archive_info": {},
+        "url": "https://download-r2.pytorch.org/whl/cpu/torch-2.9.1%2Bcpu-cp312-cp312-manylinux_2_28_x86_64.whl"
+      },
+      "version": "2.9.1+cpu"
+    },
+    "transformers": {
+      "direct_url": null,
+      "version": "5.3.0"
+    }
+  },
+  "limits": [
+    "No pretrained weights downloaded or GPU training",
+    "Pretrained CUDA/BF16/offload/VAE/media quality/performance unqualified for new cohort",
+    "Native profile is source_only; fixture profile is fixture and requires dummy=true",
+    "UI blocked by patched Pillow/Gradio constraint",
+    "Historical MSE/PG090/PG091 weights and runs unchanged",
+    "Separate local source-bound native bridge not modified"
+  ],
+  "native_runtime": {
+    "core_cohort_sha256": "b542e0f773d7624bd23b0a79bca6969c5091ec5e02a719197d69c3bcb2ff04da",
+    "core_commit": "ddb41423bcefc1fe76cd94d0f9b367353b3ea137",
+    "critic_sha256": "31f95ccf2178363d7a027597a00694c571c9d69a170151fcbe36e05326ac4707",
+    "hndl_version": "0.10.0",
+    "hypergan_build_provenance_sha256": "fa0aaed8eea39a1cc545bafb96c9a72eb155b52cb79f2d34c44f505aaf4ac179",
+    "hypergan_commit": "5f368a3770cf5bdae0448995c9f76e29af8049f7",
+    "lora_graph_sha256": "c9bb30696051cbb1c64080f9b6bcc422743a5d74ceb617c5d4c1127236dbaa9f",
+    "profile": "hypergan-hndl-v2",
+    "projection_sha256": "b5efac1cfb0c597e5d6e0839af6077ff36dec916901bfa254be78db9f691c086",
+    "runtime_sources_sha256": "69e65e3daf18ac5c99154fd735d0b6fc8e8c95433c5b0618a074cdd203ed6251"
+  },
+  "particlegan_commit": "330eb94ee748cdcad131b0275d8de75fd5a7f96f",
+  "product_import": "/ml2/particlesliders-working/pg094-upgrades/moss-venv/lib/python3.12/site-packages/moss_sliders",
+  "product_sources": {
+    "__init__.py": "3155832b9f18c910e02c9f021937fbd1c0aefc2d65697e85e4bcf17f79f71379",
+    "artifacts.py": "61330a611c291402bed1c15e2d4bc2a1ef5cad463e7df75b3610d7c95c53ce38",
+    "backend.py": "e8e05b19599d31bf9b49837f77f796a85f1dc6d875e145baface985cfd704850",
+    "campaign.py": "a4e05a96eab1835dada9fea5b1f1f129c10fe02c582063a9a942c99243be6a97",
+    "cli.py": "47f4e231a261d1d7f3abd177a219aca100512a74c880ac680c1bc9ada2887056",
+    "execution.py": "9eadb31f4ffd7d68b80bf2e44b79e6908b9c25e39e257931c265ad16e519cae3",
+    "gan.py": "cecd24eef7f7fad481f118d8b1fe1fae87e1b692232a194237f405029b88a145",
+    "hndl_cohort.json": "b542e0f773d7624bd23b0a79bca6969c5091ec5e02a719197d69c3bcb2ff04da",
+    "inference.py": "d458af6e9b2e4aa813c312c3d39fc04111e009dfe1bb0c604e6c8183d6cf1955",
+    "lora.py": "196776f500ef60b34b44d04db882898cdecec442327b8cbcfa81d5803693a880",
+    "native_hndl.py": "eea5a2600f0e941ad0a83686491bf471248c6d8e2c917d7be702eb24e96748f3",
+    "smoke.py": "538d5321a632e9265b7f535bae6b7aba4bf2a3a8a2f9fc2929913bc120b60579",
+    "training.py": "f18410d72f3ce9147a076258247406dec073098c014051efa837499b6740a3f1",
+    "ui.py": "66483ab23c660885e22045091f38dcbed50260c95f66dd078ef60b36741366c3",
+    "vendor/__init__.py": "bb293ef358aad9fd97c2d323d78395b70c718859116313aa18c24f8c1e7b4bed",
+    "vendor/pipeline_moss_image.py": "1dac1aca9feb1bfdfc727a401e4b67d61a505d3190706d1b7d2d784f88678b31"
+  },
+  "product_version": "0.3.0.dev2",
+  "schema": "moss-pg094-current-software-v1"
+}

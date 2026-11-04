@@ -26,7 +26,7 @@ def fixture():
     model = tiny_model()
     original = deepcopy(model.state_dict())
     contexts = [(torch.randn(1, 3, 16), torch.ones(1, 3, dtype=torch.bool)) for _ in range(3)]
-    config = dict(objective="pg09_gan_only", pg_version="0.9.1", rank=2, seed=17,
+    config = dict(objective="pg09_gan_only", pg_version="0.9.4", rank=2, seed=17,
                   resolution=32, rollout_steps=2, strength=1., batch_size=2,
                   steps=8, lr=.001, critic_width=8)
 
@@ -106,10 +106,9 @@ def make_after_restore(make, saved):
     return run
 
 
-def test_original_v1_header_still_resumes_in_original_pg091_cohort(tmp_path):
+def test_unidentified_legacy_v1_header_rejects_in_current_cohort(tmp_path):
     make, _, _ = fixture()
     source = make()
-    source.step()
     saved = save_checkpoint(source, tmp_path)
     metadata_path = saved / "checkpoint.json"
     metadata = json.loads(metadata_path.read_text())
@@ -117,11 +116,11 @@ def test_original_v1_header_still_resumes_in_original_pg091_cohort(tmp_path):
     for key in ("pg_version", "pg_source_profile", "penalty_input_domain"):
         del metadata[key]
     metadata_path.write_text(json.dumps(metadata))
-    expected = source.step()
     receiver = make()
-    assert restore_checkpoint(receiver, saved) == 1
-    assert receiver.step() == expected
-    equal(source.game.state_dict(), receiver.game.state_dict())
+    before = deepcopy(receiver.game.state_dict())
+    with pytest.raises(ValueError, match="explicit PG/profile/domain header"):
+        restore_checkpoint(receiver, saved)
+    equal(before, receiver.game.state_dict())
 
 
 def test_resume_checks_checksum_recipe_and_rejects_legacy_before_mutation(tmp_path):
@@ -221,7 +220,7 @@ def test_cli_rejects_legacy_recipe_and_missing_resume_before_model_load(tmp_path
     config["objective"] = "mse"
     with pytest.raises(ValueError, match="GAN-only"):
         validate_config(config)
-    with pytest.raises(FileExistsError):
+    with pytest.raises(RuntimeError, match="legacy cached campaigns"):
         main(["train-campaign", "--cache", "missing", "--output", str(tmp_path)])
     with pytest.raises(FileNotFoundError, match="complete full GAN"):
         main(["train", "--config", "examples/warm-light.json", "--resume", "missing",
@@ -233,6 +232,6 @@ def test_campaign_cache_is_checked_before_any_model_load(tmp_path, monkeypatch):
     def forbidden(**kwargs):
         raise AssertionError("An invalid cache must fail before native model loading")
     monkeypatch.setattr(backend, "load_transformer", forbidden)
-    with pytest.raises(FileNotFoundError):
+    with pytest.raises(RuntimeError, match="legacy cached campaigns"):
         main(["train-campaign", "--cache", str(tmp_path / "missing-cache"),
               "--output", str(tmp_path / "new-output")])

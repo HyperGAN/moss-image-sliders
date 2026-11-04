@@ -1,3 +1,5 @@
+> Historical cohort/evidence. Current package installation and training are described in [PG0.9.4 current](pg094-current.md). Original receipts below remain unchanged.
+
 # Base runtime without the optional UI
 
 Gradio is already isolated in the `ui` extra and imported only when building

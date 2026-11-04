@@ -34,7 +34,7 @@ def fixture():
         original = deepcopy(model.state_dict())
         contexts = [(torch.randn(1, 3, 16), torch.ones(1, 3, dtype=torch.bool))
                     for _ in range(3)]
-    config = dict(objective="pg09_gan_only", pg_version="0.9.1", rank=2, seed=17,
+    config = dict(objective="pg09_gan_only", pg_version="0.9.4", rank=2, seed=17,
                   resolution=32, rollout_steps=2, strength=1., batch_size=2,
                   steps=8, lr=.001, critic_width=8)
 
@@ -117,7 +117,7 @@ def test_mock_cuda_seeds_only_the_fork_owned_generator(monkeypatch, device, expe
 
     monkeypatch.setattr(gan, "Slider", capture_seed)
     before = torch.get_rng_state().clone()
-    config = dict(objective="pg09_gan_only", pg_version="0.9.1", seed=317, rank=2)
+    config = dict(objective="pg09_gan_only", pg_version="0.9.4", seed=317, rank=2)
     pipe = SimpleNamespace(transformer=SimpleNamespace(device=torch.device(device)))
     with pytest.raises(StopAfterSeed):
         gan._build_run(pipe, (), config, checkpointing=False, model_identity=None, owner=[])

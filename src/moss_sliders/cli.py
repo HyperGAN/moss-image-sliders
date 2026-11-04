@@ -45,7 +45,7 @@ def parser():
     return root
 
 
-def validate_config(config, *, pg_version="0.9.1"):
+def validate_config(config, *, pg_version="0.9.4", fixture=False):
     required = {"neutral", "positive", "negative", "steps", "rank", "lr", "resolution",
                 "rollout_steps", "strength", "seed", "max_sequence_length", "objective",
                 "pg_version", "preset", "batch_size"}
@@ -58,7 +58,7 @@ def validate_config(config, *, pg_version="0.9.1"):
         if not isinstance(config[key], str) or not config[key].strip():
             raise ValueError(f"{key} must be nonempty text")
     for key, lower, upper in [("steps", 1, 10000), ("rank", 1, 128),
-                              ("rollout_steps", 2, 50), ("resolution", 256, 2048),
+                              ("rollout_steps", 2, 50), ("resolution", 16 if fixture else 256, 2048),
                               ("max_sequence_length", 1, 4096), ("seed", 0, 2**32 - 1),
                               ("batch_size", 2, 512)]:
         if type(config[key]) is not int or not lower <= config[key] <= upper:
@@ -71,15 +71,16 @@ def validate_config(config, *, pg_version="0.9.1"):
     return config
 
 
-def main(argv=None, *, runtime_profile="legacy-pg091"):
+def main(argv=None, *, runtime_profile="hypergan-hndl-v2"):
     args = parser().parse_args(argv)
-    pg_version = "0.9.1"
+    pg_version = "0.9.4" if runtime_profile == "hypergan-hndl-v2" else "0.9.1"
     if runtime_profile == "hypergan-hndl-v2":
         from .native_hndl import verify_runtime
-        verify_runtime()
+        if args.command in ("train", "smoke"):
+            verify_runtime()
         pg_version = "0.9.4"
         if args.command in ("train-campaign", "ui"):
-            raise RuntimeError("The HNDL profile does not qualify historical cached campaigns or UI")
+            raise RuntimeError("Current MOSS does not qualify legacy cached campaigns or UI; see docs/pg094-current.md")
     if args.command == "doctor":
         import os
         import shutil

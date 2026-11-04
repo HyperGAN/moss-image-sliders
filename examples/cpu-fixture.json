@@ -1,0 +1,18 @@
+{
+  "neutral": "A ceramic teapot on a wooden table, studio photograph.",
+  "positive": "A ceramic teapot on a wooden table, studio photograph, warm golden lighting.",
+  "negative": "A ceramic teapot on a wooden table, studio photograph, cool blue lighting.",
+  "steps": 2,
+  "rank": 2,
+  "lr": 0.0001,
+  "resolution": 32,
+  "rollout_steps": 2,
+  "strength": 1.0,
+  "seed": 42,
+  "max_sequence_length": 16,
+  "objective": "pg09_gan_only",
+  "pg_version": "0.9.4",
+  "preset": "bispf_optimized",
+  "batch_size": 2,
+  "dummy": true
+}

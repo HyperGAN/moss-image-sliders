@@ -11,7 +11,7 @@
   "seed": 42,
   "max_sequence_length": 256,
   "objective": "pg09_gan_only",
-  "pg_version": "0.9.1",
+  "pg_version": "0.9.4",
   "preset": "bispf_optimized",
   "batch_size": 4
 }
