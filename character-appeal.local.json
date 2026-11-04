@@ -1,18 +1,25 @@
 {
-  "neutral": "A head-and-shoulders photograph of a 29-year-old woman with short, dark, spiky hair. She wears a faded black T-shirt and a small silver ear cuff. Her head is tilted slightly, one eyebrow raised, a sideways grin on her face as she looks at the camera. Soft window light, a blurred green wall behind her.",
-  "positive": "A head-and-shoulders photograph of a strikingly attractive 29-year-old woman with short, dark, spiky hair, one unruly spike falling forward. She wears a faded black T-shirt and a small silver ear cuff. Her head is tilted slightly, one expressive eyebrow cocked. A crooked, toothy grin catches her just before she laughs; her nose scrunches a little and her bright eyes look amused, as if she just got away with something. Beautifully defined cheekbones, an appealing jawline, expressive lips, a few freckles and natural skin texture. Distinctive, charming, full of personality. Soft window light, a blurred green wall behind her.",
-  "negative": "A head-and-shoulders photograph of a 29-year-old woman with short, dark, spiky hair. She wears a faded black T-shirt and a small silver ear cuff. Her head is tilted slightly, one eyebrow raised, a sideways grin on her face as she looks at the camera. Unflattering facial rendering, poorly defined features, dull unfocused eyes, a stiff and awkward grin, waxy skin. Her expression feels forced and lifeless. Soft window light, a blurred green wall behind her.",
-  "steps": 1024,
-  "rank": 2,
-  "lr": 0.00001,
-  "d_lr_mult": 100.0,
-  "resolution": 256,
-  "rollout_steps": 2,
-  "strength": 1.0,
-  "seed": 17,
-  "max_sequence_length": 256,
-  "objective": "pg09_gan_only",
-  "pg_version": "0.9.4",
-  "preset": "bispf_optimized",
-  "batch_size": 2
+  "schema": "particle-slider-train-v1",
+  "profile": "training_profile.local-pg094.json",
+  "training": {
+    "neutral": "A head-and-shoulders photograph of a 29-year-old woman with short, dark, spiky hair. She wears a faded black T-shirt and a small silver ear cuff. Her head is tilted slightly, one eyebrow raised, a sideways grin on her face as she looks at the camera. Soft window light, a blurred green wall behind her.",
+    "positive": "A head-and-shoulders photograph of a strikingly attractive 29-year-old woman with short, dark, spiky hair, one unruly spike falling forward. She wears a faded black T-shirt and a small silver ear cuff. Her head is tilted slightly, one expressive eyebrow cocked. A crooked, toothy grin catches her just before she laughs; her nose scrunches a little and her bright eyes look amused, as if she just got away with something. Beautifully defined cheekbones, an appealing jawline, expressive lips, a few freckles and natural skin texture. Distinctive, charming, full of personality. Soft window light, a blurred green wall behind her.",
+    "negative": "A head-and-shoulders photograph of a 29-year-old woman with short, dark, spiky hair. She wears a faded black T-shirt and a small silver ear cuff. Her head is tilted slightly, one eyebrow raised, a sideways grin on her face as she looks at the camera. Unflattering facial rendering, poorly defined features, dull unfocused eyes, a stiff and awkward grin, waxy skin. Her expression feels forced and lifeless. Soft window light, a blurred green wall behind her.",
+    "steps": 1024,
+    "rank": 2,
+    "lr": 1e-05,
+    "d_lr_mult": 100.0,
+    "resolution": 256,
+    "rollout_steps": 2,
+    "strength": 1.0,
+    "seed": 17,
+    "max_sequence_length": 256,
+    "objective": "pg09_gan_only",
+    "pg_version": "0.9.4",
+    "preset": "bispf_optimized",
+    "batch_size": 2
+  },
+  "execution": {
+    "runner": "local"
+  }
 }

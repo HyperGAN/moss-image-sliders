@@ -1,8 +1,10 @@
 # One training command
 
 ```sh
-./train --config training.example.json
+particle-slider train --config training.example.json
 ```
+
+The project wrapper remains available: `./train --config training.example.json`.
 
 `./train` forwards to the common `particle-slider train` command with this
 project's explicit `training_profile.json`. The frontend can be selected through
@@ -27,10 +29,10 @@ It uses the existing FP32 DiT/BF16 text-encoder cohort and does not change this
 repository's default MSE trainer or dependencies:
 
 ```sh
-./train --config character-appeal.local.json --profile training_profile.local-pg094.json
+particle-slider train --config character-appeal.local.json
 ```
 
-The later `--profile` explicitly selects the alternate profile. Add `--check`
+The example envelope explicitly selects the alternate profile. Add `--check`
 for CPU/source validation. The profile is tied to this machine's runtime,
 immutable source receipt, cached weights and shared GPU0 policy. It is not a
 portable Modal profile, and does not add a particle-bank prior to the existing
