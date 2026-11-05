@@ -10,6 +10,12 @@ attention LoRA and the shared spatial field critic execute the public
 sampling and full-state checkpoint validation. **There is no particle bank**:
 `particles=None` is the legitimate adapter-only generator arm.
 
+Training, evaluation, exports and inference use RAW current weights. Do not
+maintain model/adapter EMA, average checkpoints or compare/select EMA weights.
+The public MOSS recipe exposes no host EMA option; do not add unsupported
+`ema_decay` fields or inference-selection flags. Historical artifacts retain
+their original provenance.
+
 CPU software checks use the real tiny random MOSS architecture. A fresh native
 PG0.9.5 **256×256 RAW-response research preset** measured G `0.0001`, D
 `0.018000000000000002` (`d_lr_mult=180`, no particle bank), with 128 updates:
