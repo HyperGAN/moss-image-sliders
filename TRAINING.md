@@ -17,9 +17,12 @@ native MOSS architecture; no model files are downloaded. It writes ordinary
 shared-game full checkpoints and portable adapter exports labelled dummy=true.
 The shared dispatcher owns process isolation and output/progress bookkeeping;
 the product owns native model construction, GAN artifacts and source admission.
-Native workers support periodic checkpoints and same-cohort resume. Raw adapter
-selection is product owned; EMA selection and export-format overrides are not
-advertised. `--stop-after` is a session-only API and is not advertised here.
+Native workers support periodic checkpoints and same-cohort resume. RAW adapter
+selection is product owned. Training, evaluation, export and inference use raw
+current weights without EMA state, checkpoint averaging or EMA comparisons.
+This recipe has no host EMA option; do not add an unsupported `ema_decay`
+field. EMA selection and export-format overrides are not advertised.
+`--stop-after` is a session-only API and is not advertised here.
 
 The old machine-local bridge on feat/unified-training-command-20261104 is a
 separate source-bound experiment and is unchanged. Its provenance does not
