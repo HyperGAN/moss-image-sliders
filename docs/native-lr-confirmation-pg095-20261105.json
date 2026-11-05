@@ -1,0 +1,258 @@
+{
+  "schema": "particle-slider-native-lr-evidence-v1",
+  "status": "best_tested_heldout_confirmed",
+  "measured_at": "2026-11-05",
+  "repository": "HyperGAN/moss-image-sliders",
+  "configuration_overrides": {
+    "lr": 0.0001,
+    "d_lr_mult": 180.0
+  },
+  "actual_optimizer_rates": {
+    "generator": [
+      0.0001
+    ],
+    "critic": [
+      0.018000000000000002,
+      0.018000000000000002,
+      0.018000000000000002,
+      0.018000000000000002
+    ],
+    "particle_bank": null
+  },
+  "actual_rate_float_hex": {
+    "G": "0x1.a36e2eb1c432dp-14",
+    "D": "0x1.26e978d4fdf3cp-6",
+    "d_lr_mult": "0x1.6800000000000p+7"
+  },
+  "source": {
+    "product_commit": "d2699d62a4acd8d3ccc8acfa4fb07ba79ebcecc7",
+    "runtime_package_git_tree": "26062afb90ff159f15c62336d7bce52cefdda3b2",
+    "public_runtime_files_byte_equal": 17,
+    "core_version": "0.13.0",
+    "core_commit": "3dd672a7f9b8c169daef90fd63e4bb42b9ddc423",
+    "particlegan_version": "0.9.5",
+    "particlegan_commit": "1b8355b184b21bb7d81104ee590813c262f6df0a",
+    "particlegan_wheel_sha256": "c1c0de7a635ac1b1634ba158eed050b6f6aed993e01f9b463435430c77d846ae",
+    "PG_source_profile": "release-0.9.5",
+    "product_runtime_profile": "hypergan-hndl-v3-pg095",
+    "hypergan_commit": "5f368a3770cf5bdae0448995c9f76e29af8049f7",
+    "hndl_version": "0.10.0",
+    "model": "OpenMOSS-Team/MOSS-Image-SFT",
+    "model_revision": "fc5de0d56fc910cbca6f6625a70f5f582b26deb1"
+  },
+  "scope": {
+    "cohort": "moss095-native256-common128-primary-v1",
+    "qualification": "Source-qualified native256 RAW-response research preset; general native frontend source_only metadata remains unchanged",
+    "native_pixels": [
+      256,
+      256
+    ],
+    "native_response_shape": [
+      1,
+      128,
+      16,
+      16
+    ],
+    "base_precision": "BF16 DiT and text encoder",
+    "trainable_precision": "float32",
+    "response_precision": "float32",
+    "adapter": "HNDL attention LoRA q/k/v/o",
+    "rank": 2,
+    "alpha": 2,
+    "particle_bank": false,
+    "batch": 2,
+    "seed": 17,
+    "max_sequence_length": 256,
+    "preset": "bispf_optimized",
+    "schedule_horizon": 128,
+    "completed_updates": 128,
+    "selection": "RAW",
+    "strength_magnitude": 1.0,
+    "signed_directions": [
+      -1.0,
+      1.0
+    ],
+    "neutral_Euler_rollout_positions": [
+      0,
+      1
+    ],
+    "train_scenes": 1,
+    "train_examples": 2,
+    "train_fields": 4,
+    "development_scenes": 2,
+    "development_examples": 4,
+    "development_fields": 8,
+    "confirmation_scenes": 3,
+    "confirmation_seeds": 2,
+    "confirmation_examples": 12,
+    "confirmation_fields": 24,
+    "native_training_API": "moss_sliders.native_hndl.build_hndl_run",
+    "public_RAW_API": [
+      "moss_sliders.artifacts.load_slider",
+      "particle_sliders.pg09_backends.MossResponseAdapter"
+    ]
+  },
+  "numerical": {
+    "python": "3.12.15",
+    "torch": "2.9.1+cu128",
+    "CUDA": "12.8",
+    "transformers": "5.3.0",
+    "diffusers": "0.38.0",
+    "numpy": "2.5.4",
+    "native_policy": {
+      "torch": "2.9.1+cu128",
+      "cuda": "12.8",
+      "deterministic": true,
+      "warn_only": false,
+      "tf32_matmul": false,
+      "tf32_cudnn": false,
+      "cudnn_benchmark": false,
+      "cudnn_deterministic": true,
+      "flash_sdp": true,
+      "memory_efficient_sdp": true,
+      "math_sdp": true,
+      "cudnn_sdp": true,
+      "CUBLAS": ":4096:8",
+      "matmul_precision": "highest",
+      "force_overrides": {
+        "TORCH_ALLOW_TF32_CUBLAS_OVERRIDE": null,
+        "NVIDIA_TF32_OVERRIDE": null
+      }
+    },
+    "native_threads": 2
+  },
+  "metric": {
+    "name": "RAW equal-example relative SSE",
+    "direction": "minimize",
+    "aggregation": "Cast S/T/N to FP64 before subtraction; sum squared errors and teacher-edit energy across both declared positions and all coordinates within each scene/seed/sign example; divide per example; equal-example mean",
+    "zero_energy": "undefined without epsilon; teacher-only valid/excluded membership fixed; student failures never drop examples",
+    "development": 0.9907276965186096,
+    "development_examples": 4,
+    "heldout_confirmation": 0.9091853181345732,
+    "confirmation_examples": 12,
+    "confirmation_excluded_examples": 0,
+    "confirmation_per_example_relative_SSE": [
+      0.9325341651939565,
+      0.9200436520921259,
+      0.9051734145269957,
+      0.8920132084168999,
+      0.9937367178732881,
+      0.9226367496142693,
+      0.9452071589152589,
+      0.9109191198145216,
+      0.8802232796381367,
+      0.8490565881447079,
+      0.8768380937963922,
+      0.881841669588325
+    ],
+    "OFF": 1.0,
+    "teacher": 0.0,
+    "reversed_edit": 4.0
+  },
+  "search": {
+    "kind": "G only, exact common actual D fixed, no particle bank",
+    "common_horizon": 128,
+    "rungs": [
+      32,
+      64,
+      128
+    ],
+    "cells": [
+      {
+        "cell": 0,
+        "G": 3e-05,
+        "actual_D": 0.018000000000000002,
+        "d_lr_mult": 600.0,
+        "RAW32": 1.0823743550953329
+      },
+      {
+        "cell": 1,
+        "G": 0.0001,
+        "actual_D": 0.018000000000000002,
+        "d_lr_mult": 180.0,
+        "RAW32": 1.0469044241242087,
+        "RAW64": 0.9914087042144453,
+        "RAW128": 0.9907276965186096
+      },
+      {
+        "cell": 2,
+        "G": 0.0003,
+        "actual_D": 0.018000000000000002,
+        "d_lr_mult": 60.000000000000014,
+        "RAW32": 1.0034826354602897,
+        "RAW64": 1.018164100422232
+      },
+      {
+        "cell": 3,
+        "G": 0.001,
+        "actual_D": 0.018000000000000002,
+        "d_lr_mult": 18.0,
+        "RAW32": 1.236276436535669
+      }
+    ],
+    "selected32": [
+      2,
+      1
+    ],
+    "selected64": [
+      1
+    ],
+    "selected128": 1,
+    "all_finite_admitted_budgets_completed": true,
+    "sealed_confirmation": "Declared independent final corpus, first semantically opened/encoded after immutable selected128; no tuning from its values",
+    "counts": {
+      "known_physical_completed_update_calls": 258,
+      "logical_completed_updates": 256,
+      "duplicate_mechanical_updates": 2,
+      "confirmation_update_calls": 0
+    }
+  },
+  "evidence": {
+    "native_fresh2_vs_fresh1plus1_complete_state_metrics_exact": true,
+    "public_RAW_OFF_replay_exact": true,
+    "native_final_training_game_critic_optimizer_constructors_used": false,
+    "native_final_frozen_base_and_RAW_adapter_unchanged": true,
+    "native_final_fixed_teacher_membership_before_student": true,
+    "native_final_actual_forward_guard_calls": 5427,
+    "actual_native_final_exit0_reaped": true,
+    "scientific_plan_sha256": "c9de153ac226f96ed9a20214ffa523f7041e7872fba526495efa9d2387ea600d",
+    "native_proof_qualification_sha256": "9801c600d25dfc42df34539091323465852f59c55458190f65e3e921c6318554",
+    "selection32_sha256": "f1711ad496b452a719ec42f1632e0587d18758fb350883563b4960e51c30cf7d",
+    "selection64_sha256": "d792f41dcf784db50d54cec8afa40e732404451b815e833e5cf4ac91e87bada9",
+    "leader128_sha256": "c50dc1fe401aa1d29be1b893c851a383a557b944ed3a779be9288a472584cdae",
+    "selected128_full_state_sha256": "4f3d222afa383f42f7a7812f79677d434ea964eb896dd31e4411c837db7287df",
+    "selected128_checkpoint_file_sha256": "9c7609bbaea5f2bf6d04505032b65477e3548a42260484e398e6e82a3994f448",
+    "selected128_report_sha256": "8b7f57c8cd8e964a7d4efa4a30ef576e495b5e047499af18c8e7ae0c677c1f6c",
+    "selected128_public_RAW_files": {
+      "slider.json": {
+        "bytes": 593505,
+        "sha256": "b11362b850182f21dcd67f03b84ed191f9c97224962d0fed3d4fae8936b8be67"
+      },
+      "adapter.safetensors": {
+        "bytes": 8288536,
+        "sha256": "23c655ecd2ade550a9cb858a689fc7bfee80cfae4d382dac290c6c47cc757cb7"
+      }
+    },
+    "final_reader_descriptor_sha256": "9a45785d33825cfb4151af7402cc4989ad8f6b543df0fb32dbdfa35c363425aa",
+    "confirmation_report_sha256": "86f87310326622464cc7fff14f834a301cb13467023af9d60d8e35c19411bad6",
+    "confirmation_responses_sha256": "a6e9c216bc8c8eecfa81dbf050a7e933231445e79a235463ff92ab52d07a3064",
+    "confirmation_supervisor_sha256": "9f0f8c19474c56d1b3471e138ef7e44aae17747ab4b0c016fe3106030dc2a1f9",
+    "independent_saved_field_audit": {
+      "status": "PASS_INDEPENDENT_SAVED_FIELD_FP64_EXACT",
+      "sha256": "80e7982d78e239427d39e1c5fbab8c855f6ac687d9f7ce1fa16b85268e7f4670",
+      "primary_exact": 0.9091853181345732,
+      "valid_examples": 12,
+      "excluded_examples": 0,
+      "fields": 24,
+      "all_per_example_values_exact": true,
+      "fixed_teacher_membership_exact": true,
+      "FP64_before_subtraction": true,
+      "epsilon_used": false,
+      "CUDA_initialized": false,
+      "native_model_or_PG_calls": 0,
+      "torch_threads": 2
+    }
+  },
+  "defaults_changed": false,
+  "limits": "Best tested recipe for this exact source/model/data/numerical/native256/HNDL/rank/batch/128-horizon cohort and declared successive-halving protocol. Only the selected64 winner was measured at128. Not a universal optimum, production-resolution sampler, VAE/offload/UI qualification, arbitrary frontend qualification or semantic-quality claim. No model weights, checkpoints, response tensors or paired corpus are distributed."
+}
