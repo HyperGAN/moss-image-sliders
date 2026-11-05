@@ -51,7 +51,7 @@ def _validate_gan_config(config, names, shapes, completed_steps):
             raise ValueError("GAN config lacks shared source/conditioning identity: " + key)
     if not config.get("implementation_sources"):
         raise ValueError("GAN config lacks shared implementation source identity")
-    if PG_VERSION == "0.9.4":
+    if PG_VERSION == "0.9.5":
         from .native_hndl import verify_runtime
         identity = backend.get("model_identity", {}).get("network_runtime")
         if identity != verify_runtime():
@@ -152,7 +152,7 @@ def load_slider(transformer, directory):
         raise ValueError("Adapter contains non-finite or non-float32 weights")
     # The full artifact is validated before hooks are attached or base flags change.
     factory = None
-    if manifest["format"] == V2 and manifest["pg_version"] == "0.9.4":
+    if manifest["format"] == V2 and manifest["pg_version"] == "0.9.5":
         from .native_hndl import HNDLLowRankResidual
         factory = HNDLLowRankResidual
     slider = Slider(transformer, rank, alpha, manifest["targets"], residual_factory=factory)

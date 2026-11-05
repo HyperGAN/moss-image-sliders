@@ -11,7 +11,7 @@ from moss_sliders.execution import validate_training
 
 def fixture_recipe():
     return dict(neutral="neutral", positive="positive", negative="negative", dummy=True,
-                objective="pg09_gan_only", pg_version="0.9.4", preset="bispf_optimized",
+                objective="pg09_gan_only", pg_version="0.9.5", preset="bispf_optimized",
                 steps=2, rank=2, lr=.001, resolution=32, rollout_steps=2, strength=1.,
                 seed=17, max_sequence_length=16, batch_size=2)
 
@@ -43,7 +43,7 @@ def test_installed_unified_profile_check_train_and_resume(tmp_path):
     assert result["status"] == "completed" and result["completed_steps"] == 2
     assert result["qualification"] == "fixture"
     packet = json.loads((Path(result["checkpoint"]) / "checkpoint.json").read_text())
-    assert packet["pg_version"] == "0.9.4"
+    assert packet["pg_version"] == "0.9.5"
     adapter = json.loads((Path(result["adapter"]) / "slider.json").read_text())
     assert adapter["core_config"]["generator_arm"] == "adapter_gan"
     assert adapter["training"]["recipe"]["dummy"] is True

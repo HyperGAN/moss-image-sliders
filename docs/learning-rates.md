@@ -38,9 +38,11 @@ runtime identity for each trial.
 
 The machine-local native LR campaign uses a separately pinned core `a794e3b`,
 FP32 DiT/BF16 text encoder and an immutable native overlay. Its measured rates
-remain qualified only for that exact cohort. This public source uses core
-`ddb4142` and the declared native dependencies. CPU optimizer/replay tests confirm
+remain qualified only for that exact cohort. The previous public PG094 source used core
+`ddb4142`; the current PG095 package uses core `3dd672a` and its declared native dependencies. CPU optimizer/replay tests confirm
 configuration and continuation, not transfer of native quality or convergence.
 Reproduce the selected candidate through this canonical source before promoting
 it as a public native recommendation. Existing historical configs, weights,
 source locks and the local running overlay remain unchanged.
+
+The current package pins core0.13/PG0.9.5. Earlier measured PG094/coreddb rates retain their original source identity and are not recommendations for this new cohort. No inherited rate default changes here.

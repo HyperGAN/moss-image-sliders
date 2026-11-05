@@ -3,7 +3,7 @@
 Install the current product and exact shared core in a separate environment as
 shown in README.md. The installed `moss` and `moss-cpu-fixture` profiles use
 `particle-slider train`, the merged isolated execution API, and a product-owned
-native worker/factory. Every GAN update still executes `ConditionalPG09`.
+native worker/factory. Every GAN update still executes `ConditionalPG095`.
 
 `moss` is source_only: CPU source and software checks do not qualify pretrained
 CUDA/BF16/offload/media output. Its execution keeps the existing pinned model,
@@ -24,3 +24,5 @@ advertised. `--stop-after` is a session-only API and is not advertised here.
 The old machine-local bridge on feat/unified-training-command-20261104 is a
 separate source-bound experiment and is unchanged. Its provenance does not
 qualify this portable factory. Historical source cohorts remain separate.
+
+Current source uses core0.13.0/PG0.9.5 and product profile `hypergan-hndl-v3-pg095`. Old PG094 full-state/portable GAN packets require their original environment; fresh native qualification remains pending.

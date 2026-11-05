@@ -34,7 +34,7 @@ def fixture():
         original = deepcopy(model.state_dict())
         contexts = [(torch.randn(1, 3, 16), torch.ones(1, 3, dtype=torch.bool))
                     for _ in range(3)]
-    config = dict(objective="pg09_gan_only", pg_version="0.9.4", rank=2, seed=17,
+    config = dict(objective="pg09_gan_only", pg_version="0.9.5", rank=2, seed=17,
                   resolution=32, rollout_steps=2, strength=1., batch_size=2,
                   steps=8, lr=.001, critic_width=8)
 
@@ -117,7 +117,7 @@ def test_mock_cuda_seeds_only_the_fork_owned_generator(monkeypatch, device, expe
 
     monkeypatch.setattr(gan, "Slider", capture_seed)
     before = torch.get_rng_state().clone()
-    config = dict(objective="pg09_gan_only", pg_version="0.9.4", seed=317, rank=2)
+    config = dict(objective="pg09_gan_only", pg_version="0.9.5", seed=317, rank=2)
     pipe = SimpleNamespace(transformer=SimpleNamespace(device=torch.device(device)))
     with pytest.raises(StopAfterSeed):
         gan._build_run(pipe, (), config, checkpointing=False, model_identity=None, owner=[])
@@ -136,13 +136,14 @@ def test_late_failed_build_restores_rng_hooks_flags_and_allows_retry(monkeypatch
     flags = [p.requires_grad for p in model.parameters()]
     forwards = [block.forward for block in model.layers]
     before = torch.get_rng_state().clone()
-    original_game = gan.ConditionalPG09
+    from particle_sliders import pg095
+    original_game = pg095.ConditionalPG095
 
     def failure(*args, **kwargs):
         assert all(getattr(block, "_pg09_scale_checkpoint", False) for block in model.layers)
         raise RuntimeError("late game construction failure")
 
-    monkeypatch.setattr(gan, "ConditionalPG09", failure)
+    monkeypatch.setattr("particle_sliders.pg095.ConditionalPG095", failure)
     with pytest.raises(RuntimeError, match="late game construction failure"):
         gan.build_run(pipe, contexts, config)
     assert torch.equal(before, torch.get_rng_state())
@@ -150,7 +151,7 @@ def test_late_failed_build_restores_rng_hooks_flags_and_allows_retry(monkeypatch
     assert [block.forward for block in model.layers] == forwards
     assert all(not getattr(block, "_pg09_scale_checkpoint", False) for block in model.layers)
     assert all(not getattr(module, "_moss_slider_attached", False) for module in model.modules())
-    monkeypatch.setattr(gan, "ConditionalPG09", original_game)
+    monkeypatch.setattr(pg095, "ConditionalPG095", original_game)
     retried = gan.build_run(pipe, contexts, config)
     assert len(retried.game.rows) == 4
     assert torch.equal(before, torch.get_rng_state())
