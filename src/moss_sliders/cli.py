@@ -48,7 +48,7 @@ def parser():
     return root
 
 
-def validate_config(config, *, pg_version="0.9.4", fixture=False):
+def validate_config(config, *, pg_version="0.9.5", fixture=False):
     required = {"neutral", "positive", "negative", "steps", "rank", "lr", "resolution",
                 "rollout_steps", "strength", "seed", "max_sequence_length", "objective",
                 "pg_version", "preset", "batch_size"}
@@ -77,14 +77,14 @@ def validate_config(config, *, pg_version="0.9.4", fixture=False):
     return config
 
 
-def main(argv=None, *, runtime_profile="hypergan-hndl-v2"):
+def main(argv=None, *, runtime_profile="hypergan-hndl-v3-pg095"):
     args = parser().parse_args(argv)
-    pg_version = "0.9.4" if runtime_profile == "hypergan-hndl-v2" else "0.9.1"
-    if runtime_profile == "hypergan-hndl-v2":
+    pg_version = "0.9.5" if runtime_profile == "hypergan-hndl-v3-pg095" else "0.9.1"
+    if runtime_profile == "hypergan-hndl-v3-pg095":
         from .native_hndl import verify_runtime
         if args.command in ("train", "smoke"):
             verify_runtime()
-        pg_version = "0.9.4"
+        pg_version = "0.9.5"
         if args.command in ("train-campaign", "ui"):
             raise RuntimeError("Current MOSS does not qualify legacy cached campaigns or UI; see docs/pg094-current.md")
     if args.command == "doctor":

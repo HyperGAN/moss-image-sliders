@@ -12,7 +12,7 @@ from moss_sliders.learning_rates import recipe_overrides
 
 def config(**changes):
     return dict(neutral='neutral scene', positive='warm scene', negative='cool scene',
-                objective='pg09_gan_only', pg_version='0.9.4', preset='bispf_optimized',
+                objective='pg09_gan_only', pg_version='0.9.5', preset='bispf_optimized',
                 rank=2, seed=17, resolution=32, rollout_steps=2, strength=1.,
                 batch_size=2, max_sequence_length=32, steps=4, lr=1e-4, **changes)
 

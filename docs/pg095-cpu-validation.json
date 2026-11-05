@@ -1,0 +1,35 @@
+{
+  "schema": "moss-pg095-cpu-validation-v1",
+  "product_version": "0.4.0.dev0",
+  "core": {
+    "version": "0.13.0",
+    "commit": "3dd672a7f9b8c169daef90fd63e4bb42b9ddc423",
+    "install": "pip-built exact public Git VCS"
+  },
+  "particlegan": {
+    "version": "0.9.5",
+    "wheel_sha256": "c1c0de7a635ac1b1634ba158eed050b6f6aed993e01f9b463435430c77d846ae"
+  },
+  "product_profile": "hypergan-hndl-v3-pg095",
+  "builder_profile": "hypergan-hndl-v2",
+  "source_closure_files": 577,
+  "checks": [
+    {
+      "scope": "full source CPU suite",
+      "passed": 125,
+      "skipped": 1,
+      "seconds": 48.75,
+      "skip": "optional incompatible UI"
+    },
+    {
+      "scope": "installed wheel real tiny HNDL/CLI/RNG/portable/resume/rates, isolated copied tests",
+      "passed": 69,
+      "skipped": 0,
+      "seconds": 28.38
+    }
+  ],
+  "torch": "2.9.1+cu128",
+  "cuda_initialized": false,
+  "pretrained_native_qualification": false,
+  "historical_locks_and_artifacts": "unchanged; original pins required"
+}

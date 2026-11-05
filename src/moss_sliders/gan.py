@@ -41,9 +41,9 @@ class GanRun:
 
 
 def build_run(pipe, contexts, config, *, checkpointing=True, model_identity=None,
-              runtime_profile="hypergan-hndl-v2"):
+              runtime_profile="hypergan-hndl-v3-pg095"):
     """Validate before attachment and roll back hooks/flags after a failed build."""
-    if runtime_profile == "hypergan-hndl-v2":
+    if runtime_profile == "hypergan-hndl-v3-pg095":
         from .native_hndl import verify_runtime
         identity = verify_runtime()
         model_identity = dict(model_identity or {"model": MODEL_ID, "revision": MODEL_REVISION},
@@ -83,7 +83,7 @@ def build_run(pipe, contexts, config, *, checkpointing=True, model_identity=None
 
 
 def _build_run(pipe, contexts, config, *, checkpointing, model_identity, owner,
-               runtime_profile="hypergan-hndl-v2"):
+               runtime_profile="hypergan-hndl-v3-pg095"):
     """Fixed frozen neutral rollouts, paired signs, and useful context/time features.
 
     Each scheduler position receives a separately seeded frozen neutral rollout.
@@ -91,7 +91,7 @@ def _build_run(pipe, contexts, config, *, checkpointing, model_identity, owner,
     The shared game owns independent balanced D/G row and reference-noise streams.
     """
     from particle_sliders.pg09 import PG_VERSION
-    expected_version = "0.9.4" if runtime_profile == "hypergan-hndl-v2" else "0.9.1"
+    expected_version = "0.9.5" if runtime_profile == "hypergan-hndl-v3-pg095" else "0.9.1"
     if (config.get("objective") != OBJECTIVE or config.get("pg_version") != expected_version
             or PG_VERSION != expected_version):
         raise ValueError("An explicit PG 0.9 GAN-only recipe is required")
@@ -105,7 +105,7 @@ def _build_run(pipe, contexts, config, *, checkpointing, model_identity, owner,
         if devices:
             torch.cuda.default_generators[devices[0]].manual_seed(config["seed"])
         residual_factory = None
-        if runtime_profile == "hypergan-hndl-v2":
+        if runtime_profile == "hypergan-hndl-v3-pg095":
             from .native_hndl import HNDLLowRankResidual
             residual_factory = HNDLLowRankResidual
         slider = Slider(pipe.transformer, rank=config["rank"], residual_factory=residual_factory)
@@ -141,7 +141,7 @@ def _build_run(pipe, contexts, config, *, checkpointing, model_identity, owner,
         if not 0 < scale < float("inf"):
             slider.detach()
             raise ValueError("Frozen training edit has no finite nonzero response scale")
-        if runtime_profile == "hypergan-hndl-v2":
+        if runtime_profile == "hypergan-hndl-v3-pg095":
             from .native_hndl import MossHNDLFieldCritic
             critic = MossHNDLFieldCritic(rows[0].target.shape, conditions.shape[1],
                                         config.get("critic_width", 32)).to(device)
@@ -152,7 +152,11 @@ def _build_run(pipe, contexts, config, *, checkpointing, model_identity, owner,
     if checkpointing:
         for block in pipe.transformer.layers:
             checkpoint_with_adapter_scale(block, backend.network)
-    game = ConditionalPG09(
+    game_class = ConditionalPG09
+    if runtime_profile == "hypergan-hndl-v3-pg095":
+        from particle_sliders.pg095 import ConditionalPG095
+        game_class = ConditionalPG095
+    game = game_class(
         backend, rows, critic, conditions=conditions, particles=None,
         response_scale=scale, response_domain="continuous_field",
         preset="bispf_optimized", sampling="balanced",

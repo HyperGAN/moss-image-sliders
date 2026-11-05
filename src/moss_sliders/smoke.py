@@ -12,11 +12,11 @@ def tiny_model():
                                 text_dim=16, freq_dim=16, latent_channels=4).eval()
 
 
-def run_smoke(steps=4, *, runtime_profile="hypergan-hndl-v2"):
+def run_smoke(steps=4, *, runtime_profile="hypergan-hndl-v3-pg095"):
     from .gan import build_run, restore_checkpoint, save_checkpoint
     from .artifacts import save_gan_slider
     from particle_sliders.pg09_backends import FlowSchedule, ResponseRow
-    pg_version = "0.9.4" if runtime_profile == "hypergan-hndl-v2" else "0.9.1"
+    pg_version = "0.9.5" if runtime_profile == "hypergan-hndl-v3-pg095" else "0.9.1"
     torch.set_num_threads(1)
     torch.manual_seed(42)
     model = tiny_model()

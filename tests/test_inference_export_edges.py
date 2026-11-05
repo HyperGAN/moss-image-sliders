@@ -84,7 +84,7 @@ def test_inference_checks_empty_negative_budget_before_encoding_either_branch():
 def gan_export():
     model = tiny_model()
     contexts = [(torch.randn(1, 3, 16), torch.ones(1, 3, dtype=torch.bool)) for _ in range(3)]
-    config = dict(objective="pg09_gan_only", pg_version="0.9.4", rank=2, lr=.001,
+    config = dict(objective="pg09_gan_only", pg_version="0.9.5", rank=2, lr=.001,
                   seed=71, resolution=32, rollout_steps=2, strength=1.,
                   batch_size=2, steps=2, critic_width=8)
     run = build_run(MOSSImagePipeline(model, MOSSImageScheduler()), contexts, config,

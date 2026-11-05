@@ -10,15 +10,15 @@ from pathlib import Path
 
 from torch import nn
 
-PROFILE = "hypergan-hndl-v2"
+PROFILE = "hypergan-hndl-v3-pg095"
 LORA_GRAPH = '''down = linear(value, $rank, bias=False, name="down")
 linear(down, $output_width, bias=False, name="up")'''
 
 
 def verify_runtime():
     """Reject a historical environment before attaching or loading native weights."""
-    if version("particle-sliders-core") != "0.12.0":
-        raise ValueError("MOSS HNDL requires the qualified core 0.12.0 profile")
+    if version("particle-sliders-core") != "0.13.0":
+        raise ValueError("MOSS HNDL requires the qualified core 0.13.0 profile")
     import particle_sliders
     manifest_path = Path(__file__).with_name("hndl_cohort.json")
     cohort = json.loads(manifest_path.read_text())
@@ -34,12 +34,13 @@ def verify_runtime():
         raise ValueError("MOSS HNDL compatibility source closure differs from the exact candidate")
     from particle_sliders.pg09 import PG_VERSION, validate_pg09_domain
     from particle_sliders.fibo_hndl import verified_builder
-    if PG_VERSION != "0.9.4":
-        raise ValueError("MOSS HNDL requires official ParticleGAN 0.9.4")
+    if PG_VERSION != "0.9.5":
+        raise ValueError("MOSS HNDL requires official ParticleGAN 0.9.5")
     # Source validation is part of admission even for a tiny field.
     validate_pg09_domain((1, 4, 1, 2, 2), response_domain="continuous_field")
     _, identity = verified_builder()
-    return dict(identity, core_commit=cohort["core_commit"],
+    return dict(identity, profile=PROFILE, builder_profile=identity["profile"],
+                core_commit=cohort["core_commit"],
                 core_cohort_sha256=hashlib.sha256(manifest_path.read_bytes()).hexdigest(),
                 lora_graph_sha256=hashlib.sha256(LORA_GRAPH.encode()).hexdigest())
 

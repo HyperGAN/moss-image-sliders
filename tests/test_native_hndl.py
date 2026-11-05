@@ -6,7 +6,7 @@ import json
 import pytest
 import torch
 
-pytestmark = pytest.mark.skipif(version("particle-sliders-core") != "0.12.0",
+pytestmark = pytest.mark.skipif(version("particle-sliders-core") != "0.13.0",
                                 reason="requires the separate HyperGAN/HNDL environment")
 
 
@@ -18,7 +18,7 @@ def make_fixture():
     torch.manual_seed(131)
     original = deepcopy(tiny_model().state_dict())
     contexts = [(torch.randn(1, 3, 16), torch.ones(1, 3, dtype=torch.bool)) for _ in range(3)]
-    config = dict(objective="pg09_gan_only", pg_version="0.9.4", rank=2, seed=17,
+    config = dict(objective="pg09_gan_only", pg_version="0.9.5", rank=2, seed=17,
                   resolution=32, rollout_steps=2, strength=1., batch_size=2,
                   steps=4, lr=.001, critic_width=8)
 
@@ -122,10 +122,10 @@ def test_exact_hndl_checkpoint_restore_and_rejection_without_mutation(tmp_path, 
     assert receiver.step() == expected
     equal(run.game.state_dict(), receiver.game.state_dict())
     packet = receiver.game.state_dict()
-    assert packet["config"]["pg_version"] == "0.9.4"
-    assert packet["config"]["pg_source_profile"] == "release-0.9.4"
+    assert packet["config"]["pg_version"] == "0.9.5"
+    assert packet["config"]["pg_source_profile"] == "release-0.9.5"
     assert packet["config"]["backend"]["model_identity"]["network_runtime"]["core_commit"] == (
-        "ddb41423bcefc1fe76cd94d0f9b367353b3ea137")
+        "3dd672a7f9b8c169daef90fd63e4bb42b9ddc423")
     corrupt = deepcopy(packet)
     corrupt["config"][identity_key] = wrong
     with pytest.raises(ValueError):
@@ -148,7 +148,7 @@ def test_checkpoint_json_cohort_refuses_before_tensor_load(tmp_path, monkeypatch
     metadata = json.loads(metadata_path.read_text())
     assert metadata["schema"] == "moss-pg09-checkpoint-v2"
     assert (metadata["pg_version"], metadata["pg_source_profile"],
-            metadata["penalty_input_domain"]) == ("0.9.4", "release-0.9.4", "auto")
+            metadata["penalty_input_domain"]) == ("0.9.5", "release-0.9.5", "auto")
     metadata[field] = wrong
     metadata_path.write_text(json.dumps(metadata))
 
@@ -193,10 +193,10 @@ def test_new_export_records_actual_cohort_and_zero_is_adapter_free(tmp_path):
     save_gan_slider(run.slider, path, {}, core_config=run.game.export_state_dict()["config"],
                     completed_steps=run.game.completed_steps)
     manifest = json.loads((path / "slider.json").read_text())
-    assert manifest["pg_version"] == "0.9.4"
-    assert manifest["core_config"]["pg_source_profile"] == "release-0.9.4"
+    assert manifest["pg_version"] == "0.9.5"
+    assert manifest["core_config"]["pg_source_profile"] == "release-0.9.5"
     identity = manifest["core_config"]["backend"]["model_identity"]["network_runtime"]
-    assert identity["profile"] == "hypergan-hndl-v2"
+    assert identity["profile"] == "hypergan-hndl-v3-pg095"
     state = deepcopy(run.slider.state_dict())
     run.slider.detach()
     with torch.no_grad():
@@ -268,7 +268,7 @@ def test_builder_and_core_source_tamper_refuse_before_native_attachment(tmp_path
             build_hndl_run(object(), (), {})
 
 
-@pytest.mark.parametrize("name", ["pg09.py", "fibo_critic.hndl", "pg094_release.json", "extra.py"])
+@pytest.mark.parametrize("name", ["pg09.py", "fibo_critic.hndl", "pg095_release.json", "extra.py"])
 def test_entire_core_code_graph_data_closure_rejects_changes(tmp_path, monkeypatch, name):
     from pathlib import Path
     import shutil
@@ -293,7 +293,7 @@ def test_failed_modern_build_rolls_back_and_same_pipeline_can_retry(monkeypatch)
     model = tiny_model()
     pipe = MOSSImagePipeline(model, MOSSImageScheduler())
     contexts = [(torch.randn(1, 3, 16), torch.ones(1, 3, dtype=torch.bool)) for _ in range(3)]
-    config = dict(objective="pg09_gan_only", pg_version="0.9.4", rank=2, seed=17,
+    config = dict(objective="pg09_gan_only", pg_version="0.9.5", rank=2, seed=17,
                   resolution=32, rollout_steps=2, strength=1., batch_size=2,
                   steps=4, lr=.001, critic_width=8)
     flags = [p.requires_grad for p in model.parameters()]
@@ -302,7 +302,7 @@ def test_failed_modern_build_rolls_back_and_same_pipeline_can_retry(monkeypatch)
     def failure(*args, **kwargs):
         raise RuntimeError("late construction failure")
     with monkeypatch.context() as patch:
-        patch.setattr(gan, "ConditionalPG09", failure)
+        patch.setattr("particle_sliders.pg095.ConditionalPG095", failure)
         with pytest.raises(RuntimeError, match="late construction failure"):
             build_hndl_run(pipe, contexts, config)
     assert [p.requires_grad for p in model.parameters()] == flags

@@ -1,9 +1,9 @@
 # MOSS-Image Sliders
 
 Signed concept LoRA controls for pinned OpenMOSS MOSS-Image-SFT. The current
-`moss-image-sliders 0.3.0.dev2` package and `moss-sliders train` use official
-**ParticleGAN 0.9.4**, shared **particle-sliders-core 0.12.0** at
-`ddb41423bcefc1fe76cd94d0f9b367353b3ea137`, HyperGAN develop builder
+`moss-image-sliders 0.4.0.dev0` package and `moss-sliders train` use official
+**ParticleGAN 0.9.5**, shared **particle-sliders-core 0.13.0** at
+`3dd672a7f9b8c169daef90fd63e4bb42b9ddc423`, HyperGAN develop builder
 `5f368a3770cf5bdae0448995c9f76e29af8049f7`, and HNDL 0.10.0. Actual HNDL
 attention LoRA and the shared spatial field critic execute the public
 `bispf_optimized` adapter GAN; the shared core owns losses, optimizers,
@@ -15,7 +15,7 @@ BF16, offload, real VAE output, performance and media quality remain unqualified
 for this new source cohort. Model loading still requires CUDA and defaults to
 local cached weights. Old weights, four historical controls, MSE pilots and
 PG0.9.0/0.9.1 run records retain their original objective/version and are not
-retrained by this package update. [Migration and exact limits](docs/pg094-current.md).
+retrained by this package update. [Migration and exact limits](docs/pg095-current.md).
 
 ## Install the current CPU runtime
 
@@ -27,7 +27,7 @@ Create a new environment; never repin an active campaign:
 python3.12 -m venv .venv-cpu
 . .venv-cpu/bin/activate
 python -m pip install --require-hashes -r requirements-runtime-cpu.lock
-python -m pip install --no-deps 'particle-sliders-core[serialization,hypergan-hndl] @ git+https://github.com/HyperGAN/particle-sliders.git@ddb41423bcefc1fe76cd94d0f9b367353b3ea137#subdirectory=packages/particle-sliders-core'
+python -m pip install --no-deps 'particle-sliders-core[serialization,hypergan-hndl] @ git+https://github.com/HyperGAN/particle-sliders.git@3dd672a7f9b8c169daef90fd63e4bb42b9ddc423#subdirectory=packages/particle-sliders-core'
 python -m pip install --no-deps 'hypergan @ git+https://github.com/HyperGAN/HyperGAN.git@5f368a3770cf5bdae0448995c9f76e29af8049f7'
 python -m pip install --no-deps .
 python -m pip check
@@ -157,7 +157,7 @@ adapter and private result bundle remain private.
 
 ## Train a concept
 
-The example JSON recipes explicitly name `pg09_gan_only`, ParticleGAN `0.9.1`,
+The example JSON recipes explicitly name `pg09_gan_only`, ParticleGAN `0.9.5`,
 `bispf_optimized`, and batch size. Recipes from the old MSE trainer fail validation.
 Training and inference preflight the full native chat template before any
 encoder forward. An over-budget prompt fails instead of being silently truncated.

@@ -112,7 +112,7 @@ def test_bfloat16_base_with_float32_adapter_training():
     frozen = {k: v.clone() for k, v in model.state_dict().items()}
     contexts = [(torch.randn(1, 3, 16).bfloat16(), torch.ones(1, 3, dtype=torch.bool))
                 for _ in range(3)]
-    config = dict(objective='pg09_gan_only', pg_version='0.9.4', rank=2, lr=.001,
+    config = dict(objective='pg09_gan_only', pg_version='0.9.5', rank=2, lr=.001,
                   seed=71, resolution=32, rollout_steps=2, strength=1.,
                   batch_size=2, steps=2, critic_width=8)
     run = build_run(MOSSImagePipeline(model, MOSSImageScheduler()), contexts, config)

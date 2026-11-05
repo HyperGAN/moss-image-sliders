@@ -26,7 +26,7 @@ def fixture():
     model = tiny_model()
     original = deepcopy(model.state_dict())
     contexts = [(torch.randn(1, 3, 16), torch.ones(1, 3, dtype=torch.bool)) for _ in range(3)]
-    config = dict(objective="pg09_gan_only", pg_version="0.9.4", rank=2, seed=17,
+    config = dict(objective="pg09_gan_only", pg_version="0.9.5", rank=2, seed=17,
                   resolution=32, rollout_steps=2, strength=1., batch_size=2,
                   steps=8, lr=.001, critic_width=8)
 
