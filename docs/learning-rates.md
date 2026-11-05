@@ -30,12 +30,11 @@ history, row/noise streams and source identities in full checkpoints. Resume
 requires the same rates and source cohort; changing a multiplier starts a new
 trial. No host learning-rate scheduler or host weight EMA is introduced.
 
-For calibration, use identical initialized adapters, critic, train/heldout rows,
-model/row/noise RNG states, precision and equal update budgets. Compare heldout
-matched-example teacher/student error against OFF, track preservation and native
-renders, then validate the strongest rates on independent prompts/seeds. GAN loss
-alone does not select a useful rate. Save measured memory, time, all effective
-optimizer-group rates and the complete runtime identity for each trial.
+Native calibration compares identical initialized state, data, stochastic streams, precision, declared schedule horizons and completed-update budgets on the actual pretrained model. Select and independently confirm rates using only held-out raw teacher/student relative SSE: cast student, teacher and neutral to FP64 before subtraction, pool positions within each example, divide by that example's teacher-edit energy, then average examples equally. Keep the teacher-only valid/excluded set fixed across candidates; zero-energy examples remain undefined, and student failures never remove examples. See the [common LR protocol](https://github.com/HyperGAN/particle-sliders/blob/main/packages/particle-sliders-core/LEARNING-RATE-CONTRACT.md).
+
+Preservation/no-edit drift, late/weak-field scores and native media outputs are optional diagnostics; they cannot select, reject or delay a rate. After the native mechanical proof, candidate endpoint net displacement is diagnostic too. Retain exact source/model/data/numerical identity, actual optimizer-rate, finite native-update, checkpoint-continuation and raw-response replay checks. Tiny CPU software checks are not native LR evidence.
+Save measured memory, time, all effective optimizer-group rates and the complete
+runtime identity for each trial.
 
 The machine-local native LR campaign uses a separately pinned core `a794e3b`,
 FP32 DiT/BF16 text encoder and an immutable native overlay. Its measured rates
