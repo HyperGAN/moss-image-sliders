@@ -10,10 +10,14 @@ attention LoRA and the shared spatial field critic execute the public
 sampling and full-state checkpoint validation. **There is no particle bank**:
 `particles=None` is the legitimate adapter-only generator arm.
 
-CPU software checks use the real tiny random MOSS architecture. Pretrained CUDA,
-BF16, offload, real VAE output, performance and media quality remain unqualified
-for this new source cohort. Model loading still requires CUDA and defaults to
-local cached weights. Old weights, four historical controls, MSE pilots and
+CPU software checks use the real tiny random MOSS architecture. A fresh native
+PG0.9.5 **256×256 RAW-response research preset** measured G `0.0001`, D
+`0.018000000000000002` (`d_lr_mult=180`, no particle bank), with 128 updates:
+development relative SSE **0.9907276965**, independent held-out confirmation
+**0.9091853181** over 12 examples. [Exact scope, search and evidence](docs/learning-rates.md#measured-native256-pg095-preset).
+Existing defaults remain unchanged. Production-resolution sampling, offload,
+VAE output, performance and media quality are outside this measurement.
+Model loading still requires CUDA and defaults to local cached weights. Old weights, four historical controls, MSE pilots and
 PG0.9.0/0.9.1 run records retain their original objective/version and are not
 retrained by this package update. [Migration and exact limits](docs/pg095-current.md).
 
@@ -53,8 +57,9 @@ particle-slider train --config examples/warm-light.json --profile moss --check -
 particle-slider train --config examples/warm-light.json --profile moss --out /new/run
 ```
 
-The native profile is explicitly `source_only` until the new model cohort is
-qualified. `--check` validates recipe/runtime sources without loading weights.
+The general native frontend profile retains its `source_only` runtime status;
+the scoped research measurement above does not change that metadata. `--check`
+validates recipe/runtime sources without loading weights.
 Execution uses this product's native factory and existing CUDA/local-cache gate.
 To run the bounded CPU architecture fixture, explicitly select its profile and
 `dummy=true` recipe:
@@ -242,5 +247,6 @@ conversion to portable v2, rather than guessing their parameter mapping.
 The UI is currently blocked by the dependency conflict described above. Its existing
 code serializes requests, binds to 127.0.0.1, and creates no public share link; this
 is not a current installation or UI qualification claim.
-Native CUDA/BF16, real VAE output, offload hooks, peak memory and visual quality
-remain separate coordinator-admitted gates. No trained weights are published.
+The native BF16 RAW-response evidence above is limited to its declared 256×256
+cohort. Real VAE output, offload hooks, production-resolution sampling, peak-memory
+generalization and visual quality remain outside it. No trained weights are published.
