@@ -1,0 +1,104 @@
+{
+  "schema": "particle-slider-scoped-finished-output-rate-guidance-v1",
+  "as_of": "2026-11-09",
+  "product_id": "moss-image-sliders",
+  "concept": "Character Appeal",
+  "selection_metric": "Equal-case arithmetic mean of intended-effect intensity ON minus exact matched OFF in finished images; higher wins.",
+  "comparison_policy": "Retain negative gains, native zeros and exact ties. Technical failures are missing evidence, not zero. No teacher-SSE, preservation, beauty, confidence or completion selector/tiebreak. Reuse completed searches, checkpoints, proofs, outputs and first scores; no additional fresh confirmation or worse-arm completion.",
+  "common_rate_overrides": {
+    "lr": 0.001,
+    "d_lr_mult": 18.0,
+    "ema_decay": null
+  },
+  "product_option_fragment": {
+    "lr": 0.001,
+    "d_lr_mult": 18.0
+  },
+  "actual_rates": {
+    "G": 0.001,
+    "D": 0.018000000000000002,
+    "bank": null
+  },
+  "profile": {
+    "concept": "Character Appeal",
+    "training_updates": 32,
+    "horizon": 128,
+    "native_resolution": 256,
+    "base_precision": "bfloat16",
+    "rank": 2,
+    "batch": 2,
+    "particle_bank": false,
+    "primary_cases": "two original neutral portrait prompts times seeds101/102",
+    "fresh_cases": "same two prompts times seeds103/104"
+  },
+  "primary": {
+    "training_updates": 32,
+    "cases": 4,
+    "mean_gain": 0.0026179340978463492,
+    "candidate_means": [
+      {
+        "G": 3e-05,
+        "mean_gain": -8.63013168176014e-05
+      },
+      {
+        "G": 0.0001,
+        "mean_gain": 0.0007961491743723547
+      },
+      {
+        "G": 0.0003,
+        "mean_gain": 0.0005989260971546174
+      },
+      {
+        "G": 0.001,
+        "mean_gain": 0.0026179340978463492
+      }
+    ],
+    "per_case_gains": {
+      "portrait0-seed101": -0.0001886735359827689,
+      "portrait0-seed102": 0.007746957242488863,
+      "portrait1-seed101": 0.0019580498337745667,
+      "portrait1-seed102": 0.0009554028511047363
+    }
+  },
+  "separate_fresh_result": {
+    "training_updates": 32,
+    "cases": 4,
+    "mean_gain": -0.003141462802886963,
+    "per_case_gains": {
+      "portrait0-fresh-seed103": -0.007926389575004578,
+      "portrait0-fresh-seed104": -0.007650064925352733,
+      "portrait1-fresh-seed103": -0.00011332084735234571,
+      "portrait1-fresh-seed104": 0.003123924136161804
+    },
+    "scope": "Fresh seeds103/104 on the SAME two original neutral prompts. Not unseen-prompt holdout, not pooled with examined101/102 primary bank. Exactly one saved originalcell3 G.001 RAW32 at h128.",
+    "supported": false
+  },
+  "weight_EMA": null,
+  "measurement_kind": "Frozen model instrument (SigLIP2), not human or statistical validation.",
+  "scope": "Conditional best tested G in the recorded concept/native profile/budget at fixed D and bank where present; not a global or joint optimum. Package defaults are unchanged.",
+  "additional_fresh_confirmation_required": false,
+  "selected_checkpoint_availability": "Private retained RAW checkpoint, not included in this repository or newly released by this documentation.",
+  "source_records": [
+    {
+      "role": "primary_result",
+      "name": "result.json",
+      "bytes": 96676,
+      "sha256": "f8f4c4f61a26bff56a7bbe531f8cf7c249d799f6447a380abcfddec0cd50d26f",
+      "availability": "Retained campaign evidence; not bundled as a public artifact download."
+    },
+    {
+      "role": "primary_decision",
+      "name": "root-existing-four-arm-RAW32-effect-selection-v1.json",
+      "bytes": 3256,
+      "sha256": "e56d469662a91d64821c1125a35578d4161bf0b3583e8b2ef8456876e147bf7c",
+      "availability": "Retained campaign evidence; not bundled as a public artifact download."
+    },
+    {
+      "role": "fresh_result",
+      "name": "result.json",
+      "bytes": 35522,
+      "sha256": "be9961070602d905a91f0f570efb8e602ae7a44433535ae40d007ed6a505092f",
+      "availability": "Retained campaign evidence; not bundled as a public artifact download."
+    }
+  ]
+}

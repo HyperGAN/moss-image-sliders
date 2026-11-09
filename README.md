@@ -16,13 +16,19 @@ The public MOSS recipe exposes no host EMA option; do not add unsupported
 `ema_decay` fields or inference-selection flags. Historical artifacts retain
 their original provenance.
 
-CPU software checks use the real tiny random MOSS architecture. A fresh native
-PG0.9.5 **256×256 RAW-response research preset** measured G `0.0001`, D
-`0.018000000000000002` (`d_lr_mult=180`, no particle bank), with 128 updates:
-development relative SSE **0.9907276965**, independent held-out confirmation
-**0.9091853181** over 12 examples. [Exact scope, search and evidence](docs/learning-rates.md#measured-native256-pg095-preset).
-Existing defaults remain unchanged. Production-resolution sampling, offload,
-VAE output, performance and media quality are outside this measurement.
+**Current finished-image guidance:** use existing Character Appeal **G0.001 RAW32**,
+fixed D `0.018000000000000002`, no bank, native256 BF16/rank2/horizon128.
+The primary four-case intended-effect ON−OFF mean is `0.0026179340978463492`.
+Its separate fresh result is weaker, **`−0.003141462802886963`**; keep it visible
+without pooling, reranking or requiring another confirmation. The primary best-tested
+choice remains G0.001. [Exact scope and supported options](docs/finished-output-learning-rates.md)
+· [portable values](docs/finished-output-rate.json). Reuse the saved RAW and scores.
+RAW-only behavior remains explicit; this host has no `ema_decay` option.
+
+The earlier PG0.9.5 native256 RAW128 **response-SSE diagnostic** selected G0.0001,
+D `0.018000000000000002`, no bank. Its development `0.9907276965` and held-out
+`0.9091853181` remain in [the historical record](docs/learning-rates.md#measured-native256-pg095-preset).
+This documentation changes no defaults, public factory qualification, code or weights.
 Model loading still requires CUDA and defaults to local cached weights. Old weights, four historical controls, MSE pilots and
 PG0.9.0/0.9.1 run records retain their original objective/version and are not
 retrained by this package update. [Migration and exact limits](docs/pg095-current.md).

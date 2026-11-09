@@ -1,5 +1,7 @@
 # Current ParticleGAN learning rates
 
+Use the existing [Character Appeal G0.001 RAW32 finished-output result](finished-output-learning-rates.md) and [portable values](finished-output-rate.json). The package defaults and old response-SSE records below are separate.
+
 The public current MOSS configuration requires an explicit `lr`. The supplied
 examples use G `0.0001`; without `d_lr_mult`, the official `bispf_optimized`
 multiplier remains `1.5`, giving D `0.00015`. This change preserves those values.
@@ -9,9 +11,11 @@ existing example values and defaults remain unchanged.
 
 ## Measured native256 PG0.9.5 preset
 
+**Historical response-SSE diagnostic, not the current finished-output selector.** All original G0.0001 RAW128 numbers, tables, source identities and reports below remain unchanged.
+
 Measured on 2026-11-05, the selected native RAW-response recipe uses **G `0.0001`, D
 `0.018000000000000002`, no particle bank**, with a common 128-update horizon.
-Use this fragment inside the complete matching MOSS configuration:
+The historical matching configuration used this fragment:
 
 ```json
 {"lr": 0.0001, "d_lr_mult": 180.0}
@@ -94,9 +98,34 @@ history, row/noise streams and source identities in full checkpoints. Resume
 requires the same rates and source cohort; changing a multiplier starts a new
 trial. No host learning-rate scheduler or host weight EMA is introduced.
 
-Native calibration compares identical initialized state, data, stochastic streams, precision, declared schedule horizons and completed-update budgets on the actual pretrained model. Select and independently confirm rates using only held-out raw teacher/student relative SSE: cast student, teacher and neutral to FP64 before subtraction, pool positions within each example, divide by that example's teacher-edit energy, then average examples equally. Keep the teacher-only valid/excluded set fixed across candidates; zero-energy examples remain undefined, and student failures never remove examples. See the [common LR protocol](https://github.com/HyperGAN/particle-sliders/blob/main/packages/particle-sliders-core/LEARNING-RATE-CONTRACT.md).
+## Current finished-output selection
 
-Preservation/no-edit drift, late/weak-field scores and native media outputs are optional diagnostics; they cannot select, reject or delay a rate. After the native mechanical proof, candidate endpoint net displacement is diagnostic too. Retain exact source/model/data/numerical identity, actual optimizer-rate, finite native-update, checkpoint-continuation and raw-response replay checks. Tiny CPU software checks are not native LR evidence.
+Rank rates by one equal-case arithmetic mean of intended-effect intensity ON
+minus exact matched OFF in finished outputs; higher wins. Retain negatives,
+native zeros and exact ties. Technical failures remain missing evidence.
+Teacher/student SSE is diagnostic only; preservation, beauty, confidence and
+completion never rank or break ties. Reuse completed searches, saved RAWs,
+proofs, teachers, outputs and first scores. Preserve separate fresh results
+without pooling; no additional confirmation or worse-arm completion is required.
+Keep each comparison's native profile, matched budget and original horizon.
+Use RAW current weights with no model-weight EMA; scalar optimizer statistics
+are unchanged. Follow the exact product-supported no-EMA configuration.
+
+## Historical response-error protocol (diagnostic only)
+
+Earlier cohorts selected and confirmed rates by held-out RAW teacher/student
+relative SSE. Their archived reduction cast student, teacher and neutral to FP64
+before subtraction, pooled positions within an example, divided by that example's
+teacher-edit energy and averaged examples equally. Teacher-only valid/excluded
+membership was fixed; zero-energy relative scores were undefined and student
+failures did not remove examples. That historical protocol and all recorded
+values retain their original scope; they are not the current finished-output
+selector or a requirement for new confirmation. Native source/model/data,
+finite-update, continuation and RAW replay evidence stays with each cohort;
+reuse valid completed proofs rather than repeat them.
+
+
+The historical response-error studies treated media and preservation as optional diagnostics. Current selection measures intended effect in finished images; no preservation/beauty/confidence/completion gate or extra confirmation is added.
 Save measured memory, time, all effective optimizer-group rates and the complete
 runtime identity for each trial.
 
