@@ -262,3 +262,13 @@ is not a current installation or UI qualification claim.
 The native BF16 RAW-response evidence above is limited to its declared 256×256
 cohort. Real VAE output, offload hooks, production-resolution sampling, peak-memory
 generalization and visual quality remain outside it. No trained weights are published.
+
+
+## Explicit cached fresh initialization
+
+The additional [`moss_sliders.fresh95` owner API](FRESH95.md) accepts already
+completed native response rows for a newly declared fresh cohort, strict FULL
+restore, and RAW-native inference. Four new installed software cases passed
+with one tiny update; the original hatchling build and full pretrained/public
+execution remain unqualified. Existing commands, defaults, cohorts and measured
+learning-rate results are unchanged.
