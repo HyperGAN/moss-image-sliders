@@ -1,0 +1,499 @@
+{
+  "schema": "slider-memory-source-facts-v1",
+  "date": "2026-11-14",
+  "calculation_only": true,
+  "models_constructed": 0,
+  "framework_imports": 0,
+  "GPU_operations": 0,
+  "model": "OpenMOSS-Team/MOSS-Image-SFT",
+  "revision": "fc5de0d56fc910cbca6f6625a70f5f582b26deb1",
+  "frozen_weights": [
+    {
+      "component": "BF16 DiT tensor bytes",
+      "bytes": 10164617280
+    },
+    {
+      "component": "BF16 encoder tensor bytes",
+      "bytes": 16785390048
+    },
+    {
+      "component": "FP32 VAE file upper bound",
+      "bytes": 249521372
+    }
+  ],
+  "parameter_derivation": "DiT index10,164,617,280 bytes; encoder8,392,695,024 parameters /16,785,390,048 bytes. Model uses42 main +2 text-refinement blocks, width3072, FFN8192 and24 heads. The Qwen3.5 encoder has24 recurrent/linear-attention blocks and8 full-attention blocks: a dense36-layer autoregressive KV formula would be wrong.",
+  "trainable": {
+    "parameters": 4405761,
+    "FP32_weights_bytes": 17623044,
+    "gradient_bytes": 17623044,
+    "persistent_momentum_or_Adam_tensor_bytes": 0,
+    "optimizer_transient_allowance_bytes": 245030960,
+    "optimizer_transient_formula": "48*A + 32MiB; FP32 protected normals/directions, FP64 promoted normals/displacements and small-matrix SVD/Gram workspace; conservative simultaneous allowance"
+  },
+  "trainable_derivation": "42×4×4×(3072+3072) +276,993 spatial-critic parameters = 4,405,761; no particle bank",
+  "metadata": [
+    {
+      "repository": "OpenMOSS-Team/MOSS-Image-SFT",
+      "requested_revision": "fc5de0d56fc910cbca6f6625a70f5f582b26deb1",
+      "resolved_revision": "fc5de0d56fc910cbca6f6625a70f5f582b26deb1",
+      "repository_metadata_sha256": "76c5f8fdc22c8946da28fe925d0ba6bb8318ac53bd5ffba87b8c980a4ba8a874",
+      "weight_files": [
+        {
+          "path": "text_encoder/model-00001-of-00004.safetensors",
+          "size": 4973910744,
+          "lfs_sha256": "abfaa3d3a8612508c85ee8f6da9c734b862f10298b903765c4ad384177c32b0b"
+        },
+        {
+          "path": "text_encoder/model-00002-of-00004.safetensors",
+          "size": 4988364288,
+          "lfs_sha256": "9112637fa6bf4d07bafd6ae268852b18d3d0c1242f4ee901c5579006e5bd4894"
+        },
+        {
+          "path": "text_encoder/model-00003-of-00004.safetensors",
+          "size": 4954202112,
+          "lfs_sha256": "956f1ef51d0cfe610b0d22987c0b7821c36e3ce228abceccef523518bcf079dc"
+        },
+        {
+          "path": "text_encoder/model-00004-of-00004.safetensors",
+          "size": 1869001848,
+          "lfs_sha256": "9e21d20e8adde88c3e0b65d4a0d251f143d98ee9d52db36b4348361091e4e208"
+        },
+        {
+          "path": "transformer/diffusion_pytorch_model-00001-of-00003.safetensors",
+          "size": 4991978016,
+          "lfs_sha256": "e40d3444940a0b0fd7cd45ba7959a5bd3d5efd7ddf87aae5ce4d87ce8aa03d01"
+        },
+        {
+          "path": "transformer/diffusion_pytorch_model-00002-of-00003.safetensors",
+          "size": 4983137016,
+          "lfs_sha256": "d106da790ec2924ffd8af04b4ffa8f8de281a974b58e55649c3ec596dc8ef033"
+        },
+        {
+          "path": "transformer/diffusion_pytorch_model-00003-of-00003.safetensors",
+          "size": 189549184,
+          "lfs_sha256": "11f637ab17c7093344a6110a1e87ffda8e56558dc55183d8e790222cfcdcf52d"
+        },
+        {
+          "path": "vae/diffusion_pytorch_model.safetensors",
+          "size": 249521372,
+          "lfs_sha256": "c3bdf94dc67ec69b30ea9fe1fa8340085679cae64d019f7c7e4a9921f1a7f17a"
+        }
+      ],
+      "configs": {
+        "transformer/config.json": {
+          "URL": "https://huggingface.co/OpenMOSS-Team/MOSS-Image-SFT/resolve/fc5de0d56fc910cbca6f6625a70f5f582b26deb1/transformer/config.json",
+          "bytes": 240,
+          "sha256": "3291c3a1c7adc22b8182a0de25ca8ec97474d72715ce84adbab09cc0be24f666",
+          "value": {
+            "_class_name": "MOSSImageTransformer",
+            "_diffusers_version": "0.38.0",
+            "dim": 3072,
+            "ffn_dim": 8192,
+            "freq_dim": 256,
+            "latent_channels": 128,
+            "num_heads": 24,
+            "num_layers": 42,
+            "rope_base": 10000.0,
+            "text_dim": 4096
+          }
+        },
+        "text_encoder/config.json": {
+          "URL": "https://huggingface.co/OpenMOSS-Team/MOSS-Image-SFT/resolve/fc5de0d56fc910cbca6f6625a70f5f582b26deb1/text_encoder/config.json",
+          "bytes": 2813,
+          "sha256": "b31ee18a242bcfcccbe740f825f6b1d3ae231b0655eeecb5de3e98d504b7d68c",
+          "value": {
+            "architectures": [
+              "Qwen3_5Model"
+            ],
+            "dtype": "bfloat16",
+            "image_token_id": 248056,
+            "model_type": "qwen3_5",
+            "text_config": {
+              "attention_bias": false,
+              "attention_dropout": 0.0,
+              "attn_output_gate": true,
+              "bos_token_id": null,
+              "dtype": "bfloat16",
+              "eos_token_id": 248044,
+              "full_attention_interval": 4,
+              "head_dim": 256,
+              "hidden_act": "silu",
+              "hidden_size": 4096,
+              "initializer_range": 0.02,
+              "intermediate_size": 12288,
+              "layer_types": [
+                "linear_attention",
+                "linear_attention",
+                "linear_attention",
+                "full_attention",
+                "linear_attention",
+                "linear_attention",
+                "linear_attention",
+                "full_attention",
+                "linear_attention",
+                "linear_attention",
+                "linear_attention",
+                "full_attention",
+                "linear_attention",
+                "linear_attention",
+                "linear_attention",
+                "full_attention",
+                "linear_attention",
+                "linear_attention",
+                "linear_attention",
+                "full_attention",
+                "linear_attention",
+                "linear_attention",
+                "linear_attention",
+                "full_attention",
+                "linear_attention",
+                "linear_attention",
+                "linear_attention",
+                "full_attention",
+                "linear_attention",
+                "linear_attention",
+                "linear_attention",
+                "full_attention"
+              ],
+              "linear_conv_kernel_dim": 4,
+              "linear_key_head_dim": 128,
+              "linear_num_key_heads": 16,
+              "linear_num_value_heads": 32,
+              "linear_value_head_dim": 128,
+              "mamba_ssm_dtype": "float32",
+              "max_position_embeddings": 262144,
+              "mlp_only_layers": [],
+              "model_type": "qwen3_5_text",
+              "mtp_num_hidden_layers": 1,
+              "mtp_use_dedicated_embeddings": false,
+              "num_attention_heads": 16,
+              "num_hidden_layers": 32,
+              "num_key_value_heads": 4,
+              "pad_token_id": null,
+              "partial_rotary_factor": 0.25,
+              "rms_norm_eps": 1e-06,
+              "rope_parameters": {
+                "mrope_interleaved": true,
+                "mrope_section": [
+                  11,
+                  11,
+                  10
+                ],
+                "partial_rotary_factor": 0.25,
+                "rope_theta": 10000000,
+                "rope_type": "default"
+              },
+              "tie_word_embeddings": false,
+              "use_cache": true,
+              "vocab_size": 248320
+            },
+            "tie_word_embeddings": false,
+            "transformers_version": "5.12.1",
+            "video_token_id": 248057,
+            "vision_config": {
+              "deepstack_visual_indexes": [],
+              "depth": 27,
+              "dtype": "bfloat16",
+              "hidden_act": "gelu_pytorch_tanh",
+              "hidden_size": 1152,
+              "in_channels": 3,
+              "initializer_range": 0.02,
+              "intermediate_size": 4304,
+              "model_type": "qwen3_5_vision",
+              "num_heads": 16,
+              "num_position_embeddings": 2304,
+              "out_hidden_size": 4096,
+              "patch_size": 16,
+              "spatial_merge_size": 2,
+              "temporal_patch_size": 2
+            },
+            "vision_end_token_id": 248054,
+            "vision_start_token_id": 248053
+          }
+        },
+        "vae/config.json": {
+          "URL": "https://huggingface.co/OpenMOSS-Team/MOSS-Image-SFT/resolve/fc5de0d56fc910cbca6f6625a70f5f582b26deb1/vae/config.json",
+          "bytes": 838,
+          "sha256": "cc77f3f0ce0357039c71018dc19edaa4fcceb0c2f7488fdc2b9c0580d6baafa1",
+          "value": {
+            "_class_name": "AutoencoderKLFlux2",
+            "_diffusers_version": "0.38.0",
+            "act_fn": "silu",
+            "batch_norm_eps": 0.0001,
+            "batch_norm_momentum": 0.1,
+            "block_out_channels": [
+              128,
+              256,
+              512,
+              512
+            ],
+            "decoder_block_out_channels": [
+              96,
+              192,
+              384,
+              384
+            ],
+            "down_block_types": [
+              "DownEncoderBlock2D",
+              "DownEncoderBlock2D",
+              "DownEncoderBlock2D",
+              "DownEncoderBlock2D"
+            ],
+            "force_upcast": true,
+            "in_channels": 3,
+            "latent_channels": 32,
+            "layers_per_block": 2,
+            "mid_block_add_attention": true,
+            "norm_num_groups": 32,
+            "out_channels": 3,
+            "patch_size": [
+              2,
+              2
+            ],
+            "sample_size": 1024,
+            "up_block_types": [
+              "UpDecoderBlock2D",
+              "UpDecoderBlock2D",
+              "UpDecoderBlock2D",
+              "UpDecoderBlock2D"
+            ],
+            "use_post_quant_conv": true,
+            "use_quant_conv": true
+          }
+        }
+      },
+      "indexes": {
+        "transformer/diffusion_pytorch_model.safetensors.index.json": {
+          "URL": "https://huggingface.co/OpenMOSS-Team/MOSS-Image-SFT/resolve/fc5de0d56fc910cbca6f6625a70f5f582b26deb1/transformer/diffusion_pytorch_model.safetensors.index.json",
+          "bytes": 40298,
+          "sha256": "b609327fc75dbe5080e7e095d8b727d74d728b4f98e8b047133b0082cfa2fb03",
+          "metadata": {
+            "total_size": 10164617280
+          }
+        },
+        "text_encoder/model.safetensors.index.json": {
+          "URL": "https://huggingface.co/OpenMOSS-Team/MOSS-Image-SFT/resolve/fc5de0d56fc910cbca6f6625a70f5f582b26deb1/text_encoder/model.safetensors.index.json",
+          "bytes": 64641,
+          "sha256": "0af6fa3fa36ba8dcbb6b7ad0325a36c5b1b69862a9a1f1486b1b80385bd8f5ee",
+          "metadata": {
+            "total_parameters": 8392695024,
+            "total_size": 16785390048
+          }
+        }
+      }
+    }
+  ],
+  "source_citations": [
+    "src/moss_sliders/backend.py",
+    "src/moss_sliders/vendor/pipeline_moss_image.py",
+    "src/moss_sliders/lora.py",
+    "src/moss_sliders/gan.py",
+    "src/moss_sliders/inference.py",
+    "examples/warm-light.json"
+  ],
+  "profiles": [
+    {
+      "operation": "Encode training prompts",
+      "gpu_count": 1,
+      "calculated_VRAM_per_GPU_GiB": 24,
+      "calculated_host_RAM_GiB": 76,
+      "geometry": "≤256 tokens;3 prompts",
+      "batch_graphs": 1,
+      "text_token_bound": 256,
+      "checkpointing": false,
+      "attention": "memory-efficient SDPA (flash/efficient; no dense fallback)",
+      "resident_frozen_bytes": 16785390048,
+      "activation_allowance_bytes": 204472320,
+      "trainable_and_optimizer_peak_bytes": 17623044,
+      "other_GPU_allowance_bytes": 0,
+      "GPU_subtotal_bytes": 17007485412,
+      "host_loading_and_cache_subtotal_bytes": 59924292600,
+      "runtime_headroom": "GPU: 25% subtotal +2GiB; host:25% subtotal +4GiB; final ceil4GiB",
+      "notes": "use_cache=False; no autoregressive KV. Recurrent FP32 state allowance included rather than a fictitious all-layer KV cache.",
+      "activation_envelope_inputs": {
+        "D": 4096,
+        "I": 12288,
+        "H": 16,
+        "L": 32,
+        "N": 256,
+        "B": 1,
+        "scalar_bytes": 4,
+        "checkpointed": false,
+        "dense_fallback": false
+      },
+      "precision": "BF16 DiT/TE; FP32 VAE/adapter/critic",
+      "quantization_metadata_bytes": 0,
+      "activation_allowance_model": "Conservative planning envelope; linear transformer terms plus explicit dense fallback, text/KV or decode/pixel allowance as recorded in profile notes. Not measured or a formal peak guarantee."
+    },
+    {
+      "operation": "Train default512px",
+      "gpu_count": 1,
+      "calculated_VRAM_per_GPU_GiB": 32,
+      "calculated_host_RAM_GiB": 76,
+      "geometry": "512×512",
+      "batch_graphs": 4,
+      "text_token_bound": 256,
+      "checkpointing": true,
+      "attention": "memory-efficient SDPA (flash/efficient; no dense fallback)",
+      "resident_frozen_bytes": 10164617280,
+      "activation_allowance_bytes": 15099494400,
+      "trainable_and_optimizer_peak_bytes": 280277048,
+      "other_GPU_allowance_bytes": 0,
+      "GPU_subtotal_bytes": 25544388728,
+      "host_loading_and_cache_subtotal_bytes": 59924292600,
+      "runtime_headroom": "GPU: 25% subtotal +2GiB; host:25% subtotal +4GiB; final ceil4GiB",
+      "notes": "Main42 block checkpointing enabled;44-block envelope also covers the two text-refinement blocks. Encoder resides on host; no VAE.",
+      "activation_envelope_inputs": {
+        "D": 3072,
+        "I": 8192,
+        "H": 24,
+        "L": 44,
+        "N": 1280,
+        "B": 4,
+        "scalar_bytes": 4,
+        "checkpointed": true,
+        "dense_fallback": false
+      },
+      "precision": "BF16 DiT/TE; FP32 VAE/adapter/critic",
+      "quantization_metadata_bytes": 0,
+      "activation_allowance_model": "Conservative planning envelope; linear transformer terms plus explicit dense fallback, text/KV or decode/pixel allowance as recorded in profile notes. Not measured or a formal peak guarantee."
+    },
+    {
+      "operation": "Render1024px all components GPU",
+      "gpu_count": 1,
+      "calculated_VRAM_per_GPU_GiB": 52,
+      "calculated_host_RAM_GiB": 76,
+      "geometry": "1024×1024",
+      "batch_graphs": 1,
+      "text_token_bound": 4096,
+      "checkpointing": false,
+      "attention": "memory-efficient SDPA (flash/efficient; no dense fallback)",
+      "resident_frozen_bytes": 27199528700,
+      "activation_allowance_bytes": 12884901888,
+      "trainable_and_optimizer_peak_bytes": 17623044,
+      "other_GPU_allowance_bytes": 0,
+      "GPU_subtotal_bytes": 40102053632,
+      "host_loading_and_cache_subtotal_bytes": 59924292600,
+      "runtime_headroom": "GPU: 25% subtotal +2GiB; host:25% subtotal +4GiB; final ceil4GiB",
+      "notes": "No offload; native FP32 VAE dominates this conservative untiled decode envelope.",
+      "activation_envelope_inputs": {
+        "D": 3072,
+        "I": 8192,
+        "H": 24,
+        "L": 44,
+        "N": 8192,
+        "B": 1,
+        "scalar_bytes": 4,
+        "checkpointed": false,
+        "dense_fallback": false
+      },
+      "precision": "BF16 DiT/TE; FP32 VAE/adapter/critic",
+      "quantization_metadata_bytes": 0,
+      "activation_allowance_model": "Conservative planning envelope; linear transformer terms plus explicit dense fallback, text/KV or decode/pixel allowance as recorded in profile notes. Not measured or a formal peak guarantee."
+    },
+    {
+      "operation": "Render1024px explicit offload",
+      "gpu_count": 1,
+      "calculated_VRAM_per_GPU_GiB": 28,
+      "calculated_host_RAM_GiB": 76,
+      "geometry": "1024×1024",
+      "batch_graphs": 1,
+      "text_token_bound": 4096,
+      "checkpointing": false,
+      "attention": "memory-efficient SDPA (flash/efficient; no dense fallback)",
+      "resident_frozen_bytes": 16785390048,
+      "activation_allowance_bytes": 4482662400,
+      "trainable_and_optimizer_peak_bytes": 17623044,
+      "other_GPU_allowance_bytes": 0,
+      "GPU_subtotal_bytes": 21285675492,
+      "host_loading_and_cache_subtotal_bytes": 59924292600,
+      "runtime_headroom": "GPU: 25% subtotal +2GiB; host:25% subtotal +4GiB; final ceil4GiB",
+      "notes": "Existing --offload/model_cpu_offload_seq only: encode→DiT→VAE phases do not overlap their model weights. Host retains the other components. Peak is the text-encoding phase; weight/activation terms are paired within each phase.",
+      "phase_ledger": [
+        {
+          "phase": "text encoding",
+          "frozen_bytes": 16785390048,
+          "activation_bytes": 4482662400
+        },
+        {
+          "phase": "DiT sampling",
+          "frozen_bytes": 10164617280,
+          "activation_bytes": 3221225472
+        },
+        {
+          "phase": "VAE decode",
+          "frozen_bytes": 249521372,
+          "activation_bytes": 12884901888
+        }
+      ],
+      "phase_peak_formula": "max_each_phase(frozen_bytes+activation_bytes)+adapter state",
+      "activation_envelope_inputs": {
+        "D": 4096,
+        "I": 12288,
+        "H": 16,
+        "L": 32,
+        "N": 4096,
+        "B": 1,
+        "scalar_bytes": 4,
+        "checkpointed": false,
+        "dense_fallback": true,
+        "scope": "worst offload phase: bounded text encoder; see phase_ledger for DiT and VAE"
+      },
+      "precision": "BF16 DiT/TE; FP32 VAE/adapter/critic",
+      "quantization_metadata_bytes": 0,
+      "activation_allowance_model": "Conservative planning envelope; linear transformer terms plus explicit dense fallback, text/KV or decode/pixel allowance as recorded in profile notes. Not measured or a formal peak guarantee."
+    }
+  ],
+  "repository": "moss-image-sliders",
+  "optimizer_source_facts": [
+    {
+      "version": "0.9.5",
+      "source_file": "recipes.py",
+      "bytes": 104250,
+      "sha256": "4f86c1a5c029916e73c834ebea4aae3bd5502dde8f10628e5a99a23f7e60242c"
+    },
+    {
+      "version": "0.9.5",
+      "source_file": "optim/dualnorm.py",
+      "bytes": 56768,
+      "sha256": "8e57be915dc8be44aaff2ac2f7ad39fbb2a7c610d77340e9f13e895974bf173c"
+    },
+    {
+      "version": "0.9.5",
+      "source_file": "optim/direction_blend.py",
+      "bytes": 4011,
+      "sha256": "84982277f0559e68aceea6d1c5ee60129c1e1972bebf61ca47dfa38b8611a1fb"
+    },
+    {
+      "version": "0.9.5",
+      "source_file": "optim/constraint_geometry.py",
+      "bytes": 9142,
+      "sha256": "e51a90df05857bd986ff097a6d266bd22cefa93a0d545a6fb25d58b42775ce4c"
+    }
+  ],
+  "KV_or_recurrent_state": {
+    "type": "use_cache=False; conservative FP32 recurrent state scratch, not all-layer KV",
+    "bytes": 53477376,
+    "formula": "24*32*128*128*4+24*4*(2*16*128+32*128)*4"
+  },
+  "cache_limits": {
+    "max_rows": 8,
+    "max_cached_prompts": 3,
+    "field_shape": [
+      1,
+      128,
+      32,
+      32
+    ],
+    "FP32_fields_per_row": 3,
+    "prompt_hidden": [
+      1,
+      256,
+      4096
+    ],
+    "prompt_bytes_per_element": 2,
+    "FP32_row_tensor_bytes": 12582912,
+    "prompt_embedding_bytes": 6291456,
+    "host_cache_formula": "max_rows*3*product(field_shape)*4 +max_cached_prompts*product(prompt_hidden)*prompt_bytes_per_element; native masks/indices included in loader/cache reserve"
+  }
+}
