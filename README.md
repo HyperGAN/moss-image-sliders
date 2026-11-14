@@ -1,3 +1,5 @@
+> **Calculated memory planning:** training **32 GiB VRAM / 76 GiB host RAM** (512×512, B=4, BF16 DiT/TE; FP32 VAE/adapter/critic); sampling **52 GiB VRAM / 76 GiB host RAM** (1024×1024). See [MEMORY.md](MEMORY.md) for checkpointed/phase variants, attention fallback and exact limits. These are conservative calculated budgets, not measured peaks.
+
 # MOSS-Image Sliders
 
 Signed concept LoRA controls for pinned OpenMOSS MOSS-Image-SFT. The current
