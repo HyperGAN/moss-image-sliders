@@ -1,15 +1,15 @@
 # Explicit cached fresh initialization
 
-`moss_sliders.fresh95` is an opt-in library API for a newly declared MOSS cohort
+`moss_sliders.scoped` is an opt-in library API for a newly declared MOSS cohort
 with already completed native response data. It leaves the existing commands,
 profiles, source guards, model, LoRA names, defaults and saved cohorts unchanged.
-It requires the original core0.13.0 / ParticleGAN0.9.5 / HNDL0.10.0 runtime and
+It requires the original core0.15.1 / ParticleGAN0.11.0 / HNDL0.10.0 runtime and
 original MOSS native pipeline. It does not upgrade an older environment or make
 an old FULL/RAW artifact compatible with a new profile.
 
 The initializer acts on the same existing HNDL down Parameters. Their original
 constructor uses `kaiming_uniform_(a=1)`: gain1 and mean square `1/fan_in`.
-The public PG0.9.5 deterministic orthogonal initializer uses QR at that second
+The public PG0.11.0 deterministic orthogonal initializer uses QR at that second
 moment. It preserves Parameter and Module identity; it need not preserve the
 old Uniform distribution's entrywise bound. UP stays zero/KEEP and the original
 HNDL critic keeps its constructor values. There is no particle bank or router.
@@ -52,12 +52,12 @@ or reset an existing cohort.
 ```python
 from pathlib import Path
 from moss_sliders import MODEL_ID, MODEL_REVISION
-from moss_sliders.fresh95 import save_prepared_cache
+from moss_sliders.scoped import save_prepared_cache
 
 # The data/resource owner supplies these actual objects and authenticated
 # records; these names are not loaders or synthetic stand-ins for native data.
 config = dict(
-    objective="pg09_gan_only", pg_version="0.9.5",
+    objective="engine_gan_only", pg_version="0.11.0",
     rank=2, seed=7, resolution=256, rollout_steps=4, strength=1.0,
     batch_size=2, steps=128, lr=0.001, d_lr_mult=18.0, critic_width=32,
 )
@@ -99,7 +99,7 @@ is part of the immutable game signature before the shared core creates the
 optimizers. Entry writes initialization metadata and FULL0/RAW0.
 
 ```python
-from moss_sliders.fresh95 import open_training
+from moss_sliders.scoped import open_training
 
 with open_training(
     config, cache, Path("outputs/new-cohort"), mode="fresh",
@@ -153,7 +153,7 @@ MOSS prompt preflight, native encoder, scheduler, conditional-only CFG and VAE
 route with the caller's fully staged components.
 
 ```python
-from moss_sliders.fresh95 import open_inference
+from moss_sliders.scoped import open_inference
 
 with open_inference(
     raw, component_factory=component_factory, owner_admission=owner_admission,

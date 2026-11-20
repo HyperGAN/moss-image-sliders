@@ -11,7 +11,8 @@ import torch
 from safetensors.torch import load_file, save_file
 from transformers import BatchEncoding
 
-from particle_sliders.pg09_backends import MossResponseAdapter, checkpoint_with_adapter_scale
+from particle_sliders.backends import checkpoint_with_adapter_scale
+from moss_sliders.response_binding import MossResponseAdapter
 from moss_sliders import MODEL_ID, MODEL_REVISION
 from moss_sliders.artifacts import load_slider, save_gan_slider, save_slider
 from moss_sliders import backend
@@ -121,7 +122,7 @@ def gan_artifact_fixture():
     from moss_sliders.gan import build_run
     model = tiny_model()
     contexts = [(torch.randn(1, 3, 16), torch.ones(1, 3, dtype=torch.bool)) for _ in range(3)]
-    config = dict(objective="pg09_gan_only", pg_version="0.9.5", rank=2, lr=.001,
+    config = dict(objective="engine_gan_only", pg_version="0.11.0", rank=2, lr=.001,
                   seed=71, resolution=32, rollout_steps=2, strength=1.,
                   batch_size=2, steps=2, critic_width=8)
     run = build_run(MOSSImagePipeline(model, MOSSImageScheduler()), contexts, config,
@@ -148,7 +149,7 @@ def test_portable_gan_roundtrip_uses_actual_shared_signature_and_weights(tmp_pat
     assert all(torch.equal(v, restored.state_dict()[k]) for k, v in expected.items())
     assert all(p.dtype == torch.float32 for p in restored.parameters())
     metadata = json.loads((tmp_path / "gan/slider.json").read_text())
-    assert metadata["objective"] == "pg09_gan_only"
+    assert metadata["objective"] == "engine_gan_only"
     assert metadata["base_model"] == MODEL_ID and metadata["revision"] == MODEL_REVISION
     assert metadata["core_config"]["generator_arm"] == "adapter_gan"
     assert torch.equal(expected_image, render(pipe, restored, "neutral", **render_kwargs))

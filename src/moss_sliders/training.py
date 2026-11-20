@@ -34,6 +34,6 @@ def checkpoint_blocks(transformer, network=None):
     """Capture each signed forward's scale for shared GAN batch recomputation."""
     if network is None:
         raise ValueError("GAN checkpointing requires the actual shared backend.network")
-    from particle_sliders.pg09_backends import checkpoint_with_adapter_scale
+    from particle_sliders.backends import checkpoint_with_adapter_scale
     for block in transformer.layers:
         checkpoint_with_adapter_scale(block, network)

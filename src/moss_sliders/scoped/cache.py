@@ -3,12 +3,12 @@ from dataclasses import fields
 import math
 from pathlib import Path
 import torch
-from particle_sliders.pg09_backends import PreparedResponse,ResponseRow
+from particle_sliders.backends import PreparedResponse,ResponseRow
 from moss_sliders import MODEL_ID,MODEL_REVISION
 from . import PROFILE,ownership
 from .util import canonical,equal,read_packet,save_packet,source_record,tree
 
-SCHEMA='MOSS-completed-native-signed-prepared-cache-fresh95-v1'
+SCHEMA='MOSS-completed-native-signed-prepared-cache-scoped-v1'
 TEACHER_KEYS=('seed','resolution','rollout_steps','strength')
 
 def teacher_configuration(config):return{k:config[k]for k in TEACHER_KEYS}

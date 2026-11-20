@@ -26,7 +26,7 @@ def fixture():
     model = tiny_model()
     original = deepcopy(model.state_dict())
     contexts = [(torch.randn(1, 3, 16), torch.ones(1, 3, dtype=torch.bool)) for _ in range(3)]
-    config = dict(objective="pg09_gan_only", pg_version="0.9.5", rank=2, seed=17,
+    config = dict(objective="engine_gan_only", pg_version="0.11.0", rank=2, seed=17,
                   resolution=32, rollout_steps=2, strength=1., batch_size=2,
                   steps=8, lr=.001, critic_width=8)
 
@@ -56,7 +56,7 @@ def equal(a, b):
 def test_shared_game_executes_gan_only_balanced_signed_rows_and_frozen_base(monkeypatch):
     make, original, _ = fixture()
     run = make()
-    assert type(run.game).__module__ == "particle_sliders.pg09"
+    assert type(run.game).__module__ == "particle_sliders.engine"
     assert run.game.recipe.name == "bispf_optimized"
     assert run.game.prior is None
     def forbidden(*args, **kwargs):
@@ -112,7 +112,7 @@ def test_unidentified_legacy_v1_header_rejects_in_current_cohort(tmp_path):
     saved = save_checkpoint(source, tmp_path)
     metadata_path = saved / "checkpoint.json"
     metadata = json.loads(metadata_path.read_text())
-    metadata["schema"] = "moss-pg09-checkpoint-v1"
+    metadata["schema"] = "moss-engine-checkpoint-v1"
     for key in ("pg_version", "pg_source_profile", "penalty_input_domain"):
         del metadata[key]
     metadata_path.write_text(json.dumps(metadata))
@@ -139,7 +139,7 @@ def test_resume_checks_checksum_recipe_and_rejects_legacy_before_mutation(tmp_pa
     meta_path.write_text(json.dumps(meta))
     with pytest.raises(ValueError, match="full PG09 GAN"):
         restore_checkpoint(run, path)
-    meta["schema"] = "moss-pg09-checkpoint-v1"
+    meta["schema"] = "moss-engine-checkpoint-v1"
     meta_path.write_text(json.dumps(meta))
     with (path / "training.pt").open("ab") as stream:
         stream.write(b"corrupt")
@@ -169,7 +169,7 @@ def test_partial_run_resume_keeps_original_budget_and_exports_actual_leaves(tmp_
     assert other.game.completed_steps == recipe["steps"]
     assert (tmp_path / "resumed/checkpoints/step-000008/training.pt").is_file()
     manifest = json.loads((tmp_path / "resumed/adapter/slider.json").read_text())
-    assert manifest["objective"] == "pg09_gan_only"
+    assert manifest["objective"] == "engine_gan_only"
     assert manifest["core_config"]["recipe"]["total_steps"] == recipe["steps"]
     assert manifest["completed_steps"] == recipe["steps"]
     assert manifest["training"]["initial_completed_steps"] == 1
@@ -186,7 +186,7 @@ def test_invalid_build_leaves_model_reusable(change):
     with pytest.raises(ValueError):
         build_run(pipe, [context] * 3, dict(config, **change))
     assert [p.requires_grad for p in model.parameters()] == flags
-    assert all(not getattr(b, "_pg09_scale_checkpoint", False) for b in model.layers)
+    assert all(not getattr(b, "_adapter_scale_checkpoint", False) for b in model.layers)
     Slider(model).detach()
 
 

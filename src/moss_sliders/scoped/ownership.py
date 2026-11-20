@@ -13,16 +13,16 @@ def guard():
         if source_record(root/name)!=pin:
             raise RuntimeError('captured original MOSS Source differs: '+name)
     identity=native_hndl.verify_runtime()  # Exact original recursive admission.
-    if metadata.version('particlegan')!='0.9.5' or source_record(pg_init.__file__)['sha256']!=INIT_SHA:
-        raise RuntimeError('exact public PG095 initializer required')
+    if metadata.version('particlegan')!='0.11.0' or source_record(pg_init.__file__)['sha256']!=INIT_SHA:
+        raise RuntimeError('exact public current engine initializer required')
     return identity
 
 def sources():
     from moss_sliders import native_hndl,lora,gan,inference,training,learning_rates,backend
     from moss_sliders.vendor import pipeline_moss_image
-    from particle_sliders import pg09,pg095,pg09_backends,lifecycle
+    from particle_sliders import engine,backends,lifecycle
     modules=(native_hndl,lora,gan,inference,training,learning_rates,backend,pipeline_moss_image,
-             pg09,pg095,pg09_backends,lifecycle)
+             engine,backends,lifecycle)
     return dict(own={p.name:source_record(p)for p in sorted(Path(__file__).absolute().parent.glob('*.py'))},
         original={m.__name__:source_record(m.__file__)for m in modules})
 
@@ -42,7 +42,7 @@ class Attachment:
         self.markers={id(m):('_moss_slider_attached'in vars(m),vars(m).get('_moss_slider_attached'))for m in transformer.modules()}
         if any(getattr(m,'_moss_slider_attached',False)for m in transformer.modules()):
             raise ValueError('a foreign MOSS slider is already attached')
-        if any(getattr(m,'_pg09_scale_checkpoint',False)for m in transformer.layers):
+        if any(getattr(m,'_adapter_scale_checkpoint',False)for m in transformer.layers):
             raise ValueError('a foreign scale checkpoint is already attached')
     def attach(self,rank):
         from moss_sliders.lora import Slider
@@ -58,7 +58,7 @@ class Attachment:
         self.named_ids=[(n,id(p))for n,p in self.slider.named_parameters()]
         return self.slider
     def checkpoint(self,network):
-        from particle_sliders.pg09_backends import checkpoint_with_adapter_scale
+        from particle_sliders.backends import checkpoint_with_adapter_scale
         for block in self.transformer.layers:
             self.pending_checkpoints.append(checkpoint_with_adapter_scale(block,network))
     def require_active(self):
