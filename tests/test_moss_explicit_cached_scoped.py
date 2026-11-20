@@ -1,7 +1,7 @@
 """Four NEW authored/UNRUN MOSS software nodes; ONE total tiny update.
 
 Original source guards, real tiny original MOSS architecture, original HNDL
-modules and actual PG095 game execute. Synthetic complete fields replace only
+modules and actual current engine game execute. Synthetic complete fields replace only
 data collection. No original proof, teacher or pretrained runtime is called.
 """
 from copy import deepcopy
@@ -10,13 +10,13 @@ from pathlib import Path
 import math
 import pytest
 import torch
-from particle_sliders.pg09_backends import PreparedResponse,ResponseRow,FrozenResponseAdapter
+from particle_sliders.backends import PreparedResponse,ResponseRow,FrozenResponseAdapter
 from moss_sliders import MODEL_ID,MODEL_REVISION,gan,training as old_training
 from moss_sliders.smoke import tiny_model
 from moss_sliders.vendor.pipeline_moss_image import MOSSImagePipeline,MOSSImageScheduler
-from moss_sliders.fresh95 import open_training,open_inference,save_prepared_cache,file_pin,Checkpoint
-from moss_sliders.fresh95 import api,cache,policy
-from moss_sliders.fresh95.util import equal
+from moss_sliders.scoped import open_training,open_inference,save_prepared_cache,file_pin,Checkpoint
+from moss_sliders.scoped import api,cache,policy
+from moss_sliders.scoped.util import equal
 
 def component_factory(request):
     assert request['operation']in('fresh','resume','inference')and request['particle_bank']is None
@@ -32,7 +32,7 @@ def staged(tmp_path,monkeypatch):
         monkeypatch.setattr(gan,name,forbidden)
     monkeypatch.setattr(old_training,'sample_training_state',forbidden)
     monkeypatch.setattr(FrozenResponseAdapter,'prepare',forbidden)
-    config=dict(objective='pg09_gan_only',pg_version='0.9.5',rank=2,seed=7,resolution=32,
+    config=dict(objective='engine_gan_only',pg_version='0.11.0',rank=2,seed=7,resolution=32,
         rollout_steps=2,strength=1.,batch_size=2,steps=3,lr=.001,d_lr_mult=18.,critic_width=4)
     base=component_factory(dict(operation='fresh',particle_bank=None))
     base_state=deepcopy(base.transformer.state_dict());base_path=tmp_path/'synthetic-original-base.pt'
@@ -55,7 +55,7 @@ def staged(tmp_path,monkeypatch):
         real_teacher_calls=0,synthetic_row=index)for index,x in enumerate(prepared)]
     frozen=save_prepared_cache(tmp_path/'completed-cache.pt',config=config,base_identity=identity,
         prepared=prepared,teacher_origins=origins,cache_id='NEW-synthetic-MOSS-paired-four-fields',owner_admission=lambda request:True)
-    return dict(config=config,cache=frozen,base_identity=identity,device='cpu',cohort_id='NEW-MOSS-cached-fresh95-software-v1',
+    return dict(config=config,cache=frozen,base_identity=identity,device='cpu',cohort_id='NEW-MOSS-cached-scoped-software-v1',
         component_factory=component_factory,owner_admission=lambda request:True),tmp_path,base_state
 
 def opened(staged,name='fresh'):
@@ -63,7 +63,7 @@ def opened(staged,name='fresh'):
     return open_training(directory=root/name,mode='fresh',**options)
 
 def test_new_before_optimizer_same_HNDL_Parameters_zeroUP_critic_KEEP_no_bank(staged,monkeypatch):
-    original=policy.initialize;game=api.ConditionalPG095;seen=[]
+    original=policy.initialize;game=api.ConditionalParticleGAN;seen=[]
     def initialize(slider,critic,*args):
         ids=[id(p)for p in slider.parameters()]+[id(p)for p in critic.parameters()]
         before=deepcopy(critic.state_dict());receipt=original(slider,critic,*args)
@@ -74,7 +74,7 @@ def test_new_before_optimizer_same_HNDL_Parameters_zeroUP_critic_KEEP_no_bank(st
         assert seen and backend.metadata()['fresh_initialization']['receipt']==seen[-1]
         assert kwargs['particles']is None
         return game(backend,*args,**kwargs)
-    monkeypatch.setattr(policy,'initialize',initialize);monkeypatch.setattr(api,'ConditionalPG095',construct)
+    monkeypatch.setattr(policy,'initialize',initialize);monkeypatch.setattr(api,'ConditionalParticleGAN',construct)
     with opened(staged)as owner:
         assert owner.game.completed_steps==0 and owner.game.prior is None
         assert owner.game.state_dict()['config']['backend']['fresh_initialization']['receipt']==seen[0]
@@ -97,7 +97,7 @@ def test_new_a1_QR_Gram_deterministic_KEEP_caller_RNG_and_frozen_base(staged):
         assert equal(base,pipe.transformer.state_dict())
     assert all(p.requires_grad==flag for p,flag in flags)
     assert all('_moss_slider_attached'not in vars(m)for m in pipe.transformer.modules())
-    assert all('_pg09_scale_checkpoint'not in vars(m)for m in pipe.transformer.layers)
+    assert all('_adapter_scale_checkpoint'not in vars(m)for m in pipe.transformer.layers)
     assert torch.equal(before,torch.get_rng_state())
     with opened(staged,'b')as again:
         assert equal(first,again.native.network.state_dict())and receipt==again.initialization
@@ -116,7 +116,7 @@ def test_new_ONE_update_strict_whole_FULL_opts_RNG_and_RAW_native_skip(staged,mo
     monkeypatch.setattr(policy,'initialize',forbidden)
     with open_training(directory=root/'resume',mode='resume',resume=full,**options)as resumed:
         assert resumed.inherited_steps==1 and equal(state,resumed.game.state_dict())
-    monkeypatch.setattr(api,'load_cache',forbidden);monkeypatch.setattr(api,'ConditionalPG095',forbidden)
+    monkeypatch.setattr(api,'load_cache',forbidden);monkeypatch.setattr(api,'ConditionalParticleGAN',forbidden)
     with open_inference(raw,component_factory=component_factory,owner_admission=lambda request:True)as inferred:
         assert not hasattr(inferred,'game')and not hasattr(inferred,'critic')
         assert equal(network,inferred.native.network.state_dict())
@@ -130,7 +130,7 @@ def test_new_early_mode_FULL_EMA_refusal_and_retry_only_pending_cleanup(staged,m
     bad=dict(options,component_factory=forbidden)
     for mode,resume,ema in(('fresh',Checkpoint('unused',1,'0'*64),None),('resume',None,None),('fresh',None,.9)):
         with pytest.raises(ValueError):open_training(directory=root/'bad',mode=mode,resume=resume,ema_decay=ema,**bad)
-    legacy=root/'old-FULL.pt';torch.save(dict(schema='old-moss-pg09-checkpoint-v2'),legacy)
+    legacy=root/'old-FULL.pt';torch.save(dict(schema='old-moss-engine-checkpoint-v2'),legacy)
     with pytest.raises(ValueError):open_training(directory=root/'legacy',mode='resume',resume=file_pin(legacy),**bad)
     with pytest.raises(ValueError):
         open_training(directory=root/'denied',mode='fresh',**dict(options,component_factory=forbidden,owner_admission=lambda request:False))

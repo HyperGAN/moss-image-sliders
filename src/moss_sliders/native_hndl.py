@@ -10,15 +10,15 @@ from pathlib import Path
 
 from torch import nn
 
-PROFILE = "hypergan-hndl-v3-pg095"
+PROFILE = "hypergan-hndl-engine"
 LORA_GRAPH = '''down = linear(value, $rank, bias=False, name="down")
 linear(down, $output_width, bias=False, name="up")'''
 
 
 def verify_runtime():
     """Reject a historical environment before attaching or loading native weights."""
-    if version("particle-sliders-core") != "0.13.0":
-        raise ValueError("MOSS HNDL requires the qualified core 0.13.0 profile")
+    if version("particle-sliders-core") != "0.15.1":
+        raise ValueError("MOSS HNDL requires the qualified core 0.15.1 profile")
     import particle_sliders
     manifest_path = Path(__file__).with_name("hndl_cohort.json")
     cohort = json.loads(manifest_path.read_text())
@@ -32,12 +32,12 @@ def verify_runtime():
         raise ValueError("MOSS HNDL core source closure differs from the exact qualified candidate")
     if closure(root.parent / "concept_slider_core") != cohort["compatibility_sources"]:
         raise ValueError("MOSS HNDL compatibility source closure differs from the exact candidate")
-    from particle_sliders.pg09 import PG_VERSION, validate_pg09_domain
-    from particle_sliders.fibo_hndl import verified_builder
-    if PG_VERSION != "0.9.5":
-        raise ValueError("MOSS HNDL requires official ParticleGAN 0.9.5")
+    from particle_sliders.engine import PG_VERSION, validate_engine_domain
+    from .fibo_hndl import verified_builder
+    if PG_VERSION != "0.11.0":
+        raise ValueError("MOSS HNDL requires official ParticleGAN 0.11.0")
     # Source validation is part of admission even for a tiny field.
-    validate_pg09_domain((1, 4, 1, 2, 2), response_domain="continuous_field")
+    validate_engine_domain((1, 4, 1, 2, 2), response_domain="continuous_field")
     _, identity = verified_builder()
     return dict(identity, profile=PROFILE, builder_profile=identity["profile"],
                 core_commit=cohort["core_commit"],
@@ -49,7 +49,7 @@ class HNDLLowRankResidual(nn.Module):
     """Actual HNDL attention LoRA with the historical native parameter names."""
     def __init__(self, base, rank, alpha):
         super().__init__()
-        from particle_sliders.fibo_hndl import verified_builder
+        from .fibo_hndl import verified_builder
         builder, identity = verified_builder()
         graph = builder(LORA_GRAPH, input_shape={"value": ["B", 1, base.in_features]},
                         output_shape=["B", 1, base.out_features],
@@ -98,10 +98,10 @@ class MossHNDLFieldCritic(nn.Module):
 
     def __init__(self, response_shape, condition_width, width=32):
         super().__init__()
-        from particle_sliders.pg09 import validate_pg09_domain
-        from particle_sliders.fibo_hndl import HNDLFieldCritic
+        from particle_sliders.engine import validate_engine_domain
+        from .fibo_hndl import HNDLFieldCritic
         shape = tuple(response_shape)
-        validate_pg09_domain(shape, response_domain="continuous_field")
+        validate_engine_domain(shape, response_domain="continuous_field")
         if shape[0] != 1 or len(shape) not in (4, 5) or len(shape) == 5 and shape[2] != 1:
             raise ValueError("MOSS HNDL requires native [1,C,H,W] or [1,C,1,H,W] fields")
         self.identity = verify_runtime()

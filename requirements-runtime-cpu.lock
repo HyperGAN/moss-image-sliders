@@ -246,9 +246,7 @@ hf-xet==1.8.0 \
 hndl==0.10.0 \
     --hash=sha256:b3130dcf1f11acdafb4465a184ff63cc007a0e33bc1268d61c23e0d68e1cfd4a \
     --hash=sha256:e36a92da0cd34304c05c477a81d37c61dbab10d724bd07b421149f93b3b8c188
-    # via
-    #   moss-image-sliders (pyproject.toml)
-    #   particle-sliders-core
+    # via moss-image-sliders (pyproject.toml)
 httpcore==1.0.9 \
     --hash=sha256:2d400746a40668fc9dec9810239072b40b4484b640a8c38fd654a024c7a1bf55 \
     --hash=sha256:6e34463af53fd2ab5d807f399a9b45ea31c3dfa2276f15a2c3f00afff6e176e8
@@ -531,8 +529,9 @@ packaging==26.3 \
     #   accelerate
     #   huggingface-hub
     #   transformers
-particlegan==0.9.5 \
-    --hash=sha256:c1c0de7a635ac1b1634ba158eed050b6f6aed993e01f9b463435430c77d846ae
+particlegan==0.11.0 \
+    --hash=sha256:218ac69efd42e092367b4c7a5c4abb4685dc63a73ccc23223a8bb4dd1543e327 \
+    --hash=sha256:8a167a38d1471ce358a4603256adcc636a573b9255146ae89e3ea88ae69074f4
     # via
     #   moss-image-sliders (pyproject.toml)
     #   particle-sliders-core

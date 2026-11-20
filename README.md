@@ -4,8 +4,8 @@
 
 Signed concept LoRA controls for pinned OpenMOSS MOSS-Image-SFT. The current
 `moss-image-sliders 0.4.0.dev0` package and `moss-sliders train` use official
-**ParticleGAN 0.9.5**, shared **particle-sliders-core 0.13.0** at
-`3dd672a7f9b8c169daef90fd63e4bb42b9ddc423`, HyperGAN develop builder
+**ParticleGAN 0.11.0**, shared **particle-sliders-core 0.15.1** at
+`c13890f8e2a1ecf1dc8eb9f2a37f9187cb9fea78`, HyperGAN develop builder
 `5f368a3770cf5bdae0448995c9f76e29af8049f7`, and HNDL 0.10.0. Actual HNDL
 attention LoRA and the shared spatial field critic execute the public
 `bispf_optimized` adapter GAN; the shared core owns losses, optimizers,
@@ -45,7 +45,7 @@ Create a new environment; never repin an active campaign:
 python3.12 -m venv .venv-cpu
 . .venv-cpu/bin/activate
 python -m pip install --require-hashes -r requirements-runtime-cpu.lock
-python -m pip install --no-deps 'particle-sliders-core[serialization,hypergan-hndl] @ git+https://github.com/HyperGAN/particle-sliders.git@3dd672a7f9b8c169daef90fd63e4bb42b9ddc423#subdirectory=packages/particle-sliders-core'
+python -m pip install --no-deps 'particle-sliders-core[serialization] @ git+https://github.com/HyperGAN/particle-sliders.git@c13890f8e2a1ecf1dc8eb9f2a37f9187cb9fea78#subdirectory=packages/particle-sliders-core'
 python -m pip install --no-deps 'hypergan @ git+https://github.com/HyperGAN/HyperGAN.git@5f368a3770cf5bdae0448995c9f76e29af8049f7'
 python -m pip install --no-deps .
 python -m pip check
@@ -176,7 +176,7 @@ adapter and private result bundle remain private.
 
 ## Train a concept
 
-The example JSON recipes explicitly name `pg09_gan_only`, ParticleGAN `0.9.5`,
+The example JSON recipes explicitly name `engine_gan_only`, ParticleGAN `0.11.0`,
 `bispf_optimized`, and batch size. Recipes from the old MSE trainer fail validation.
 Training and inference preflight the full native chat template before any
 encoder forward. An over-budget prompt fails instead of being silently truncated.
@@ -268,7 +268,7 @@ generalization and visual quality remain outside it. No trained weights are publ
 
 ## Explicit cached fresh initialization
 
-The additional [`moss_sliders.fresh95` owner API](FRESH95.md) accepts already
+The additional [`moss_sliders.scoped` owner API](SCOPED.md) accepts already
 completed native response rows for a newly declared fresh cohort, strict FULL
 restore, and RAW-native inference. Four new installed software cases passed
 with one tiny update; the original hatchling build and full pretrained/public

@@ -3,10 +3,11 @@
 import math
 import torch
 
-from particle_sliders.pg09_backends import (
-    FlowSchedule, MossResponseAdapter, ResponseRow, moss_pipeline_decoder,
+from particle_sliders.backends import (
+    FlowSchedule, ResponseRow,
 )
 
+from .response_binding import MossResponseAdapter, moss_pipeline_decoder
 from . import MODEL_ID, MODEL_REVISION
 from .backend import preflight_prompt
 
@@ -26,7 +27,7 @@ def render(pipe, slider, prompt, *, scale=0.0, seed=42, width=1024, height=1024,
         if (response_backend.transformer is not pipe.transformer
                 or response_backend.slider is not slider):
             raise ValueError("Inference backend must own the same transformer and slider")
-    elif any(getattr(block, "_pg09_scale_checkpoint", False) for block in pipe.transformer.layers):
+    elif any(getattr(block, "_adapter_scale_checkpoint", False) for block in pipe.transformer.layers):
         raise ValueError("Pass the training response_backend for a checkpointed transformer, "
                          "or load the portable adapter in a fresh inference process")
     # The native encoder truncates by default. Validate both complete formatted

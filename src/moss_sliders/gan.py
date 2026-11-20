@@ -14,23 +14,24 @@ import uuid
 
 import torch
 
-from particle_sliders.pg09 import ConditionalPG09
-from particle_sliders.pg09_backends import (
-    MossResponseAdapter, ResponseRow, checkpoint_with_adapter_scale,
+from particle_sliders.engine import ConditionalParticleGAN
+from particle_sliders.backends import (
+    ResponseRow, checkpoint_with_adapter_scale,
 )
 
+from .response_binding import MossResponseAdapter
 from . import MODEL_ID, MODEL_REVISION
 from .lora import Slider
 from .learning_rates import recipe_overrides as rate_overrides
 from .training import sample_training_state
 
-OBJECTIVE = "pg09_gan_only"
+OBJECTIVE = "engine_gan_only"
 
 
 @dataclass
 class GanRun:
     backend: object
-    game: ConditionalPG09
+    game: ConditionalParticleGAN
 
     @property
     def slider(self):
@@ -41,9 +42,9 @@ class GanRun:
 
 
 def build_run(pipe, contexts, config, *, checkpointing=True, model_identity=None,
-              runtime_profile="hypergan-hndl-v3-pg095"):
+              runtime_profile="hypergan-hndl-engine"):
     """Validate before attachment and roll back hooks/flags after a failed build."""
-    if runtime_profile == "hypergan-hndl-v3-pg095":
+    if runtime_profile == "hypergan-hndl-engine":
         from .native_hndl import verify_runtime
         identity = verify_runtime()
         model_identity = dict(model_identity or {"model": MODEL_ID, "revision": MODEL_REVISION},
@@ -61,7 +62,7 @@ def build_run(pipe, contexts, config, *, checkpointing=True, model_identity=None
             not math.isfinite(config[key]) or config[key] <= 0 for key in ("lr", "strength")):
         raise ValueError("Invalid GAN resolution, learning rate or strength")
     blocks = list(pipe.transformer.layers)
-    if any(getattr(block, "_pg09_scale_checkpoint", False) for block in blocks):
+    if any(getattr(block, "_adapter_scale_checkpoint", False) for block in blocks):
         raise ValueError("Build a new GAN run with an unwrapped transformer")
     flags = [(p, p.requires_grad) for p in pipe.transformer.parameters()]
     forwards = [(block, block.forward) for block in blocks]
@@ -75,23 +76,23 @@ def build_run(pipe, contexts, config, *, checkpointing=True, model_identity=None
             slider.detach()
         for block, forward in forwards:
             block.forward = forward
-            if hasattr(block, "_pg09_scale_checkpoint"):
-                delattr(block, "_pg09_scale_checkpoint")
+            if hasattr(block, "_adapter_scale_checkpoint"):
+                delattr(block, "_adapter_scale_checkpoint")
         for parameter, flag in flags:
             parameter.requires_grad_(flag)
         raise
 
 
 def _build_run(pipe, contexts, config, *, checkpointing, model_identity, owner,
-               runtime_profile="hypergan-hndl-v3-pg095"):
+               runtime_profile="hypergan-hndl-engine"):
     """Fixed frozen neutral rollouts, paired signs, and useful context/time features.
 
     Each scheduler position receives a separately seeded frozen neutral rollout.
     Both signs use the identical latent/time and positive-minus-negative teacher.
     The shared game owns independent balanced D/G row and reference-noise streams.
     """
-    from particle_sliders.pg09 import PG_VERSION
-    expected_version = "0.9.5" if runtime_profile == "hypergan-hndl-v3-pg095" else "0.9.1"
+    from particle_sliders.engine import PG_VERSION
+    expected_version = "0.11.0" if runtime_profile == "hypergan-hndl-engine" else "0.9.1"
     if (config.get("objective") != OBJECTIVE or config.get("pg_version") != expected_version
             or PG_VERSION != expected_version):
         raise ValueError("An explicit PG 0.9 GAN-only recipe is required")
@@ -105,7 +106,7 @@ def _build_run(pipe, contexts, config, *, checkpointing, model_identity, owner,
         if devices:
             torch.cuda.default_generators[devices[0]].manual_seed(config["seed"])
         residual_factory = None
-        if runtime_profile == "hypergan-hndl-v3-pg095":
+        if runtime_profile == "hypergan-hndl-engine":
             from .native_hndl import HNDLLowRankResidual
             residual_factory = HNDLLowRankResidual
         slider = Slider(pipe.transformer, rank=config["rank"], residual_factory=residual_factory)
@@ -141,22 +142,19 @@ def _build_run(pipe, contexts, config, *, checkpointing, model_identity, owner,
         if not 0 < scale < float("inf"):
             slider.detach()
             raise ValueError("Frozen training edit has no finite nonzero response scale")
-        if runtime_profile == "hypergan-hndl-v3-pg095":
+        if runtime_profile == "hypergan-hndl-engine":
             from .native_hndl import MossHNDLFieldCritic
             critic = MossHNDLFieldCritic(rows[0].target.shape, conditions.shape[1],
                                         config.get("critic_width", 32)).to(device)
         else:
-            from particle_sliders.pg09_moss_campaign import CampaignFieldCritic
+            from .campaign_binding import CampaignFieldCritic
             critic = CampaignFieldCritic(rows[0].target.shape[1], conditions.shape[1],
                                         config.get("critic_width", 32)).to(device)
     if checkpointing:
         for block in pipe.transformer.layers:
             checkpoint_with_adapter_scale(block, backend.network)
-    game_class = ConditionalPG09
-    if runtime_profile == "hypergan-hndl-v3-pg095":
-        from particle_sliders.pg095 import ConditionalPG095
-        game_class = ConditionalPG095
-    game = game_class(
+    from particle_sliders.engine import ConditionalParticleGAN
+    game = ConditionalParticleGAN(
         backend, rows, critic, conditions=conditions, particles=None,
         response_scale=scale, response_domain="continuous_field",
         preset="bispf_optimized", sampling="balanced",
@@ -168,15 +166,15 @@ def _build_run(pipe, contexts, config, *, checkpointing, model_identity, owner,
 
 def prepare_cached_rows(cache):
     """Validate cache identity and shared runtime before loading a real model."""
-    from particle_sliders.pg09 import PG_VERSION
+    from particle_sliders.engine import PG_VERSION
     if PG_VERSION != "0.9.1":
         raise RuntimeError("Legacy cached campaigns require their original PG0.9.1/core cohort; see docs/pg094-current.md")
-    from particle_sliders.pg09_moss_campaign import MossCampaignRows
-    from particle_sliders.pg09 import validate_pg09_domain
+    from .campaign_binding import MossCampaignRows
+    from particle_sliders.engine import validate_engine_domain
     provider = MossCampaignRows(cache)
     if provider.recipe["model_revision"] != MODEL_REVISION or len(provider) < 2:
         raise ValueError("Campaign cache requires the pinned MOSS revision and nonempty signed rows")
-    validate_pg09_domain(provider.response_shape, response_domain="continuous_field")
+    validate_engine_domain(provider.response_shape, response_domain="continuous_field")
     return provider
 
 
@@ -187,10 +185,10 @@ def build_cached_run(transformer, cache, *, total_steps=3840, batch_size=8,
         raise ValueError("batch_size must be an integer in [2,512]")
     if type(total_steps) is not int or not 1 <= total_steps <= 3840:
         raise ValueError("Campaign total_steps must be an integer in [1,3840]")
-    from particle_sliders.pg09 import PG_VERSION
+    from particle_sliders.engine import PG_VERSION
     if PG_VERSION != "0.9.1":
         raise RuntimeError("Legacy cached campaigns require their original PG0.9.1/core cohort; see docs/pg094-current.md")
-    from particle_sliders.pg09_moss_campaign import build_campaign_run
+    from .campaign_binding import build_campaign_run
     provider = prepare_cached_rows(cache) if provider is None else provider
     run = build_campaign_run(
         transformer, provider, response_scale=provider.response_scale(),
@@ -226,7 +224,7 @@ def save_checkpoint(run, root):
         packet = _cpu(run.game.state_dict())
         torch.save(packet, pending / "training.pt")
         config = packet["config"]
-        metadata = dict(schema="moss-pg09-checkpoint-v2", objective=OBJECTIVE,
+        metadata = dict(schema="moss-engine-checkpoint-v2", objective=OBJECTIVE,
                         pg_version=config["pg_version"],
                         pg_source_profile=config["pg_source_profile"],
                         penalty_input_domain=config["penalty_input_domain"],
@@ -244,12 +242,12 @@ def restore_checkpoint(run, directory):
     """Read RNG tensors on CPU; shared core validates before mutating state."""
     directory = Path(directory)
     meta = json.loads((directory / "checkpoint.json").read_text())
-    if (meta.get("schema") not in ("moss-pg09-checkpoint-v1", "moss-pg09-checkpoint-v2") or
+    if (meta.get("schema") not in ("moss-engine-checkpoint-v1", "moss-engine-checkpoint-v2") or
             meta.get("objective") != OBJECTIVE or type(meta.get("step")) is not int):
         raise ValueError("Only full PG09 GAN checkpoints can resume training")
     expected = run.game.export_state_dict()["config"]
     identity_keys = ("pg_version", "pg_source_profile", "penalty_input_domain")
-    if meta["schema"] == "moss-pg09-checkpoint-v2" or any(key in meta for key in identity_keys):
+    if meta["schema"] == "moss-engine-checkpoint-v2" or any(key in meta for key in identity_keys):
         if any(meta.get(key) != expected[key] for key in identity_keys):
             raise ValueError("GAN checkpoint cohort header differs; use its original pinned environment")
     elif expected["pg_version"] != "0.9.1":

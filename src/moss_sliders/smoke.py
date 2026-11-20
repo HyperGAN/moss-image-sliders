@@ -12,11 +12,11 @@ def tiny_model():
                                 text_dim=16, freq_dim=16, latent_channels=4).eval()
 
 
-def run_smoke(steps=4, *, runtime_profile="hypergan-hndl-v3-pg095"):
+def run_smoke(steps=4, *, runtime_profile="hypergan-hndl-engine"):
     from .gan import build_run, restore_checkpoint, save_checkpoint
     from .artifacts import save_gan_slider
-    from particle_sliders.pg09_backends import FlowSchedule, ResponseRow
-    pg_version = "0.9.5" if runtime_profile == "hypergan-hndl-v3-pg095" else "0.9.1"
+    from particle_sliders.backends import FlowSchedule, ResponseRow
+    pg_version = "0.11.0" if runtime_profile == "hypergan-hndl-engine" else "0.9.1"
     torch.set_num_threads(1)
     torch.manual_seed(42)
     model = tiny_model()
@@ -24,7 +24,7 @@ def run_smoke(steps=4, *, runtime_profile="hypergan-hndl-v3-pg095"):
     contexts = [(torch.randn(1, 3, 16), torch.ones(1, 3, dtype=torch.bool)) for _ in range(3)]
     original = {key: tensor.clone() for key, tensor in model.state_dict().items()}
     pipe = MOSSImagePipeline(model, MOSSImageScheduler())
-    config = dict(objective="pg09_gan_only", pg_version=pg_version, rank=2, seed=42,
+    config = dict(objective="engine_gan_only", pg_version=pg_version, rank=2, seed=42,
                   resolution=32, rollout_steps=2, strength=1., batch_size=2,
                   steps=steps, lr=0.001, critic_width=8)
     run = build_run(pipe, contexts, config, runtime_profile=runtime_profile)
@@ -44,7 +44,7 @@ def run_smoke(steps=4, *, runtime_profile="hypergan-hndl-v3-pg095"):
         model = tiny_model()
         model.load_state_dict(original)
         restored = load_slider(model, path)
-        from particle_sliders.pg09_backends import MossResponseAdapter
+        from moss_sliders.response_binding import MossResponseAdapter
         backend = MossResponseAdapter(model, restored)
         outputs = []
         for scale in [-1, 0, 1]:
@@ -57,7 +57,7 @@ def run_smoke(steps=4, *, runtime_profile="hypergan-hndl-v3-pg095"):
         assert all(torch.equal(original[key], tensor) for key, tensor in model.state_dict().items())
     return {"backend": "official MOSSImageTransformer (tiny random weights)", "device": "cpu",
             "model_weights_downloaded": False, "optimizer_steps": steps,
-            "objective": "pg09_gan_only", "pg_version": pg_version,
+            "objective": "engine_gan_only", "pg_version": pg_version,
             "runtime_profile": runtime_profile,
             "game": type(run.game).__module__ + "." + type(run.game).__name__,
             "losses": [value["g_loss"] for value in receipts],

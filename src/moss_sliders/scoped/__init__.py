@@ -2,7 +2,7 @@
 
 No old builder, default, source guard or saved cohort is changed.
 """
-PROFILE='moss-native-hndl-explicit-cached-fresh95-v1'
+PROFILE='moss-native-hndl-explicit-cached-scoped-v1'
 from .util import Checkpoint,file_pin
 
 def save_prepared_cache(*args,**kwargs):

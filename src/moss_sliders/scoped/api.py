@@ -5,22 +5,22 @@ import hashlib,math
 from pathlib import Path
 import torch
 from particle_sliders.field_critic import seed_initialization_rng
-from particle_sliders.pg095 import ConditionalPG095
-from particle_sliders.pg09_backends import MossResponseAdapter
+from particle_sliders.engine import ConditionalParticleGAN
+from moss_sliders.response_binding import MossResponseAdapter
 from moss_sliders import MODEL_ID,MODEL_REVISION
 from moss_sliders.learning_rates import recipe_overrides
 from . import PROFILE,ownership,policy
 from .cache import load_cache,to_device,validate_base
 from .util import canonical,equal,new_directory,read_packet,save_packet,write_json
 
-FULL_SCHEMA='MOSS-native-HNDL-explicit-cached-fresh95-v1-FULL'
-RAW_SCHEMA='MOSS-native-HNDL-explicit-cached-fresh95-v1-RAW'
+FULL_SCHEMA='MOSS-native-HNDL-explicit-cached-scoped-v1-FULL'
+RAW_SCHEMA='MOSS-native-HNDL-explicit-cached-scoped-v1-RAW'
 
 def configuration(value):
     if not isinstance(value,dict):raise ValueError('explicit original configuration required')
     allowed={'objective','pg_version','rank','seed','resolution','rollout_steps','strength','batch_size','steps','lr','critic_width','d_lr_mult'}
-    if set(value)-allowed or value.get('objective')!='pg09_gan_only'or value.get('pg_version')!='0.9.5':
-        raise ValueError('exact original native PG095 adapter-only recipe required')
+    if set(value)-allowed or value.get('objective')!='engine_gan_only'or value.get('pg_version')!='0.11.0':
+        raise ValueError('exact original native current engine adapter-only recipe required')
     for key,lower,upper in(('rank',1,128),('batch_size',2,512),('rollout_steps',2,50),('steps',1,10000),('seed',0,2**32-1),('resolution',16,2048),('critic_width',1,4096)):
         if type(value.get(key))is not int or not lower<=value[key]<=upper:raise ValueError('invalid recipe: '+key)
     if value['resolution']%16 or type(value.get('strength'))not in(int,float)or not math.isfinite(value['strength'])or value['strength']<=0:
@@ -132,7 +132,7 @@ class Training(NativeOwner):
             self.backend=ReceiptBackend(self.native,self.initialization,self.sources,self.cache_identity)
             # All fresh policies/receipt are already in the immutable signature
             # before the shared core constructs the first optimizer.
-            self.game=ConditionalPG095(self.backend,prepared,self.critic,conditions=conditions,particles=None,
+            self.game=ConditionalParticleGAN(self.backend,prepared,self.critic,conditions=conditions,particles=None,
                 response_scale=self.cache_identity['response_scale'],response_domain='continuous_field',
                 preset='bispf_optimized',sampling='balanced',batch_size=config['batch_size'],
                 total_steps=config['steps'],seed=config['seed'],recipe_overrides=recipe_overrides(config))

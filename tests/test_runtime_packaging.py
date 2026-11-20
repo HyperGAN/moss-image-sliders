@@ -19,10 +19,10 @@ def test_ui_is_optional_and_runtime_lock_keeps_patched_numeric_cohort():
     assert 'gradio' not in base
     assert project['optional-dependencies']['ui'] == ['gradio==6.30.0']
     assert 'Pillow>=13.0.0' in project['dependencies']
-    assert any('3dd672a7f9b8c169daef90fd63e4bb42b9ddc423' in value for value in project['dependencies'])
+    assert any('c13890f8e2a1ecf1dc8eb9f2a37f9187cb9fea78' in value for value in project['dependencies'])
     text = (ROOT / 'requirements-runtime-cpu.lock').read_text()
     assert 'pillow==13.0.0' in text
-    assert 'particlegan==0.9.5' in text
+    assert 'particlegan==0.11.0' in text
     assert 'torch @ https://download-r2.pytorch.org/whl/cpu/torch-2.9.1%2Bcpu-cp312-cp312-manylinux_2_28_x86_64.whl' in text
     assert '--index-url https://pypi.org/simple' in text
     assert '--extra-index-url' not in text
@@ -103,14 +103,14 @@ def test_public_hndl_cpu_profile_pins_exact_source_and_keeps_archive_hashes():
     project = tomllib.loads((ROOT / 'profiles/hypergan-hndl/pyproject.toml').read_text())['project']
     core = next(Requirement(value) for value in project['dependencies']
                 if Requirement(value).name == 'particle-sliders-core')
-    assert core.extras == {'serialization', 'hypergan-hndl'}
+    assert core.extras == {'serialization'}
     assert core.url == ('git+https://github.com/HyperGAN/particle-sliders.git@'
-                        '3dd672a7f9b8c169daef90fd63e4bb42b9ddc423'
+                        'c13890f8e2a1ecf1dc8eb9f2a37f9187cb9fea78'
                         '#subdirectory=packages/particle-sliders-core')
     text = (ROOT / 'requirements-hndl-cpu.lock').read_text()
     names = re.findall(r'^([A-Za-z0-9][A-Za-z0-9_.-]*)(?:==| @ )', text, flags=re.M)
     assert len(names) == 45
-    assert 'pillow==13.0.0' in text and 'particlegan==0.9.5' in text and 'hndl==0.10.0' in text
+    assert 'pillow==13.0.0' in text and 'particlegan==0.11.0' in text and 'hndl==0.10.0' in text
     assert 'gradio' not in names and not any(name.startswith('nvidia-') for name in names)
     assert 'git+' not in text and '--extra-index-url' not in text
     for entry in re.split(r'\n(?=[A-Za-z0-9][A-Za-z0-9_.-]*(?:==| @ ))', text):

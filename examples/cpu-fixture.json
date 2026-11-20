@@ -10,8 +10,8 @@
   "strength": 1.0,
   "seed": 42,
   "max_sequence_length": 16,
-  "objective": "pg09_gan_only",
-  "pg_version": "0.9.5",
+  "objective": "engine_gan_only",
+  "pg_version": "0.11.0",
   "preset": "bispf_optimized",
   "batch_size": 2,
   "dummy": true
